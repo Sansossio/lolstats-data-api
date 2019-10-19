@@ -35,26 +35,25 @@ export class ConfigService {
     }
   }
 
-  private loadConfiguration () {
-    const { NODE_ENV } = process.env
-    if (!NODE_ENV) return
+  private loadConfiguration (customEnv?, testConfig?) {
+    const { NODE_ENV } = customEnv || process.env
+    if (!NODE_ENV) return false
     const path: string = `${__dirname}/configs/${NODE_ENV}`
     const availableExt: string[] = ['ts', 'js', 'json']
     let foundExt: boolean = false
     for (const ext of availableExt) {
       const fullPath: string = `${path}.${ext}`
-      if (fs.existsSync(fullPath)) {
-        const configEnv = require(fullPath).default
+      if (testConfig || fs.existsSync(fullPath)) {
+        const configEnv = testConfig || require(fullPath).default
         this.config = _.merge(this.config, configEnv)
         foundExt = true
         break
       }
     }
     if (!foundExt) {
-      console.error(`No config found for environment: ${NODE_ENV}`)
-      return
+      return false
     }
-    console.log(`Loaded configuration to env: ${NODE_ENV}`)
+    return true
   }
 
   get<T> (key: string): T {
