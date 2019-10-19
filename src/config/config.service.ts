@@ -2,6 +2,7 @@ import * as _ from 'lodash'
 import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as defaultConfig from './configs/default'
+import { TypeOrmModuleOptions } from '@nestjs/typeorm'
 import { Injectable } from '@nestjs/common'
 export interface IConfig {
   [key: string]: any
@@ -54,6 +55,10 @@ export class ConfigService {
       return false
     }
     return true
+  }
+
+  createTypeOrmOptions (): TypeOrmModuleOptions {
+    return this.get<TypeOrmModuleOptions>('database')
   }
 
   get<T> (key: string): T {
