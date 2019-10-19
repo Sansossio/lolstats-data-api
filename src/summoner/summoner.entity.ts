@@ -1,8 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Index } from 'typeorm'
 import { ApiResponseModelProperty as ApiModelProperty } from '@nestjs/swagger'
 import { Regions } from 'api-riot-games/dist/constants'
+import { SummonerLeagueEntity } from 'src/leagues/leagues.summoner.entity'
 
-@Entity()
+@Entity('summoners')
+@Index('index_summoner_region', ['accountId', 'region'], { unique: true })
 export class SummonerEntity {
   @ApiModelProperty()
   @PrimaryGeneratedColumn()
@@ -39,6 +41,12 @@ export class SummonerEntity {
   @ApiModelProperty()
   @Column({ type: 'varchar' })
   region: Regions
+
+  @ApiModelProperty({
+    type: [SummonerLeagueEntity]
+  })
+  @OneToMany(type => SummonerLeagueEntity, leagues => leagues.idSummoner, { cascade: true })
+  leagues: SummonerLeagueEntity[]
 
   @ApiModelProperty({ example: new Date().toISOString() })
   @Column({

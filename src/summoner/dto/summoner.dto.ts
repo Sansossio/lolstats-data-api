@@ -15,5 +15,5 @@ export class SummonerGetDTO {
   @IsString()
   @IsNotEmpty()
   @IsEnum(riotRegions)
-  regions: Regions
+  region: Regions
 }

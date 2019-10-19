@@ -4,12 +4,10 @@ import { SummonerGetDTO } from './dto/summoner.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { SummonerEntity } from './summoner.entity'
 import { Repository } from 'typeorm'
-import { SummonerV4DTO } from 'api-riot-games/dist/dto/Summoner/Summoner.dto'
-import { Regions } from 'api-riot-games/dist/constants'
 
 @Injectable()
 export class SummonerService {
-  private readonly api = this.riot.getLolApi().summoner
+  private readonly api = this.riot.getLolApi()
 
   constructor (
     @InjectRepository(SummonerEntity)
@@ -17,12 +15,23 @@ export class SummonerService {
     private readonly riot: RiotApiService
   ) {}
 
-  async save (instance: SummonerV4DTO, region: Regions) {
-    const save: SummonerEntity = {
-      ...instance,
-      region
-    }
-    return this.repository.save(save)
+  private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerEntity> {
+    // Search summoner
+    const {
+      response: summoner
+    } = await this.api.summoner.getByName(params.summonerName, params.region)
+    // Search summoner leagues
+    const {
+      response: leagues
+    } = await this.api.league.bySummoner(summoner.id, params.region)
+
+    const response = this.repository.create({
+      ...summoner,
+      region: params.region,
+      leagues
+    })
+
+    return response
   }
 
   async get (params: SummonerGetDTO) {
@@ -30,16 +39,17 @@ export class SummonerService {
     const search = await this.repository.findOne({
       where: {
         name: params.summonerName,
-        region: params.regions
-      }
+        region: params.region
+      },
+      relations: ['leagues']
     })
     if (search) {
       return search
     }
     // Search in riot api
     try {
-      const { response } = await this.api.getByName(params.summonerName, params.regions)
-      return this.save(response, params.regions)
+      const userInfo = await this.getSummonerInfo(params)
+      return this.repository.save(userInfo)
     } catch (e) {
       throw new NotFoundException()
     }
