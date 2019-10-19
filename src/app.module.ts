@@ -6,17 +6,26 @@ import { SummonerModule } from './summoner/summoner.module'
 import { RiotApiModule } from './riot-api/riot-api.module'
 import { LeaguesService } from './leagues/leagues.service'
 import { LeaguesModule } from './leagues/leagues.module'
+import { HistoricModule } from './historic/historic.module'
+import { DBConnection } from './enum/database-connection.enum'
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
+      name: DBConnection.CONTEXT,
       imports: [ConfigModule],
       useExisting: ConfigService
     }),
+    TypeOrmModule.forRootAsync({
+      name: DBConnection.HISTORIC,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => configService.createTypeOrmOptionsHistoric()
+    }),
     RiotApiModule,
     SummonerModule,
-    LeaguesModule
+    LeaguesModule,
+    HistoricModule
   ],
-  providers: [ConfigService, LeaguesService]
+  providers: [ConfigService]
 })
 export class AppModule {}

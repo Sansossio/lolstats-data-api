@@ -5,13 +5,14 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { SummonerEntity } from './summoner.entity'
 import { Repository } from 'typeorm'
 import { LeaguesService } from '../leagues/leagues.service'
+import { DBConnection } from '../enum/database-connection.enum'
 
 @Injectable()
 export class SummonerService {
   private readonly api = this.riot.getLolApi().summoner
 
   constructor (
-    @InjectRepository(SummonerEntity)
+    @InjectRepository(SummonerEntity, DBConnection.CONTEXT)
     private readonly repository: Repository<SummonerEntity>,
     private readonly riot: RiotApiService,
     private readonly leagueService: LeaguesService

@@ -1,14 +1,14 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm'
 import { ApiModelProperty } from '@nestjs/swagger'
-import { SummonerEntity } from '../../summoner/summoner.entity'
 
-@Entity('summoner_leagues')
-export class SummonerLeagueEntity {
+@Entity('historic_summoner_leagues')
+export class SummonerLeagueHistoricEntity {
   @ApiModelProperty()
   @PrimaryGeneratedColumn()
   idSummonerLeague?: number
 
-  @ManyToOne(type => SummonerEntity, summoner => summoner.idSummoner)
+  @ApiModelProperty()
+  @Column({ type: 'int' })
   idSummoner?: number
 
   @ApiModelProperty()

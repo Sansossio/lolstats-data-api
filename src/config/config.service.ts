@@ -58,7 +58,11 @@ export class ConfigService {
   }
 
   createTypeOrmOptions (): TypeOrmModuleOptions {
-    return this.get<TypeOrmModuleOptions>('database')
+    return this.get<TypeOrmModuleOptions>('database.context')
+  }
+
+  createTypeOrmOptionsHistoric (): TypeOrmModuleOptions {
+    return this.get<TypeOrmModuleOptions>('database.historic')
   }
 
   get<T> (key: string): T {
