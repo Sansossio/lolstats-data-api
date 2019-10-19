@@ -1,4 +1,7 @@
+import { config } from 'dotenv'
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+
+config()
 
 export interface IDatabaseConnection {
   [key: string]: TypeOrmModuleOptions
