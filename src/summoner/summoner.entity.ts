@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany, Index } from 'typeorm'
 import { ApiResponseModelProperty as ApiModelProperty } from '@nestjs/swagger'
 import { Regions } from 'api-riot-games/dist/constants'
-import { SummonerLeagueEntity } from 'src/leagues/leagues.summoner.entity'
+import { SummonerLeagueEntity } from '../leagues/entities/leagues.summoner.entity'
 
 @Entity('summoners')
 @Index('index_summoner_region', ['accountId', 'region'], { unique: true })

@@ -1,6 +1,6 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne, JoinColumn, ManyToOne } from 'typeorm'
 import { ApiModelProperty } from '@nestjs/swagger'
-import { SummonerEntity } from 'src/summoner/summoner.entity'
+import { SummonerEntity } from '../../summoner/summoner.entity'
 
 @Entity('summoner_leagues')
 export class SummonerLeagueEntity {
@@ -23,10 +23,6 @@ export class SummonerLeagueEntity {
   @Column({ type: 'boolean' })
   hotStreak: boolean
 
-  // @ApiModelProperty()
-  // @Column({ type: 'MiniSeriesDTO' })
-  // miniSeries
-
   @ApiModelProperty()
   @Column({ type: 'int' })
   wins: number
@@ -40,8 +36,8 @@ export class SummonerLeagueEntity {
   losses: number
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
-  rank: string
+  @Column({ type: 'tinyint' })
+  rank: number
 
   @ApiModelProperty()
   @Column({ type: 'varchar' })
