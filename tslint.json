@@ -4,6 +4,11 @@
   "jsRules": {
     "no-unused-expression": true
   },
+  "linterOptions": {
+    "exclude": [
+      "node_modules"
+    ]
+  },
   "rules": {
     "quotemark": [true, "single"],
     "member-access": [false],
@@ -13,7 +18,8 @@
     "interface-name": [false],
     "arrow-parens": false,
     "object-literal-sort-keys": false,
-    "no-floating-promises": false
+    "no-floating-promises": false,
+    "variable-name": false
   },
   "rulesDirectory": []
 }

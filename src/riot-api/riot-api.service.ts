@@ -2,7 +2,6 @@ import { Injectable, Global } from '@nestjs/common'
 import { RiotApi } from 'api-riot-games'
 import { ConfigService } from '../config/config.service'
 
-@Global()
 @Injectable()
 export class RiotApiService {
   private readonly api: RiotApi

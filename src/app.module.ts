@@ -1,16 +1,19 @@
 import { Module } from '@nestjs/common'
-import { RiotApiService } from './riot-api/riot-api.service'
 import { ConfigService } from './config/config.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from './config/config.module'
+import { SummonerModule } from './summoner/summoner.module'
+import { RiotApiModule } from './riot-api/riot-api.module'
 
 @Module({
   imports: [
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useExisting: ConfigService
-    })
+    }),
+    RiotApiModule,
+    SummonerModule
   ],
-  providers: [ConfigService, RiotApiService]
+  providers: [ConfigService]
 })
 export class AppModule {}
