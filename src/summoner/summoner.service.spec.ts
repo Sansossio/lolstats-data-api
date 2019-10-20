@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SummonerService } from './summoner.service'
 import { getRepositoryToken } from '@nestjs/typeorm'
-import { SummonerEntity } from './summoner.entity'
+import { SummonerContextEntity } from './summoner.entity'
 import { Repository } from 'typeorm'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { LeaguesService } from '../leagues/leagues.service'
@@ -14,7 +14,7 @@ describe('SummonerService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: getRepositoryToken(SummonerEntity),
+          provide: getRepositoryToken(SummonerContextEntity),
           useClass: Repository
         },
         ConfigService,

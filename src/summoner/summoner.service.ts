@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { SummonerGetDTO } from './dto/summoner.dto'
 import { InjectRepository } from '@nestjs/typeorm'
-import { SummonerEntity } from './summoner.entity'
+import { SummonerContextEntity } from './summoner.entity'
 import { Repository } from 'typeorm'
 import { LeaguesService } from '../leagues/leagues.service'
 import { DBConnection } from '../enum/database-connection.enum'
@@ -12,13 +12,13 @@ export class SummonerService {
   private readonly api = this.riot.getLolApi().summoner
 
   constructor (
-    @InjectRepository(SummonerEntity, DBConnection.CONTEXT)
-    private readonly repository: Repository<SummonerEntity>,
+    @InjectRepository(SummonerContextEntity, DBConnection.CONTEXT)
+    private readonly repository: Repository<SummonerContextEntity>,
     private readonly riot: RiotApiService,
     private readonly leagueService: LeaguesService
   ) {}
 
-  private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerEntity> {
+  private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerContextEntity> {
     // Search summoner
     const {
       response: summoner

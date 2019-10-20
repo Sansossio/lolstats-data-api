@@ -1,9 +1,9 @@
 import { Entity, ManyToOne } from 'typeorm'
-import { SummonerEntity } from '../../summoner/summoner.entity'
-import { SummonerLeagueHistoricEntity } from '../../historic/entities/summoner/summoner-league.entity.historic'
+import { SummonerContextEntity } from '../../summoner/summoner.entity'
+import { SummonerLeagueEntity } from 'lolstats-common/src/database'
 
 @Entity('summoner_leagues')
-export class SummonerLeagueEntity extends SummonerLeagueHistoricEntity {
-  @ManyToOne(type => SummonerEntity, summoner => summoner.idSummoner)
+export class SummonerLeagueContextEntity extends SummonerLeagueEntity {
+  @ManyToOne(type => SummonerContextEntity, summoner => summoner.idSummoner)
   idSummoner?: number
 }
