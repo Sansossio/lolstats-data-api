@@ -5,6 +5,10 @@ import { RiotApiService } from '../riot-api/riot-api.service'
 import { RiotApiModule } from '../riot-api/riot-api.module'
 import { stub, restore, SinonStub } from 'sinon'
 import Regions from 'lolstats-common/src/enum/riot/regions.riot.enum'
+import { getRepositoryToken } from '@nestjs/typeorm'
+import { Repository } from 'typeorm'
+import { SummonerLeagueContextEntity } from './entities/summoner-league.entity'
+import { DBConnection } from '../enum/database-connection.enum'
 
 describe('LeaguesService', () => {
   let service: LeaguesService
@@ -14,7 +18,13 @@ describe('LeaguesService', () => {
     spy = jest.spyOn(RiotApiService.prototype, 'getLolApi')
     const module: TestingModule = await Test.createTestingModule({
       imports: [RiotApiModule],
-      providers: [LeaguesService]
+      providers: [
+        {
+          provide: getRepositoryToken(SummonerLeagueContextEntity, DBConnection.CONTEXT),
+          useClass: Repository
+        },
+        LeaguesService
+      ]
     }).compile()
     service = module.get<LeaguesService>(LeaguesService)
   })
@@ -70,7 +80,7 @@ describe('LeaguesService', () => {
         ]
         return { response }
       })
-      const response = await service.bySummoner('Testing', Regions.PBE)
+      const response = await service.getBySummoner('Testing', Regions.PBE)
       expect(response).toEqual(expectResponse)
     })
   })

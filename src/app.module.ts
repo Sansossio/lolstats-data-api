@@ -4,9 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { ConfigModule } from './config/config.module'
 import { SummonerModule } from './summoner/summoner.module'
 import { RiotApiModule } from './riot-api/riot-api.module'
-import { LeaguesService } from './leagues/leagues.service'
 import { LeaguesModule } from './leagues/leagues.module'
-import { HistoricModule } from './historic/historic.module'
 import { DBConnection } from './enum/database-connection.enum'
 
 @Module({
@@ -16,15 +14,9 @@ import { DBConnection } from './enum/database-connection.enum'
       imports: [ConfigModule],
       useExisting: ConfigService
     }),
-    TypeOrmModule.forRootAsync({
-      name: DBConnection.HISTORIC,
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => configService.createTypeOrmOptionsHistoric()
-    }),
     RiotApiModule,
     SummonerModule,
-    LeaguesModule,
-    HistoricModule
+    LeaguesModule
   ],
   providers: [ConfigService]
 })

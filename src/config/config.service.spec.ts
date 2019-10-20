@@ -33,7 +33,7 @@ describe('ConfigService', () => {
         user: 'root',
         password: 'password'
       }
-      method('database', database)
+      method('database.context', database)
       const value = service.createTypeOrmOptions()
       expect(value).toEqual(database)
     })

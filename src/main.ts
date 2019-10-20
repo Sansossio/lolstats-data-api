@@ -7,7 +7,7 @@ async function bootstrap () {
   const app = await NestFactory.create(AppModule)
   app.useGlobalPipes(new ValidationPipe())
   const options = new DocumentBuilder()
-    .setTitle('LolStats - Riot api')
+    .setTitle('LolStats - Context api')
     .setDescription('Riot games api proxy')
     .build()
   const document = SwaggerModule.createDocument(app, options)

@@ -6,6 +6,8 @@ import { Repository } from 'typeorm'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { LeaguesService } from '../leagues/leagues.service'
 import { ConfigService } from '../config/config.service'
+import { DBConnection } from '../enum/database-connection.enum'
+import { SummonerLeagueContextEntity } from '../leagues/entities/summoner-league.entity'
 
 describe('SummonerService', () => {
   let service: SummonerService
@@ -14,7 +16,11 @@ describe('SummonerService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         {
-          provide: getRepositoryToken(SummonerContextEntity),
+          provide: getRepositoryToken(SummonerContextEntity, DBConnection.CONTEXT),
+          useClass: Repository
+        },
+        {
+          provide: getRepositoryToken(SummonerLeagueContextEntity, DBConnection.CONTEXT),
           useClass: Repository
         },
         ConfigService,

@@ -61,10 +61,6 @@ export class ConfigService {
     return this.get<TypeOrmModuleOptions>('database.context')
   }
 
-  createTypeOrmOptionsHistoric (): TypeOrmModuleOptions {
-    return this.get<TypeOrmModuleOptions>('database.historic')
-  }
-
   get<T> (key: string): T {
     return _.get(this.config, key, key)
   }
