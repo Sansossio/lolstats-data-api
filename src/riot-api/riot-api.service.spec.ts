@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { RiotApiService } from './riot-api.service'
 import { ConfigModule } from '../config/config.module'
-import { RiotApi } from 'api-riot-games'
-import { LolApi } from 'api-riot-games/dist/riot/apis'
+import { RiotApi } from 'lolstats-common/src/modules/riot'
+import { LolApi } from 'lolstats-common/src/modules/riot/apis'
 
 describe('RiotServiceService', () => {
   let service: RiotApiService

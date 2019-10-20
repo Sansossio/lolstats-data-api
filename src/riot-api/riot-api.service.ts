@@ -1,5 +1,5 @@
-import { Injectable, Global } from '@nestjs/common'
-import { RiotApi } from 'api-riot-games'
+import { Injectable } from '@nestjs/common'
+import { RiotApi } from 'lolstats-common/src/modules/riot'
 import { ConfigService } from '../config/config.service'
 
 @Injectable()
@@ -21,7 +21,7 @@ export class RiotApiService {
     return this.api
   }
 
-  getLolApi () {
+  getLolApi (): typeof RiotApi.prototype.leagueOfLegends {
     return this.api.leagueOfLegends
   }
 }

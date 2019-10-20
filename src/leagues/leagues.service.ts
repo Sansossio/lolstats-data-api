@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import { Regions } from 'api-riot-games/dist/constants'
+import Regions from 'lolstats-common/src/enum/riot/regions.riot.enum'
 import * as RomanNumerals from 'js-roman-numerals'
+import { SummonerLeagueDto } from 'lolstats-common/src/modules/riot/dto'
 
 @Injectable()
 export class LeaguesService {
@@ -22,7 +23,7 @@ export class LeaguesService {
     }))
   }
 
-  async bySummoner (encryptedSummonerId: string, region: Regions) {
+  async bySummoner (encryptedSummonerId: string, region: Regions): Promise<(SummonerLeagueDto & { rank: number; })[]> {
     const {
       response: leagues
     } = await this.api.bySummoner(encryptedSummonerId, region)
