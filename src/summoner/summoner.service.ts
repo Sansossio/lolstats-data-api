@@ -126,4 +126,8 @@ export class SummonerService {
       throw new NotFoundException()
     }
   }
+
+  async exists (params: SummonerGetDTO): Promise<boolean> {
+    return !!await this.search(params)
+  }
 }
