@@ -65,9 +65,9 @@ export class SummonerService {
     return response
   }
 
-  private updateIntervalCheck (updateAt: Date): boolean {
+  private updateIntervalCheck (updateAt?: Date): boolean {
     const now = new Date().getTime()
-    const lastUpdate = updateAt.getTime()
+    const lastUpdate = (updateAt || new Date()).getTime()
     const interval = Math.abs(now - lastUpdate)
     return interval > this.userUpdateInternal
   }
@@ -91,7 +91,7 @@ export class SummonerService {
     const baseUser = {
       leagues: undefined,
       // Force column updateAt
-      revisionDate: base.revisionDate + 1
+      revisionDate: (base.revisionDate || 0) + 1
     }
     const updateInstance = Object.assign(base, summoner, baseUser)
     const { idSummoner } = await this.saveSummoner(updateInstance, true)

@@ -4,11 +4,11 @@ import { get } from 'lodash'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { RiotApiModule } from '../riot-api/riot-api.module'
 import { stub, restore, SinonStub } from 'sinon'
-import Regions from 'lolstats-common/src/enum/riot/regions.riot.enum'
 import { getRepositoryToken } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { SummonerLeagueContextEntity } from './entities/summoner-league.entity'
 import { DBConnection } from '../enum/database-connection.enum'
+import { Regions } from 'api-riot-games/dist/constants'
 
 describe('LeaguesService', () => {
   let service: LeaguesService

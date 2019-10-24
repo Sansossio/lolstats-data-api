@@ -1,12 +1,13 @@
 import { IsString, IsNotEmpty, IsEnum } from 'class-validator'
 import { ApiModelProperty } from '@nestjs/swagger'
-import Regions, { riotRegionsList } from 'lolstats-common/src/enum/riot/regions.riot.enum'
+import { Regions } from 'api-riot-games/dist/constants'
+import { riotRegionsList } from '../../enum/regions.enum'
 
 export class SummonerGetDTO {
   @ApiModelProperty()
   @IsString()
   @IsNotEmpty()
-  summonerName: string
+  summonerName!: string
 
   @ApiModelProperty({
     enum: riotRegionsList
@@ -14,5 +15,5 @@ export class SummonerGetDTO {
   @IsString()
   @IsNotEmpty()
   @IsEnum(riotRegionsList)
-  region: Regions
+  region!: Regions
 }

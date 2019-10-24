@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { RiotApi } from 'lolstats-common/src/modules/riot'
+import { RiotApi } from 'api-riot-games'
 import { ConfigService } from '../config/config.service'
 
 @Injectable()

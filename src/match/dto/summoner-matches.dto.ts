@@ -5,13 +5,13 @@ import { SummonerMatchesEntity } from '../entities/summoner-matches.entity'
 export class SummonerMatchesFindBySummoner {
   @ApiModelProperty()
   @IsNumberString()
-  idSummoner: number
+  idSummoner!: number
 }
 
 export class SummonerMatchesFindBySummonerResponse {
   @ApiResponseModelProperty()
-  total: number
+  total!: number
 
   @ApiResponseModelProperty({ type: [SummonerMatchesEntity] })
-  matches: SummonerMatchesEntity[]
+  matches!: SummonerMatchesEntity[]
 }
