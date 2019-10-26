@@ -1,8 +1,8 @@
 import { Entity, OneToMany, Index, Column, PrimaryGeneratedColumn } from 'typeorm'
 import { ApiResponseModelProperty as ApiModelProperty } from '@nestjs/swagger'
 import { SummonerLeagueContextEntity } from '../leagues/entities/summoner-league.entity'
-import { SummonerMatchesEntity } from '../match/entities/summoner-matches.entity'
 import { BaseEntity } from '../base/Entity.base'
+import Regions from '../enum/regions.enum'
 
 @Entity('summoners')
 @Index('index_summoner_region', ['accountId', 'region'], { unique: true })
@@ -47,14 +47,11 @@ export class SummonerContextEntity extends BaseEntity {
 
   @ApiModelProperty()
   @Column({ type: 'varchar' })
-  region!: string
+  region!: Regions
 
   @ApiModelProperty({
     type: [SummonerLeagueContextEntity]
   })
   @OneToMany(type => SummonerLeagueContextEntity, leagues => leagues.idSummoner, { cascade: true })
   leagues!: SummonerLeagueContextEntity[]
-
-  @OneToMany(type => SummonerMatchesEntity, match => match.idSummoner, { cascade: true })
-  matches?: SummonerMatchesEntity[]
 }

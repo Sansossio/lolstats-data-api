@@ -8,10 +8,11 @@ import { LeaguesService } from '../leagues/leagues.service'
 import { DBConnection } from '../enum/database-connection.enum'
 import { ConfigService } from '../config/config.service'
 import * as _ from 'lodash'
+import { MatchService } from '../match/match.service'
 
 @Injectable()
 export class SummonerService {
-  private readonly api = this.riot.getLolApi().summoner
+  private readonly api = this.riot.getLolApi()
   private readonly userUpdateInternal = this.configService.getNumber('update.userUpdateIntervalMin') * 60 * 1000
 
   constructor (
@@ -19,7 +20,8 @@ export class SummonerService {
     private readonly repository: Repository<SummonerContextEntity>,
     private readonly riot: RiotApiService,
     private readonly leagueService: LeaguesService,
-    private readonly configService: ConfigService
+    private readonly configService: ConfigService,
+    private readonly matchService: MatchService
   ) {}
 
   private async saveSummoner (instance: SummonerContextEntity | SummonerGetDTO, onlyInstance: boolean = false): Promise<SummonerContextEntity> {
@@ -52,7 +54,7 @@ export class SummonerService {
     // Search summoner
     const {
       response: summoner
-    } = await this.api.getByName(params.summonerName, params.region)
+    } = await this.api.Summoner.getByName(params.summonerName, params.region)
     // Search summoner leagues
     const leagues = await this.leagueService.getBySummoner(summoner.id, params.region)
 
@@ -65,13 +67,6 @@ export class SummonerService {
     return response
   }
 
-  private updateIntervalCheck (updateAt?: Date): boolean {
-    const now = new Date().getTime()
-    const lastUpdate = (updateAt || new Date()).getTime()
-    const interval = Math.abs(now - lastUpdate)
-    return interval > this.userUpdateInternal
-  }
-
   private async search (params: SummonerGetDTO) {
     return this.repository.createQueryBuilder('summoners')
       .leftJoinAndSelect('summoners.leagues', 'summoner_leagues')
@@ -80,12 +75,18 @@ export class SummonerService {
       .getOne()
   }
 
-  private async upsert (base: SummonerContextEntity, params: SummonerGetDTO) {
-    // Check time
-    const checkTime = this.updateIntervalCheck(base.updateAt)
+  private checkSummonerCanUpdate (user: SummonerContextEntity) {
+    const { updateAt } = user
+    const now = new Date().getTime()
+    const lastUpdate = (updateAt || new Date()).getTime()
+    const interval = Math.abs(now - lastUpdate)
+    const checkTime = interval > this.userUpdateInternal
     if (!checkTime) {
       throw new NotAcceptableException()
     }
+  }
+
+  private async upsert (base: SummonerContextEntity, params: SummonerGetDTO) {
     const summoner = await this.getSummonerInfo(params)
     // Update existing user
     const baseUser = {
@@ -99,13 +100,18 @@ export class SummonerService {
     return this.get(params)
   }
 
-  async update (params: SummonerGetDTO) {
+  async create (params: SummonerGetDTO) {
     const exists = await this.search(params)
+    let user: SummonerContextEntity
     if (!exists) {
       await this.saveSummoner(params)
-      return this.get(params, false)
+      user = await this.get(params, false)
+    } else {
+      this.checkSummonerCanUpdate(exists)
+      user = await this.upsert(exists, params)
     }
-    return this.upsert(exists, params)
+    await this.matchService.updateMatches(user.idSummoner)
+    return user
   }
 
   async get (params: SummonerGetDTO, searchOnRiot: boolean = true): Promise<SummonerContextEntity> {
@@ -114,17 +120,10 @@ export class SummonerService {
     if (search) {
       return search
     }
-    // Search in riot api
-    try {
-      if (!searchOnRiot) {
-        throw new NotFoundException()
-      }
-      const userInfo = await this.getSummonerInfo(params)
-      await this.saveSummoner(userInfo)
-      return await this.get(params, false)
-    } catch (e) {
+    if (!searchOnRiot) {
       throw new NotFoundException()
     }
+    return this.create(params)
   }
 
   async exists (params: SummonerGetDTO): Promise<boolean> {

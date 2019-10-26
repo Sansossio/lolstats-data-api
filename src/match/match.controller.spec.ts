@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { MatchController } from './match.controller'
 import { getRepositoryToken } from '@nestjs/typeorm'
-import { SummonerMatchesEntity } from './entities/summoner-matches.entity'
+import { MatchEntity } from './entities/match.entity'
 import { DBConnection } from '../enum/database-connection.enum'
 import { Repository } from 'typeorm'
 import { MatchService } from './match.service'
@@ -13,7 +13,7 @@ describe('Match Controller', () => {
     module = await Test.createTestingModule({
       providers: [
         {
-          provide: getRepositoryToken(SummonerMatchesEntity, DBConnection.CONTEXT),
+          provide: getRepositoryToken(MatchEntity, DBConnection.CONTEXT),
           useClass: Repository
         },
         MatchService

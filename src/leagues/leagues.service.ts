@@ -11,7 +11,7 @@ const RomanNumerals = require('js-roman-numerals')
 
 @Injectable()
 export class LeaguesService {
-  private readonly api = this.riot.getLolApi().league
+  private readonly api = this.riot.getLolApi()
 
   constructor (
     @InjectRepository(SummonerLeagueContextEntity, DBConnection.CONTEXT)
@@ -51,7 +51,7 @@ export class LeaguesService {
   async getBySummoner (encryptedSummonerId: string, region: Regions): Promise<(SummonerLeagueDto & { rank: number; })[]> {
     const {
       response: leagues
-    } = await this.api.bySummoner(encryptedSummonerId, region)
+    } = await this.api.League.bySummoner(encryptedSummonerId, region)
     return this.mapRank(leagues)
   }
 }

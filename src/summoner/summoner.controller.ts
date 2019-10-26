@@ -26,6 +26,6 @@ export class SummonerController {
   })
   @ApiOkResponse({ type: SummonerContextEntity })
   update (@Query() params: SummonerGetDTO) {
-    return this.service.update(params)
+    return this.service.create(params)
   }
 }

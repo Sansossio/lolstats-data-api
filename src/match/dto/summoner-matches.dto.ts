@@ -1,17 +1,17 @@
-import { ApiModelProperty, ApiResponseModelProperty } from '@nestjs/swagger'
-import { IsPositive, IsNotEmpty, IsNumberString } from 'class-validator'
-import { SummonerMatchesEntity } from '../entities/summoner-matches.entity'
+import { ApiModelProperty } from '@nestjs/swagger'
+import { IsNotEmpty, IsNumberString, IsString, IsEnum } from 'class-validator'
+import { riotRegionsList } from '../../enum/regions.enum'
+import { Regions } from 'api-riot-games/dist/constants'
 
-export class SummonerMatchesFindBySummoner {
+export class MatchesFindBySummoner {
   @ApiModelProperty()
   @IsNumberString()
+  @IsNotEmpty()
   idSummoner!: number
 }
 
-export class SummonerMatchesFindBySummonerResponse {
-  @ApiResponseModelProperty()
-  total!: number
-
-  @ApiResponseModelProperty({ type: [SummonerMatchesEntity] })
-  matches!: SummonerMatchesEntity[]
+export class MatchesFindParams {
+  beginIndex?: number
+  endIndex?: number
+  beginTime?: number
 }

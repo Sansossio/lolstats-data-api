@@ -5,6 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { SummonerContextEntity } from './summoner.entity'
 import { LeaguesModule } from '../leagues/leagues.module'
 import { DBConnection } from '../enum/database-connection.enum'
+import { MatchModule } from '../match/match.module'
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { DBConnection } from '../enum/database-connection.enum'
       ],
       DBConnection.CONTEXT
     ),
+    MatchModule,
     LeaguesModule
   ],
   controllers: [SummonerController],

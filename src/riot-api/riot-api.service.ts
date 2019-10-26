@@ -21,7 +21,7 @@ export class RiotApiService {
     return this.api
   }
 
-  getLolApi (): typeof RiotApi.prototype.leagueOfLegends {
-    return this.api.leagueOfLegends
+  getLolApi (): typeof RiotApi.prototype.Lol {
+    return this.api.Lol
   }
 }
