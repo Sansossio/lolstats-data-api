@@ -30,6 +30,7 @@ export class MatchService {
     private readonly riot: RiotApiService
   ) {}
 
+  // Internal
   private async getSummoner (find: number | string, region: Regions): Promise<SummonerContextEntity> {
     const key = typeof find === 'string' ? 'accountId' : 'idSummoner'
     const options: FindOneOptions = {
@@ -132,6 +133,7 @@ export class MatchService {
     return matches.map(match => match.match as MatchEntity)
   }
 
+  // Public methods
   async updateMatches (idSummoner: number) {
     const { region } = await this.summonerRepository.findOneOrFail(idSummoner)
     const beginTime = await this.getLastMatchTime(idSummoner)
@@ -152,5 +154,14 @@ export class MatchService {
       throw new NotFoundException('User not found')
     }
     return this.getBySummoner(summoner.idSummoner)
+  }
+
+  // Getters
+  async findMatches (options?: FindManyOptions<MatchEntity>) {
+    return this.repository.find(options)
+  }
+
+  async findMatchParticipants (options?: FindManyOptions<MatchParticipantsEntity>) {
+    return this.participantsRepository.find(options)
   }
 }

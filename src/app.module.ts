@@ -7,6 +7,7 @@ import { RiotApiModule } from './riot-api/riot-api.module'
 import { LeaguesModule } from './leagues/leagues.module'
 import { DBConnection } from './enum/database-connection.enum'
 import { MatchModule } from './match/match.module'
+import { CronJobsModule } from './cron-jobs/cron-jobs.module'
 
 @Module({
   imports: [
@@ -18,7 +19,8 @@ import { MatchModule } from './match/match.module'
     RiotApiModule,
     SummonerModule,
     LeaguesModule,
-    MatchModule
+    MatchModule,
+    CronJobsModule
   ],
   providers: [ConfigService]
 })

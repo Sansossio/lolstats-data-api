@@ -9,6 +9,8 @@ import { DBConnection } from '../enum/database-connection.enum'
 import { ConfigService } from '../config/config.service'
 import * as _ from 'lodash'
 import { MatchService } from '../match/match.service'
+import Regions from '../enum/regions.enum'
+import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto';
 
 @Injectable()
 export class SummonerService {
@@ -126,7 +128,34 @@ export class SummonerService {
     return this.create(params)
   }
 
+  async findByAccountId (accountId: string, region: Regions) {
+    return this.api.Summoner.getByPUUID(accountId, region)
+  }
+
   async exists (params: SummonerGetDTO): Promise<boolean> {
     return !!await this.search(params)
+  }
+
+  async getOrCreateByAccountID (player: MatchParticipantsIdentitiesPlayerDto, region: Regions) {
+    const find = await this.repository.findOne({
+      where: {
+        accountId: player.currentAccountId,
+        region
+      }
+    })
+    if (find) {
+      return find
+    }
+    const instance: SummonerContextEntity = {
+      idSummoner: 0,
+      accountId: player.currentAccountId,
+      id: '',
+      leagues: [],
+      name: player.summonerName,
+      profileIconId: player.profileIcon,
+      puuid: '',
+      region
+    }
+    return this.repository.save(instance)
   }
 }

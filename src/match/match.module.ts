@@ -6,6 +6,7 @@ import { DBConnection } from '../enum/database-connection.enum'
 import { MatchEntity } from './entities/match.entity'
 import { SummonerContextEntity } from '../summoner/summoner.entity'
 import { MatchParticipantsEntity } from './entities/match.participants.entity'
+import { MatchRepositories } from './match.repository'
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { MatchParticipantsEntity } from './entities/match.participants.entity'
     )
   ],
   controllers: [MatchController],
-  providers: [MatchService],
-  exports: [MatchService]
+  providers: [MatchService, MatchRepositories],
+  exports: [MatchService, MatchRepositories]
 })
 export class MatchModule {}

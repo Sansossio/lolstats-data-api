@@ -19,6 +19,7 @@ import { MatchModule } from '../match/match.module'
     LeaguesModule
   ],
   controllers: [SummonerController],
-  providers: [SummonerService]
+  providers: [SummonerService],
+  exports: [SummonerService]
 })
 export class SummonerModule {}
