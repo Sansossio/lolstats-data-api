@@ -1,5 +1,5 @@
 import { BaseEntity } from '../../base/Entity.base'
-import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Column, OneToOne } from 'typeorm'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { MatchEntity } from './match.entity'
 import { SummonerContextEntity } from '../../summoner/summoner.entity'
@@ -27,7 +27,7 @@ export class MatchParticipantsEntity extends BaseEntity {
   match?: number | MatchEntity
 
   @ApiModelProperty()
-  @ManyToOne(type => SummonerContextEntity, summoner => summoner.idSummoner)
+  @OneToOne(type => SummonerContextEntity, summoner => summoner.idSummoner, { cascade: true })
   @JoinColumn({
     name: 'summoner'
   })

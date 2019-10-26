@@ -6,7 +6,7 @@ import { MatchRepositories } from '../../match/match.repository'
 import { MatchDto } from '../../../../riot-games-api/src/dto/Match/Match/Match.dto'
 import { getManager } from 'typeorm'
 import { MatchEntity } from '../../match/entities/match.entity'
-import { clone } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { SummonerService } from '../../summoner/summoner.service'
 import Regions from '../../enum/regions.enum'
 import { SummonerContextEntity } from '../../summoner/summoner.entity'
@@ -45,9 +45,9 @@ export class MatchDetailsCron extends NestSchedule {
   }
   // Internal methods
   private async upsertParticipants (match: MatchEntity, matchDetails: MatchDto) {
-    const { matchesParticipants } = this.matchRepositories
+    const { matchesParticipants, matches } = this.matchRepositories
     await getManager(DBConnection.CONTEXT).transaction(async repo => {
-      const newParticipants = clone(match.matchParticipants)
+      const newParticipants = cloneDeep(match.matchParticipants)
       // Create new participants objects
       for (const participant of matchDetails.participantIdentities) {
         const {
@@ -58,15 +58,17 @@ export class MatchDetailsCron extends NestSchedule {
         const findParticipant = await this.findSummoner(player, region)
         const existsIndex = newParticipants
           .findIndex(p =>
-            (p.summoner as SummonerContextEntity).idSummoner === findParticipant.idSummoner
+            (p.summoner as SummonerContextEntity).idSummoner === findParticipant.idSummoner &&
+            p.match === match
           )
         if (existsIndex !== -1) {
-          newParticipants[existsIndex].idMatchParticipant = participantId
+          newParticipants[existsIndex].participantId = participantId
+          newParticipants[existsIndex].match = match
         } else {
           newParticipants.push({
-            summoner: findParticipant.idSummoner,
-            match: match.idMatch,
-            idMatchParticipant: participantId
+            summoner: findParticipant,
+            participantId: participantId,
+            match
           })
         }
       }

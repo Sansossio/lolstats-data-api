@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm'
+import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany, ManyToMany, JoinTable, JoinColumn } from 'typeorm'
 import { BaseEntity } from '../../base/Entity.base'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { Regions, Queues } from 'api-riot-games/dist/constants'
@@ -43,9 +43,12 @@ export class MatchEntity extends BaseEntity {
   @ApiModelProperty({
     type: [MatchParticipantsEntity]
   })
-  @OneToMany(type => MatchParticipantsEntity, match => match.match, { cascade: true })
+  @OneToMany(type => MatchParticipantsEntity, match => match.match)
+  @JoinColumn({
+    name: 'matchParticipantsId'
+  })
   matchParticipants!: MatchParticipantsEntity[]
 
   @ManyToMany(type => SummonerContextEntity)
-  summoners?: SummonerContextEntity[]
+  summoner?: SummonerContextEntity[]
 }

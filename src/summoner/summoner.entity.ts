@@ -3,6 +3,7 @@ import { ApiResponseModelProperty as ApiModelProperty } from '@nestjs/swagger'
 import { SummonerLeagueContextEntity } from '../leagues/entities/summoner-league.entity'
 import { BaseEntity } from '../base/Entity.base'
 import Regions from '../enum/regions.enum'
+import { MatchEntity } from '../match/entities/match.entity';
 
 @Entity('summoners')
 @Index('index_summoner_region', ['accountId', 'region'], { unique: true })
@@ -54,4 +55,7 @@ export class SummonerContextEntity extends BaseEntity {
   })
   @OneToMany(type => SummonerLeagueContextEntity, leagues => leagues.idSummoner, { cascade: true })
   leagues!: SummonerLeagueContextEntity[]
+
+  @OneToMany(type => MatchEntity, match => match.summoner, { cascade: true })
+  matchParticipants?: MatchEntity[]
 }
