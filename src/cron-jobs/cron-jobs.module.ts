@@ -3,6 +3,7 @@ import { ScheduleModule } from 'nest-schedule'
 import { MatchDetailsCron } from './jobs/match-details.cron'
 import { MatchModule } from '../match/match.module'
 import { SummonerModule } from '../summoner/summoner.module'
+import { UserDetailsCron } from './jobs/summoner-details.cron'
 
 @Module({
   imports: [
@@ -11,7 +12,8 @@ import { SummonerModule } from '../summoner/summoner.module'
     ScheduleModule.register()
   ],
   providers: [
-    MatchDetailsCron
+    MatchDetailsCron,
+    UserDetailsCron
   ]
 })
 export class CronJobsModule {}

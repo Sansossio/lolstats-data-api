@@ -11,6 +11,7 @@ import * as _ from 'lodash'
 import { MatchService } from '../match/match.service'
 import Regions from '../enum/regions.enum'
 import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
+import { SummonerV4DTO } from '../../../riot-games-api/src/dto/Summoner/Summoner.dto';
 
 @Injectable()
 export class SummonerService {
@@ -26,10 +27,6 @@ export class SummonerService {
     private readonly configService: ConfigService,
     private readonly matchService: MatchService
   ) {}
-
-  private isDisabledUser (accountId: string) {
-    return accountId === this.userIsBannedTag
-  }
 
   private async saveSummoner (instance: SummonerContextEntity | SummonerGetDTO, onlyInstance: boolean = false): Promise<SummonerContextEntity> {
     const isParams = instance.hasOwnProperty('summonerName') && instance.hasOwnProperty('region')
@@ -59,15 +56,21 @@ export class SummonerService {
   }
 
   private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerContextEntity> {
+    let method = 'getByName'
+    let value = params.summonerName
+    if (typeof params.accountId === 'string') {
+      method = 'getByAccountID'
+      value = params.accountId
+    }
     // Search summoner
     const {
       response: summoner
-    } = await this.api.Summoner.getByName(params.summonerName, params.region)
+    } = await this.api.Summoner[method](value, params.region)
     // Search summoner leagues
     const leagues = await this.leagueService.getBySummoner(summoner.id, params.region)
 
     const response = this.repository.create({
-      ...summoner,
+      ...summoner as SummonerV4DTO,
       region: params.region,
       leagues
     })
@@ -76,9 +79,16 @@ export class SummonerService {
   }
 
   private async search (params: SummonerGetDTO) {
+    let key = 'LOWER(name)'
+    let value = 'LOWER(:value)'
+    if (typeof params.accountId === 'string') {
+      key = 'accountId'
+      value = ':value'
+    }
+    const whereString = `${key} = ${value}`
     return this.repository.createQueryBuilder('summoners')
       .leftJoinAndSelect('summoners.leagues', 'summoner_leagues')
-      .where('LOWER(name) = LOWER(:name)', { name: params.summonerName })
+      .where(whereString, { value: params.accountId || params.summonerName })
       .andWhere('region = :region', { region: params.region })
       .getOne()
   }
@@ -108,14 +118,16 @@ export class SummonerService {
     return this.get(params)
   }
 
-  async create (params: SummonerGetDTO) {
+  async create (params: SummonerGetDTO, checkTime: boolean = true) {
     const exists = await this.search(params)
     let user: SummonerContextEntity
     if (!exists) {
       await this.saveSummoner(params)
       user = await this.get(params, false)
     } else {
-      this.checkSummonerCanUpdate(exists)
+      if (checkTime) {
+        this.checkSummonerCanUpdate(exists)
+      }
       user = await this.upsert(exists, params)
     }
     await this.matchService.updateMatches(user.idSummoner)
@@ -172,5 +184,9 @@ export class SummonerService {
       region
     }
     return this.repository.save(instance)
+  }
+
+  isDisabledUser (accountId: string) {
+    return accountId === this.userIsBannedTag
   }
 }

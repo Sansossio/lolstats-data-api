@@ -17,6 +17,11 @@ export default {
       details: {
         limit: 5
       }
+    },
+    summoner: {
+      details: {
+        limit: 1
+      }
     }
   },
   summoners: {

@@ -29,19 +29,7 @@ export class MatchDetailsCron extends NestSchedule {
   }
   // Summoner methods
   private async findSummoner (player: MatchParticipantsIdentitiesPlayerDto, region: Regions, ignoreError: boolean = true) {
-    try {
-      return await this.summonerService.getOrCreateByAccountID(player, region)
-    } catch (e) {
-      if (!ignoreError || e.status !== NOT_FOUND) {
-        throw e
-      }
-      // Find new summoner name
-      const user = await this.summonerService.getOrCreateByAccountID(player, region)
-      return this.findSummoner({
-        ...player,
-        summonerName: user.name
-      }, region, false)
-    }
+    return this.summonerService.getOrCreateByAccountID(player, region)
   }
   // Internal methods
   private async setLoading (idMatch: number, loading: boolean) {
@@ -88,8 +76,8 @@ export class MatchDetailsCron extends NestSchedule {
     })
   }
   // Cron function
-  @Interval(1000, { waiting: true })
-  async loadMatchesInformation () {
+  @Interval(3 * 1000, { waiting: true })
+  async loadMatchesDetails () {
     const contextLogs = 'MatchesDetailsCron'
     const matches = await this.matchRepositories.matches.find({
       where: {

@@ -6,6 +6,7 @@ import { SummonerContextEntity } from './summoner.entity'
 import { LeaguesModule } from '../leagues/leagues.module'
 import { DBConnection } from '../enum/database-connection.enum'
 import { MatchModule } from '../match/match.module'
+import { SummonerRepositories } from './summoner.repository'
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { MatchModule } from '../match/match.module'
     LeaguesModule
   ],
   controllers: [SummonerController],
-  providers: [SummonerService],
-  exports: [SummonerService]
+  providers: [SummonerService, SummonerRepositories],
+  exports: [SummonerService, SummonerRepositories]
 })
 export class SummonerModule {}
