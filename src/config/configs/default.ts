@@ -20,7 +20,7 @@ export default {
     },
     summoner: {
       details: {
-        limit: 5
+        limit: 1
       }
     }
   }

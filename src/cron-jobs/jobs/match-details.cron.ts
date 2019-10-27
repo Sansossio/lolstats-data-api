@@ -4,7 +4,7 @@ import { RiotApiService } from '../../riot-api/riot-api.service'
 import { ConfigService } from '../../config/config.service'
 import { MatchRepositories } from '../../match/match.repository'
 import { MatchDto } from '../../../../riot-games-api/src/dto/Match/Match/Match.dto'
-import { getManager, getConnection } from 'typeorm'
+import { getManager } from 'typeorm'
 import { MatchEntity } from '../../match/entities/match.entity'
 import { cloneDeep } from 'lodash'
 import { SummonerService } from '../../summoner/summoner.service'
@@ -14,6 +14,8 @@ import { DBConnection } from '../../enum/database-connection.enum'
 import * as cronUtils from './utils.cron'
 import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
 import { NOT_FOUND } from 'http-status-codes'
+
+const contextLogs = 'MatchesDetailsCron'
 
 @Injectable()
 export class MatchDetailsCron extends NestSchedule {
@@ -76,10 +78,32 @@ export class MatchDetailsCron extends NestSchedule {
       await repo.save(buildParticipants)
     })
   }
+
+  private async updateMatch (match: MatchEntity) {
+    try {
+      const load = (await this.api.get(match.gameId, match.region)).response
+      // Find details
+      await this.upsertParticipants(match, load)
+      // Remove loading
+      await this.setLoaded(match.idMatch as number)
+    } catch (e) {
+      if (cronUtils.exitJob(e)) {
+        return
+      }
+      // If match doesn't exists, mark as loaded
+      if (e.status === NOT_FOUND) {
+        await this.setLoaded(match.idMatch as number)
+      }
+      // Show error
+      if (cronUtils.showError(e)) {
+        Logger.error(e, contextLogs)
+      }
+    }
+  }
+
   // Cron function
-  @Interval(5 * 1000, { waiting: true })
+  @Interval(10 * 1000, { waiting: true })
   async loadMatchesDetails () {
-    const contextLogs = 'MatchesDetailsCron'
     const matches = await this.matchRepositories.matches.find({
       where: {
         loading: true
@@ -94,27 +118,8 @@ export class MatchDetailsCron extends NestSchedule {
       return
     }
     Logger.log(`${matches.length} will be updated`, contextLogs)
-    for (const match of matches) {
-      try {
-        const load = (await this.api.get(match.gameId, match.region)).response
-        // Find details
-        await this.upsertParticipants(match, load)
-        // Remove loading
-        await this.setLoaded(match.idMatch as number)
-      } catch (e) {
-        if (cronUtils.exitJob(e)) {
-          return
-        }
-        // If match doesn't exists, mark as loaded
-        if (e.status === NOT_FOUND) {
-          await this.setLoaded(match.idMatch as number)
-        }
-        // Show error
-        if (cronUtils.showError(e)) {
-          Logger.error(e, contextLogs)
-        }
-      }
-    }
+    const matchesList = matches.map(match => this.updateMatch(match))
+    await Promise.all(matchesList)
     Logger.log('Finish cron', contextLogs)
   }
 }

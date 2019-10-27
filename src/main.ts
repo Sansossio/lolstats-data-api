@@ -16,3 +16,7 @@ async function bootstrap () {
 }
 
 bootstrap()
+
+process.on('uncaughtException', function (exception) {
+  console.error(exception)
+})
