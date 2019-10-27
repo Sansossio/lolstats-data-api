@@ -3,20 +3,17 @@ import { NestSchedule, Interval } from 'nest-schedule'
 import { Injectable, Logger } from '@nestjs/common'
 import { SummonerRepositories } from '../../summoner/summoner.repository'
 import { ConfigService } from '../../config/config.service'
-import { NOT_FOUND } from 'http-status-codes'
-import Regions from '../../enum/regions.enum'
-import { RiotApiService } from '../../riot-api/riot-api.service';
+import * as cronUtils from './utils.cron'
+import * as summonerUtils from '../../summoner/summoner.utils'
 
 @Injectable()
 export class UserDetailsCron extends NestSchedule {
   private readonly take = this.config.getNumber('cron.summoner.details.limit')
-  private readonly api = this.riot.getLolApi().Summoner
 
   constructor (
     private readonly config: ConfigService,
     private readonly summonerService: SummonerService,
-    private readonly repositories: SummonerRepositories,
-    private readonly riot: RiotApiService
+    private readonly repositories: SummonerRepositories
   ) {
     super()
   }
@@ -26,9 +23,9 @@ export class UserDetailsCron extends NestSchedule {
   }
 
   // Cron function
-  @Interval(10 * 1000, { waiting: true })
+  @Interval(5 * 1000, { waiting: true })
   async loadSummonerDetails () {
-    const contextLogs = 'MatchesDetailsCron'
+    const contextLogs = 'SummonersDetailsCron'
     const summoners = await this.repositories.summoner.find({
       where: {
         loading: true
@@ -44,7 +41,7 @@ export class UserDetailsCron extends NestSchedule {
     Logger.log(`${summoners.length} will be updated`, contextLogs)
     for (const summoner of summoners) {
       // Is disabled user, not load information
-      const isDisabled = this.summonerService.isDisabledUser(summoner.id)
+      const isDisabled = summonerUtils.isBot(summoner.id || '')
       if (isDisabled) {
         await this.setUserLoaded(summoner.idSummoner)
         continue
@@ -58,8 +55,10 @@ export class UserDetailsCron extends NestSchedule {
           region: summoner.region
         }, checkTime)
       } catch (e) {
-        // Catch any error different of 404
-        if (e.status !== NOT_FOUND) {
+        if (cronUtils.exitJob(e)) {
+          return
+        }
+        if (cronUtils.showError(e)) {
           Logger.error(e, contextLogs)
         }
       }

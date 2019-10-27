@@ -1,7 +1,7 @@
 import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { DBConnection } from '../enum/database-connection.enum'
-import { Repository, getManager, FindOneOptions, FindManyOptions } from 'typeorm'
+import { Repository, getManager, FindOneOptions, FindManyOptions, Not, IsNull } from 'typeorm'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { MatchEntity } from './entities/match.entity'
 import { SummonerContextEntity } from '../summoner/summoner.entity'
@@ -12,6 +12,7 @@ import { MatchListingMatches } from '../../../riot-games-api/src/dto/Match/Match
 import { Regions } from 'api-riot-games/dist/constants'
 import { MatchParticipantsEntity } from './entities/match.participants.entity'
 import { SummonerGetDTO } from '../summoner/dto/summoner.dto'
+import { SummonerUtilsEnum } from '../summoner/summoner.utils'
 
 const findLimit = 100
 
@@ -88,7 +89,9 @@ export class MatchService {
     if ((endIndex - beginIndex) > findLimit) {
       throw new BadRequestException(`Limit matches request is ${findLimit}`)
     }
-    const { accountId } = await this.getSummoner(value, region)
+    const {
+      accountId = ''
+    } = await this.getSummoner(value, region)
     const matchParams: MatchQueryDTO = {
       beginIndex,
       endIndex,
@@ -135,20 +138,28 @@ export class MatchService {
   }
 
   // Public methods
-  async updateMatches (idSummoner: number) {
-    const { region } = await this.summonerRepository.findOneOrFail(idSummoner)
-    const beginTime = await this.getLastMatchTime(idSummoner)
-    const matches = await this.loadMatches(idSummoner, region, { beginTime })
-    const instances = this.match(matches, idSummoner, region)
-    await this.save(instances)
-    return instances
+  async updateMatches (idSummoner: number, ignoreError: boolean = false) {
+    try {
+      const { region } = await this.summonerRepository.findOneOrFail(idSummoner)
+      const beginTime = await this.getLastMatchTime(idSummoner)
+      const matches = await this.loadMatches(idSummoner, region, { beginTime })
+      const instances = this.match(matches, idSummoner, region)
+      await this.save(instances)
+      return instances
+    } catch (e) {
+      if (!ignoreError) {
+        throw e
+      }
+      return []
+    }
   }
 
   async getBySummonerName (params: SummonerGetDTO) {
     const summoner = await this.summonerRepository.findOne({
       where: {
         name: params.summonerName,
-        region: params.region
+        region: params.region,
+        accountId: Not(IsNull())
       }
     })
     if (!summoner) {

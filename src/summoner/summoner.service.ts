@@ -8,10 +8,11 @@ import { LeaguesService } from '../leagues/leagues.service'
 import { DBConnection } from '../enum/database-connection.enum'
 import { ConfigService } from '../config/config.service'
 import * as _ from 'lodash'
+import * as summonerUtils from './summoner.utils'
 import { MatchService } from '../match/match.service'
 import Regions from '../enum/regions.enum'
 import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
-import { SummonerV4DTO } from '../../../riot-games-api/src/dto/Summoner/Summoner.dto';
+import { SummonerV4DTO } from '../../../riot-games-api/src/dto/Summoner/Summoner.dto'
 
 @Injectable()
 export class SummonerService {
@@ -35,11 +36,12 @@ export class SummonerService {
       const value = instance as SummonerGetDTO
       instance = await this.getSummonerInfo(value)
     }
+    instance.accountId = instance.accountId || ''
     instance = instance as SummonerContextEntity
     // Search id in database
     const previous = await this.repository.findOne({
       where: {
-        id: instance.id,
+        accountId: instance.accountId,
         region
       }
     })
@@ -85,7 +87,7 @@ export class SummonerService {
       key = 'accountId'
       value = ':value'
     }
-    const whereString = `${key} = ${value}`
+    const whereString = `${key} = ${value} AND accountId is not null`
     return this.repository.createQueryBuilder('summoners')
       .leftJoinAndSelect('summoners.leagues', 'summoner_leagues')
       .where(whereString, { value: params.accountId || params.summonerName })
@@ -110,7 +112,9 @@ export class SummonerService {
     const baseUser = {
       leagues: undefined,
       // Force column updateAt
-      revisionDate: (base.revisionDate || 0) + 1
+      revisionDate: (base.revisionDate || 0) + 1,
+      // Keep user id
+      idSummoner: base.idSummoner
     }
     const updateInstance = Object.assign(base, summoner, baseUser)
     const { idSummoner } = await this.saveSummoner(updateInstance, true)
@@ -130,7 +134,9 @@ export class SummonerService {
       }
       user = await this.upsert(exists, params)
     }
-    await this.matchService.updateMatches(user.idSummoner)
+    if (!summonerUtils.isBot(params.accountId)) {
+      await this.matchService.updateMatches(user.idSummoner, true)
+    }
     return user
   }
 
@@ -160,7 +166,7 @@ export class SummonerService {
       currentAccountId,
       profileIcon
     } = player
-    const searchUserByID = !this.isDisabledUser(currentAccountId)
+    const searchUserByID = !summonerUtils.isBot(currentAccountId)
     const findTag = searchUserByID ? 'accountId' : 'name'
     const findValue = searchUserByID ? currentAccountId : summonerName
     const findOptions = {
@@ -173,20 +179,16 @@ export class SummonerService {
     if (find) {
       return find
     }
+    const accountId = summonerUtils.parseAccountId(currentAccountId)
     const instance: SummonerContextEntity = {
       idSummoner: 0,
-      accountId: currentAccountId,
-      id: '',
+      accountId,
       leagues: [],
       name: summonerName,
       profileIconId: profileIcon,
-      puuid: '',
+      loading: !!accountId,
       region
     }
     return this.repository.save(instance)
-  }
-
-  isDisabledUser (accountId: string) {
-    return accountId === this.userIsBannedTag
   }
 }

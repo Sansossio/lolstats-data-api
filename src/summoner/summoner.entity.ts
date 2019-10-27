@@ -6,7 +6,7 @@ import Regions from '../enum/regions.enum'
 import { MatchParticipantsEntity } from '../match/entities/match.participants.entity'
 
 @Entity('summoners')
-@Index('index_summoner_region', ['name', 'region'], { unique: true })
+@Index('index_summoner_region', ['accountId', 'region'], { unique: true })
 export class SummonerContextEntity extends BaseEntity {
   @ApiModelProperty()
   @PrimaryGeneratedColumn()
@@ -21,8 +21,12 @@ export class SummonerContextEntity extends BaseEntity {
   name!: string
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
-  puuid!: string
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null
+  })
+  puuid?: string
 
   @ApiModelProperty()
   @Column({
@@ -39,12 +43,20 @@ export class SummonerContextEntity extends BaseEntity {
   revisionDate?: number
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
-  id!: string
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null
+  })
+  id?: string
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
-  accountId!: string
+  @Column({
+    type: 'varchar',
+    nullable: true,
+    default: null
+  })
+  accountId?: string
 
   @ApiModelProperty()
   @Column({

@@ -20,13 +20,8 @@ export default {
     },
     summoner: {
       details: {
-        limit: 1
+        limit: 5
       }
-    }
-  },
-  summoners: {
-    banTag: {
-      accountId: '0'
     }
   }
 }

@@ -11,8 +11,9 @@ import { SummonerService } from '../../summoner/summoner.service'
 import Regions from '../../enum/regions.enum'
 import { SummonerContextEntity } from '../../summoner/summoner.entity'
 import { DBConnection } from '../../enum/database-connection.enum'
-import { NOT_FOUND } from 'http-status-codes'
+import * as cronUtils from './utils.cron'
 import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
+import { NOT_FOUND } from 'http-status-codes'
 
 @Injectable()
 export class MatchDetailsCron extends NestSchedule {
@@ -32,8 +33,8 @@ export class MatchDetailsCron extends NestSchedule {
     return this.summonerService.getOrCreateByAccountID(player, region)
   }
   // Internal methods
-  private async setLoading (idMatch: number, loading: boolean) {
-    return this.matchRepositories.matches.update({ idMatch }, { loading })
+  private async setLoaded (idMatch: number) {
+    return this.matchRepositories.matches.update({ idMatch }, { loading: false })
   }
 
   private async upsertParticipants (match: MatchEntity, matchDetails: MatchDto) {
@@ -76,7 +77,7 @@ export class MatchDetailsCron extends NestSchedule {
     })
   }
   // Cron function
-  @Interval(3 * 1000, { waiting: true })
+  @Interval(5 * 1000, { waiting: true })
   async loadMatchesDetails () {
     const contextLogs = 'MatchesDetailsCron'
     const matches = await this.matchRepositories.matches.find({
@@ -99,9 +100,19 @@ export class MatchDetailsCron extends NestSchedule {
         // Find details
         await this.upsertParticipants(match, load)
         // Remove loading
-        await this.setLoading(match.idMatch as number, false)
+        await this.setLoaded(match.idMatch as number)
       } catch (e) {
-        Logger.error(e, contextLogs)
+        if (cronUtils.exitJob(e)) {
+          return
+        }
+        // If match doesn't exists, mark as loaded
+        if (e.status === NOT_FOUND) {
+          await this.setLoaded(match.idMatch as number)
+        }
+        // Show error
+        if (cronUtils.showError(e)) {
+          Logger.error(e, contextLogs)
+        }
       }
     }
     Logger.log('Finish cron', contextLogs)
