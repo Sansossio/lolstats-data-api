@@ -18,5 +18,10 @@ export default {
         limit: 5
       }
     }
+  },
+  summoners: {
+    banTag: {
+      accountId: '0'
+    }
   }
 }

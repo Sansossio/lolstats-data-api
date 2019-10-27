@@ -10,12 +10,13 @@ import { ConfigService } from '../config/config.service'
 import * as _ from 'lodash'
 import { MatchService } from '../match/match.service'
 import Regions from '../enum/regions.enum'
-import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto';
+import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
 
 @Injectable()
 export class SummonerService {
   private readonly api = this.riot.getLolApi()
   private readonly userUpdateInternal = this.configService.getNumber('update.userUpdateIntervalMin') * 60 * 1000
+  private readonly userIsBannedTag = this.configService.get('summoners.banTag.accountId')
 
   constructor (
     @InjectRepository(SummonerContextEntity, DBConnection.CONTEXT)
@@ -25,6 +26,10 @@ export class SummonerService {
     private readonly configService: ConfigService,
     private readonly matchService: MatchService
   ) {}
+
+  private isDisabledUser (accountId: string) {
+    return accountId === this.userIsBannedTag
+  }
 
   private async saveSummoner (instance: SummonerContextEntity | SummonerGetDTO, onlyInstance: boolean = false): Promise<SummonerContextEntity> {
     const isParams = instance.hasOwnProperty('summonerName') && instance.hasOwnProperty('region')
@@ -47,7 +52,8 @@ export class SummonerService {
     }
     const upsertInstance = this.repository.create({
       ...instance,
-      idSummoner: _.get(previous, 'idSummoner', instance.idSummoner)
+      idSummoner: _.get(previous, 'idSummoner', instance.idSummoner),
+      loading: false
     })
     return this.repository.save(upsertInstance)
   }
@@ -137,22 +143,31 @@ export class SummonerService {
   }
 
   async getOrCreateByAccountID (player: MatchParticipantsIdentitiesPlayerDto, region: Regions) {
-    const find = await this.repository.findOne({
+    const {
+      summonerName,
+      currentAccountId,
+      profileIcon
+    } = player
+    const searchUserByID = !this.isDisabledUser(currentAccountId)
+    const findTag = searchUserByID ? 'accountId' : 'name'
+    const findValue = searchUserByID ? currentAccountId : summonerName
+    const findOptions = {
       where: {
-        accountId: player.currentAccountId,
         region
       }
-    })
+    }
+    _.set(findOptions, `where.${findTag}`, findValue)
+    const find = await this.repository.findOne(findOptions)
     if (find) {
       return find
     }
     const instance: SummonerContextEntity = {
       idSummoner: 0,
-      accountId: player.currentAccountId,
+      accountId: currentAccountId,
       id: '',
       leagues: [],
-      name: player.summonerName,
-      profileIconId: player.profileIcon,
+      name: summonerName,
+      profileIconId: profileIcon,
       puuid: '',
       region
     }

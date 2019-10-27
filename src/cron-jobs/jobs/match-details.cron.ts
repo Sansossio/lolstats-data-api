@@ -4,7 +4,7 @@ import { RiotApiService } from '../../riot-api/riot-api.service'
 import { ConfigService } from '../../config/config.service'
 import { MatchRepositories } from '../../match/match.repository'
 import { MatchDto } from '../../../../riot-games-api/src/dto/Match/Match/Match.dto'
-import { getManager } from 'typeorm'
+import { getManager, getConnection } from 'typeorm'
 import { MatchEntity } from '../../match/entities/match.entity'
 import { cloneDeep } from 'lodash'
 import { SummonerService } from '../../summoner/summoner.service'
@@ -44,10 +44,18 @@ export class MatchDetailsCron extends NestSchedule {
     }
   }
   // Internal methods
+  private async setLoading (idMatch: number, loading: boolean) {
+    return this.matchRepositories.matches.update({ idMatch }, { loading })
+  }
+
   private async upsertParticipants (match: MatchEntity, matchDetails: MatchDto) {
-    const { matchesParticipants, matches } = this.matchRepositories
+    const { matchesParticipants } = this.matchRepositories
     await getManager(DBConnection.CONTEXT).transaction(async repo => {
       const newParticipants = cloneDeep(match.matchParticipants)
+        .map((participant) => {
+          participant.match = match.idMatch
+          return participant
+        })
       // Create new participants objects
       for (const participant of matchDetails.participantIdentities) {
         const {
@@ -59,17 +67,20 @@ export class MatchDetailsCron extends NestSchedule {
         const existsIndex = newParticipants
           .findIndex(p =>
             (p.summoner as SummonerContextEntity).idSummoner === findParticipant.idSummoner &&
-            p.match === match
+            p.match === match.idMatch
           )
+        const participantBaseObject = {
+          summoner: findParticipant,
+          participantId: participantId,
+          match
+        }
         if (existsIndex !== -1) {
-          newParticipants[existsIndex].participantId = participantId
-          newParticipants[existsIndex].match = match
+          newParticipants[existsIndex] = Object.assign(
+            newParticipants[existsIndex],
+            participantBaseObject
+          )
         } else {
-          newParticipants.push({
-            summoner: findParticipant,
-            participantId: participantId,
-            match
-          })
+          newParticipants.push(participantBaseObject)
         }
       }
       const buildParticipants = newParticipants.map(p => matchesParticipants.create(p))
@@ -100,10 +111,9 @@ export class MatchDetailsCron extends NestSchedule {
         // Find details
         await this.upsertParticipants(match, load)
         // Remove loading
-        match.loading = false
-        await this.matchRepositories.matches.save(match)
+        await this.setLoading(match.idMatch as number, false)
       } catch (e) {
-        Logger.error(e.error, contextLogs)
+        Logger.error(e, contextLogs)
       }
     }
     Logger.log('Finish cron', contextLogs)

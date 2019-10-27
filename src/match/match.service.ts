@@ -65,6 +65,7 @@ export class MatchService {
   private match (matches: MatchListingMatches[], summoner: number, region: Regions): MatchEntity[] {
     const matchParticipants = [
       this.participantsRepository.create({
+        participantId: -1,
         summoner
       })
     ]
