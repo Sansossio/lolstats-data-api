@@ -50,8 +50,7 @@ export class SummonerService {
     }
     const upsertInstance = this.repository.create({
       ...instance,
-      idSummoner: _.get(previous, 'idSummoner', instance.idSummoner),
-      loading: false
+      idSummoner: _.get(previous, 'idSummoner', instance.idSummoner)
     })
     return this.repository.save(upsertInstance)
   }
@@ -86,7 +85,7 @@ export class SummonerService {
       key = 'accountId'
       value = ':value'
     }
-    const whereString = `${key} = ${value} AND accountId is not null`
+    const whereString = `${key} = ${value} AND bot = 0`
     return this.repository.createQueryBuilder('summoners')
       .leftJoinAndSelect('summoners.leagues', 'summoner_leagues')
       .where(whereString, { value: params.accountId || params.summonerName })
@@ -121,6 +120,16 @@ export class SummonerService {
     return this.get(params)
   }
 
+  private async getOrCreateBot (player: MatchParticipantsIdentitiesPlayerDto, region: Regions) {
+    const botInstance = summonerUtils.baseInstance({
+      name: player.summonerName,
+      bot: true,
+      loading: false,
+      region
+    })
+    return this.repository.save(botInstance)
+  }
+
   async create (params: SummonerGetDTO, checkTime: boolean = true) {
     const exists = await this.search(params)
     let user: SummonerContextEntity
@@ -134,6 +143,7 @@ export class SummonerService {
       user = await this.upsert(exists, params)
     }
     if (!summonerUtils.isBot(params.accountId)) {
+      await this.setUserLoaded(user.idSummoner)
       await this.matchService.updateMatches(user.idSummoner, true)
     }
     return user
@@ -165,29 +175,33 @@ export class SummonerService {
       currentAccountId,
       profileIcon
     } = player
-    const searchUserByID = !summonerUtils.isBot(currentAccountId)
-    const findTag = searchUserByID ? 'accountId' : 'name'
-    const findValue = searchUserByID ? currentAccountId : summonerName
-    const findOptions = {
+    // Use generic instance for bots
+    const isBot = summonerUtils.isBot(currentAccountId)
+    if (isBot) {
+      return this.getOrCreateBot(player, region)
+    }
+    // Find existing instance
+    const find = await this.repository.findOne({
       where: {
+        accountId: currentAccountId,
         region
       }
-    }
-    _.set(findOptions, `where.${findTag}`, findValue)
-    const find = await this.repository.findOne(findOptions)
+    })
     if (find) {
       return find
     }
+    // Create new partial instance
     const accountId = summonerUtils.parseAccountId(currentAccountId)
-    const instance: SummonerContextEntity = {
-      idSummoner: 0,
-      accountId,
-      leagues: [],
+    const instance: SummonerContextEntity = summonerUtils.baseInstance({
       name: summonerName,
       profileIconId: profileIcon,
-      loading: !!accountId,
+      accountId,
       region
-    }
+    })
     return this.repository.save(instance)
+  }
+
+  async setUserLoaded (idSummoner: number) {
+    await this.repository.update({ idSummoner }, { loading: false })
   }
 }

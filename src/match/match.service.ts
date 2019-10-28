@@ -158,7 +158,7 @@ export class MatchService {
       where: {
         name: params.summonerName,
         region: params.region,
-        accountId: Not(IsNull())
+        bot: false
       }
     })
     if (!summoner) {

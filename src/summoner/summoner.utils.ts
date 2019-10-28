@@ -1,5 +1,9 @@
+import { SummonerContextEntity } from './summoner.entity'
+import Regions from '../enum/regions.enum'
+
 export enum SummonerUtilsEnum {
-  BOT_TAG = '0'
+  BOT_TAG = '0',
+  BOT_NAME = 'Bot'
 }
 
 export function isBot (accountId: string | undefined) {
@@ -11,4 +15,15 @@ export function parseAccountId (accountId: string) {
     return undefined
   }
   return accountId
+}
+
+export function baseInstance (instance: Partial<SummonerContextEntity> & { region: Regions }): SummonerContextEntity {
+  return {
+    ...instance,
+    idSummoner: instance.idSummoner || 0,
+    leagues: instance.leagues || [],
+    name: instance.name || SummonerUtilsEnum.BOT_NAME,
+    profileIconId: instance.profileIconId || 0,
+    region: instance.region
+  }
 }

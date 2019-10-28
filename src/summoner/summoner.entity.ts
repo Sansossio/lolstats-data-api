@@ -65,6 +65,12 @@ export class SummonerContextEntity extends BaseEntity {
   loading?: boolean = true
 
   @ApiModelProperty()
+  @Column({
+    default: false
+  })
+  bot?: boolean = false
+
+  @ApiModelProperty()
   @Column({ type: 'varchar' })
   region!: Regions
 

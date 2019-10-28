@@ -21,15 +21,11 @@ export class UserDetailsCron extends NestSchedule {
     super()
   }
 
-  private async setUserLoaded (idSummoner: number) {
-    await this.repositories.summoner.update({ idSummoner }, { loading: false })
-  }
-
   async updateSummoner (summoner: SummonerContextEntity) {
     // Is disabled user, not load information
     const isDisabled = summonerUtils.isBot(summoner.id || '')
     if (isDisabled) {
-      await this.setUserLoaded(summoner.idSummoner)
+      await this.summonerService.setUserLoaded(summoner.idSummoner)
       return
     }
     try {
