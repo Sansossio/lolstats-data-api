@@ -1,4 +1,4 @@
-import { SummonerEntity } from '../entities/entities/summoner.entity'
+import { SummonerEntity } from '../database/entities/entities/summoner.entity'
 import Regions from '../enum/regions.enum'
 
 export enum SummonerUtilsEnum {

@@ -4,3 +4,7 @@ export enum RepositoriesName {
   MATCH = 'MATCH',
   MATCH_PARTICIPANTS = 'MATCH_PARTICIPANTS'
 }
+
+export enum DatabaseEnum {
+  CONTEXT = 'CONTEXT_DATABASE'
+}

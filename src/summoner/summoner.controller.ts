@@ -1,7 +1,7 @@
 import { Controller, Get, Query, Post } from '@nestjs/common'
 import { SummonerService } from './summoner.service'
 import { ApiOperation, ApiOkResponse, ApiUseTags } from '@nestjs/swagger'
-import { SummonerEntity } from '../entities/entities/summoner.entity'
+import { SummonerEntity } from '../database/entities/entities/summoner.entity'
 import { SummonerGetDTO } from './dto/summoner.dto'
 
 @Controller('summoner')

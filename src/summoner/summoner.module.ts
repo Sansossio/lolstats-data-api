@@ -3,7 +3,7 @@ import { SummonerController } from './summoner.controller'
 import { SummonerService } from './summoner.service'
 import { LeaguesModule } from '../leagues/leagues.module'
 import { MatchModule } from '../match/match.module'
-import { summonerLeagueProvider, summonerProvider } from '../entities/providers'
+import { summonerLeagueProvider, summonerProvider } from '../database/entities/providers'
 
 @Module({
   imports: [

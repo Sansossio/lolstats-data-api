@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../base/Entity.base'
+import { BaseEntity } from '../../../base/Entity.base'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { MatchEntity } from './match.entity'
 import { SummonerEntity } from './summoner.entity'

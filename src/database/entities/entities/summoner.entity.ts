@@ -1,7 +1,7 @@
 import { ApiResponseModelProperty as ApiModelProperty } from '@nestjs/swagger'
 import { SummonerLeagueEntity } from './summoner-league.entity'
-import { BaseEntity } from '../../base/Entity.base'
-import Regions from '../../enum/regions.enum'
+import { BaseEntity } from '../../../base/Entity.base'
+import Regions from '../../../enum/regions.enum'
 import { MatchParticipantsEntity } from './match.participants.entity'
 import { Table, Column, HasMany, Model, PrimaryKey } from 'sequelize-typescript'
 

@@ -1,4 +1,4 @@
-import { BaseEntity } from '../../base/Entity.base'
+import { BaseEntity } from '../../../base/Entity.base'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { Regions } from 'api-riot-games/dist/constants'
 import { MatchParticipantsEntity } from './match.participants.entity'

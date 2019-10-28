@@ -1,16 +1,18 @@
 import { Injectable, BadRequestException, NotFoundException, Inject } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import { MatchEntity } from '../entities/entities/match.entity'
-import { SummonerEntity } from '../entities/entities/summoner.entity'
-import { sortBy, cloneDeep, set, merge } from 'lodash'
+import { MatchEntity } from '../database/entities/entities/match.entity'
+import { SummonerEntity } from '../database/entities/entities/summoner.entity'
+import { sortBy, cloneDeep, set } from 'lodash'
 import { MatchesFindParams } from './dto/summoner-matches.dto'
 import { MatchQueryDTO } from 'api-riot-games/dist/dto'
 import { Regions } from 'api-riot-games/dist/constants'
-import { MatchParticipantsEntity } from '../entities/entities/match.participants.entity'
 import { SummonerGetDTO } from '../summoner/dto/summoner.dto'
 import { MatchListingMatches } from 'api-riot-games/dist/dto/Match/MatchListing/MatchListingMatches.dto'
-import { RepositoriesName } from '../entities/repositories.enum'
 import { FindOptions } from 'sequelize/types'
+import { MatchParticipantsService } from '../match-participants/match-participants.service'
+import { Transaction } from 'sequelize'
+import { RepositoriesName } from '../database/database.enum'
+import { DatabaseService } from '../database/database.service'
 
 const findLimit = 100
 
@@ -21,21 +23,22 @@ export class MatchService {
   constructor (
     @Inject(RepositoriesName.MATCH)
     private readonly repository: typeof MatchEntity,
-    @Inject(RepositoriesName.MATCH_PARTICIPANTS)
-    private readonly participantsRepository: typeof MatchParticipantsEntity,
     @Inject(RepositoriesName.SUMMONER)
     private readonly summonerRepository: typeof SummonerEntity,
 
+    private readonly databaseService: DatabaseService,
+    private readonly matchParticipantsService: MatchParticipantsService,
     private readonly riot: RiotApiService
   ) {}
 
   // Internal
-  private async getSummoner (find: number | string, region: Regions): Promise<SummonerEntity> {
+  private async getSummoner (find: number | string, region: Regions, transaction?: Transaction): Promise<SummonerEntity> {
     const key = typeof find === 'string' ? 'accountId' : 'idSummoner'
     const options: FindOptions = {
       where: {
         region
-      }
+      },
+      transaction
     }
     set(options, `where.${key}`, find)
     const data = await this.summonerRepository.findOne(options)
@@ -46,23 +49,16 @@ export class MatchService {
   }
 
   private match (matches: MatchListingMatches[], summonerId: number, region: Regions): MatchEntity[] {
-    const matchParticipants = [
-      this.participantsRepository.build({
-        participantId: -1,
-        summonerId
-      })
-    ]
     return matches.map<MatchEntity>(match => this.repository.build({
       gameCreation: new Date(match.timestamp),
       gameId: match.gameId,
       queue: match.queue,
       season: match.season,
-      matchParticipants,
       region
     }))
   }
 
-  private async loadMatches (value: number | string, region: Regions, params: MatchesFindParams = {}) {
+  private async loadMatches (value: number | string, region: Regions, params: MatchesFindParams = {}, transaction?: Transaction) {
     const {
       endIndex = findLimit,
       beginIndex = 0,
@@ -73,7 +69,7 @@ export class MatchService {
       throw new BadRequestException(`Limit matches request is ${findLimit}`)
     }
     if (!accountId) {
-      ({ accountId = '' } = await this.getSummoner(value, region))
+      ({ accountId = '' } = await this.getSummoner(value, region, transaction))
       params.accountId = accountId
     }
     const matchParams: MatchQueryDTO = {
@@ -90,19 +86,20 @@ export class MatchService {
       newParams.beginIndex = beginIndex + findLimit
       newParams.endIndex = endIndex + findLimit
       const loadMatches =
-        await this.loadMatches(accountId, region, newParams)
+        await this.loadMatches(accountId, region, newParams, transaction)
       matches.push(...loadMatches)
     }
 
     return sortBy(matches, 'gameId')
   }
 
-  private async getLastMatchTime (idSummoner: number): Promise<number | undefined> {
-    const [match] = await this.getBySummoner(idSummoner, {
+  private async getLastMatchTime (idSummoner: number, transaction?: Transaction): Promise<number | undefined> {
+    const [match] = await this.matchParticipantsService.getMatchesBySummoner(idSummoner, {
       order: [
         ['matchId', 'DESC']
       ],
-      limit: 1
+      limit: 1,
+      transaction
     })
     if (!match) {
       return
@@ -110,47 +107,44 @@ export class MatchService {
     return new Date(match.gameCreation).getTime()
   }
 
-  private async getBySummoner (summonerId?: number, options?: FindOptions) {
-    if (!summonerId) {
-      return []
-    }
-    options = merge(options || {}, {
-      where: {
-        summonerId
-      },
-      include: ['match']
-    })
-    const matches = await this.participantsRepository.findAll(options)
-    return matches.map(match => match.match)
-  }
-
   // Public methods
-  async updateMatches (summoner: SummonerEntity) {
+  async updateMatches (summoner: SummonerEntity, transaction?: Transaction) {
     if (!summoner) {
       throw new Error()
     }
+    const finishTransaction = !transaction
     const dupEntryError = 'ER_DUP_ENTRY'
     const {
       idSummoner
     } = summoner
     const { region } = summoner
-    const beginTime = await this.getLastMatchTime(idSummoner)
-    const matches = await this.loadMatches(idSummoner, region, { beginTime })
+    transaction = await this.databaseService.getTransaction(transaction)
+    const beginTime = await this.getLastMatchTime(idSummoner, transaction)
+    const matches = await this.loadMatches(idSummoner, region, { beginTime }, transaction)
     const instances = this.match(matches, idSummoner, region)
     for (const instance of instances) {
       try {
-        await instance.save()
+        const match = await instance.save({ transaction })
+        await this.matchParticipantsService.create(summoner.idSummoner, match.id, transaction)
       } catch (e) {
         // Ignore when is duplicated entry
         if (e.code !== dupEntryError) {
+          // Rollback only if transaction was created here
+          if (finishTransaction) {
+            await transaction.rollback()
+          }
           throw e
         }
       }
     }
+    // Commit only if transaction was created here
+    if (finishTransaction) {
+      await transaction.commit()
+    }
     return instances
   }
 
-  async getBySummonerName (params: SummonerGetDTO) {
+  async getBySummonerName (params: SummonerGetDTO, transaction?: Transaction) {
     const summoner = await this.summonerRepository.findOne({
       where: {
         name: params.summonerName,
@@ -161,7 +155,7 @@ export class MatchService {
     if (!summoner) {
       throw new NotFoundException('User not found')
     }
-    return this.getBySummoner(summoner.idSummoner)
+    return this.matchParticipantsService.getMatchesBySummoner(summoner.idSummoner)
   }
 
   // Getters
@@ -170,6 +164,6 @@ export class MatchService {
   }
 
   async findMatchParticipants (options?: FindOptions) {
-    return this.participantsRepository.findAll(options)
+    return this.matchParticipantsService.findAll(options)
   }
 }

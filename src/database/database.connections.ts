@@ -1,13 +1,14 @@
 import { config } from 'dotenv'
-import { getEntitiesPath } from './database.config.utils'
+import { getEntitiesPath } from './database.utils'
 import { Sequelize } from 'sequelize-typescript'
-import { allProviders } from '../../../entities/exportProviders'
+import { allProviders } from './entities/exportProviders'
+import { DatabaseEnum } from './database.enum'
 
 config()
 
 export const databaseProviders = [
   {
-    provide: 'SEQUELIZE',
+    provide: DatabaseEnum.CONTEXT,
     useFactory: async () => {
       const sequelize = new Sequelize({
         dialect: 'mysql',

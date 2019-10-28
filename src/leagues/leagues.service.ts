@@ -1,9 +1,9 @@
 import { Injectable, Inject } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import { SummonerLeagueEntity } from '../entities/entities/summoner-league.entity'
+import { SummonerLeagueEntity } from '../database/entities/entities/summoner-league.entity'
 import { Regions } from 'api-riot-games/dist/constants'
 import { SummonerLeagueDto } from 'api-riot-games/dist/dto'
-import { RepositoriesName } from '../entities/repositories.enum'
+import { RepositoriesName } from '../database/database.enum'
 
 const RomanNumerals = require('js-roman-numerals')
 

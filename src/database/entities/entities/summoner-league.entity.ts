@@ -1,6 +1,6 @@
 import { SummonerEntity } from './summoner.entity'
 import { ApiModelProperty } from '@nestjs/swagger'
-import { BaseEntity } from '../../base/Entity.base'
+import { BaseEntity } from '../../../base/Entity.base'
 import { Table, Column, BelongsTo, ForeignKey } from 'sequelize-typescript'
 
 @Table({
