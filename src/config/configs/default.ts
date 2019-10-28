@@ -11,5 +11,17 @@ export default {
   },
   update: {
     userUpdateIntervalMin: 1
+  },
+  cron: {
+    match: {
+      details: {
+        limit: 5
+      }
+    },
+    summoner: {
+      details: {
+        limit: 1
+      }
+    }
   }
 }

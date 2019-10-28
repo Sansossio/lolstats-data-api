@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import Regions from 'lolstats-common/src/enum/riot/regions.riot.enum'
-import * as RomanNumerals from 'js-roman-numerals'
-import { SummonerLeagueDto } from 'lolstats-common/src/modules/riot/dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { SummonerLeagueContextEntity } from './entities/summoner-league.entity'
 import { Repository } from 'typeorm'
 import { DBConnection } from '../enum/database-connection.enum'
+import { Regions } from 'api-riot-games/dist/constants'
+import { SummonerLeagueDto } from 'api-riot-games/dist/dto'
+
+const RomanNumerals = require('js-roman-numerals')
 
 @Injectable()
 export class LeaguesService {
-  private readonly api = this.riot.getLolApi().league
+  private readonly api = this.riot.getLolApi()
 
   constructor (
     @InjectRepository(SummonerLeagueContextEntity, DBConnection.CONTEXT)
@@ -50,7 +51,7 @@ export class LeaguesService {
   async getBySummoner (encryptedSummonerId: string, region: Regions): Promise<(SummonerLeagueDto & { rank: number; })[]> {
     const {
       response: leagues
-    } = await this.api.bySummoner(encryptedSummonerId, region)
+    } = await this.api.League.bySummoner(encryptedSummonerId, region)
     return this.mapRank(leagues)
   }
 }

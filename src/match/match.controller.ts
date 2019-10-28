@@ -1,7 +1,8 @@
-import { Controller, Get, Query } from '@nestjs/common'
+import { Controller, Query, Post, Get } from '@nestjs/common'
 import { MatchService } from './match.service'
-import { ApiOkResponse, ApiUseTags, ApiOperation } from '@nestjs/swagger'
-import { SummonerMatchesFindBySummoner, SummonerMatchesFindBySummonerResponse } from './dto/summoner-matches.dto'
+import { ApiUseTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger'
+import { MatchEntity } from './entities/match.entity'
+import { SummonerGetDTO } from '../summoner/dto/summoner.dto'
 
 @Controller('match')
 @ApiUseTags('Match')
@@ -11,11 +12,13 @@ export class MatchController {
   ) {}
 
   @Get('summoner')
-  @ApiOkResponse({ type: SummonerMatchesFindBySummonerResponse })
-  @ApiOperation({
-    title: 'Get summoner match list'
+  @ApiOkResponse({
+    type: [MatchEntity]
   })
-  async get (@Query() params: SummonerMatchesFindBySummoner): Promise<SummonerMatchesFindBySummonerResponse> {
-    return this.service.getByUser(params)
+  @ApiOperation({
+    title: 'Get summoner matches'
+  })
+  async getBySummoner (@Query() params: SummonerGetDTO): Promise<unknown> {
+    return this.service.getBySummonerName(params)
   }
 }

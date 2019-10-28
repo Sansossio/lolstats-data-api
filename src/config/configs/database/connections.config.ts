@@ -1,5 +1,6 @@
 import { config } from 'dotenv'
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+import { getEntitiesPath } from './database.config.utils'
 
 config()
 
@@ -15,7 +16,7 @@ export const databaseConnections: IDatabaseConnection = {
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    entities: ['{src,dist}/**/**.entity{.ts,.js}'],
+    entities: [getEntitiesPath()],
     synchronize: true,
     logging: false
   }
