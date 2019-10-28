@@ -1,7 +1,7 @@
 import { Controller, Query, Post, Get } from '@nestjs/common'
 import { MatchService } from './match.service'
 import { ApiUseTags, ApiOperation, ApiOkResponse } from '@nestjs/swagger'
-import { MatchEntity } from './entities/match.entity'
+import { MatchEntity } from '../entities/entities/match.entity'
 import { SummonerGetDTO } from '../summoner/dto/summoner.dto'
 
 @Controller('match')

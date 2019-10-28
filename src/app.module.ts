@@ -1,26 +1,19 @@
 import { Module } from '@nestjs/common'
 import { ConfigService } from './config/config.service'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { ConfigModule } from './config/config.module'
 import { SummonerModule } from './summoner/summoner.module'
 import { RiotApiModule } from './riot-api/riot-api.module'
 import { LeaguesModule } from './leagues/leagues.module'
-import { DBConnection } from './enum/database-connection.enum'
 import { MatchModule } from './match/match.module'
-import { CronJobsModule } from './cron-jobs/cron-jobs.module'
+import { DatabaseModule } from './database/database.module'
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync({
-      name: DBConnection.CONTEXT,
-      imports: [ConfigModule],
-      useExisting: ConfigService
-    }),
+    DatabaseModule,
     RiotApiModule,
     SummonerModule,
     LeaguesModule,
     MatchModule,
-    CronJobsModule
+    DatabaseModule
   ],
   providers: [ConfigService]
 })

@@ -26,18 +26,6 @@ describe('ConfigService', () => {
       expect(service.get(key)).toEqual(value)
     })
 
-    it('should return database connection params', () => {
-      const method = get(service, 'set').bind(service)
-      const database = {
-        host: 'localhost',
-        user: 'root',
-        password: 'password'
-      }
-      method('database.context', database)
-      const value = service.createTypeOrmOptions()
-      expect(value).toEqual(database)
-    })
-
     it('should return keyName value setted by configuration when NODE_ENV is undefined', () => {
       const key = 'testingKey2'
       const value = 'testingValue'

@@ -7,11 +7,12 @@ export class MatchesFindBySummoner {
   @ApiModelProperty()
   @IsNumberString()
   @IsNotEmpty()
-  idSummoner!: number
+  id!: number
 }
 
 export class MatchesFindParams {
   beginIndex?: number
   endIndex?: number
   beginTime?: number
+  accountId?: string
 }

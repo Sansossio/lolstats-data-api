@@ -1,13 +1,12 @@
-import { Entity, Column, UpdateDateColumn, CreateDateColumn } from 'typeorm'
-import { ApiModelProperty } from '@nestjs/swagger'
+import { Model, Table, Column } from 'sequelize-typescript'
 
-@Entity()
-export class BaseEntity {
-  @ApiModelProperty({ example: new Date().toISOString() })
-  @CreateDateColumn()
-  createAt?: Date
+@Table({
+  timestamps: true
+})
+export class BaseEntity extends Model<BaseEntity> {
+  @Column
+  createdAt?: Date
 
-  @ApiModelProperty({ example: new Date().toISOString() })
-  @UpdateDateColumn()
-  updateAt?: Date
+  @Column
+  updatedAt?: Date
 }

@@ -1,18 +1,27 @@
-import { Entity, PrimaryGeneratedColumn, Column, Index, OneToMany, JoinColumn } from 'typeorm'
 import { BaseEntity } from '../../base/Entity.base'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { Regions } from 'api-riot-games/dist/constants'
 import { MatchParticipantsEntity } from './match.participants.entity'
+import { Table, Column, HasMany, PrimaryKey } from 'sequelize-typescript'
 
-@Entity('match')
-@Index('index_gameid_region', ['gameId', 'region'], { unique: true })
+@Table({
+  tableName: 'match',
+  indexes: [
+    {
+      name: 'index_gameid_region',
+      fields: ['gameId', 'region'],
+      unique: true
+    }
+  ]
+})
 export class MatchEntity extends BaseEntity {
   @ApiModelProperty()
-  @PrimaryGeneratedColumn()
-  idMatch?: number
+  id?: number
 
   @ApiModelProperty({ type: String })
-  @Column({ type: 'varchar' })
+  @Column({
+    type: 'varchar(3)'
+  })
   region!: Regions
 
   @ApiModelProperty()
@@ -20,7 +29,7 @@ export class MatchEntity extends BaseEntity {
   gameId!: number
 
   @ApiModelProperty()
-  @Column()
+  @Column
   queue!: number
 
   @ApiModelProperty({
@@ -30,18 +39,18 @@ export class MatchEntity extends BaseEntity {
   gameCreation!: Date
 
   @ApiModelProperty()
-  @Column()
+  @Column
   season!: number
 
   @ApiModelProperty()
   @Column({
-    default: true
+    defaultValue: true
   })
   loading?: boolean = true
 
   @ApiModelProperty({
     type: [MatchParticipantsEntity]
   })
-  @OneToMany(type => MatchParticipantsEntity, match => match.match, { cascade: true })
+  @HasMany(type => MatchParticipantsEntity)
   matchParticipants!: MatchParticipantsEntity[]
 }

@@ -1,20 +1,15 @@
 import { Module } from '@nestjs/common'
 import { LeaguesService } from './leagues.service'
-import { ConfigModule } from '../config/config.module'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { SummonerLeagueContextEntity } from './entities/summoner-league.entity'
-import { DBConnection } from '../enum/database-connection.enum'
+import { summonerLeagueProvider } from '../entities/providers/summoner.league.provider'
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature(
-      [
-        SummonerLeagueContextEntity
-      ],
-      DBConnection.CONTEXT
-    )
+  imports: [],
+  providers: [
+    // Database
+    summonerLeagueProvider,
+    // Services
+    LeaguesService
   ],
-  providers: [LeaguesService],
   exports: [LeaguesService]
 })
 export class LeaguesModule {}

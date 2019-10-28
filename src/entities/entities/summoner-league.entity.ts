@@ -1,27 +1,31 @@
-import { Entity, ManyToOne, JoinColumn, PrimaryGeneratedColumn, Column } from 'typeorm'
-import { SummonerContextEntity } from '../../summoner/summoner.entity'
+import { SummonerEntity } from './summoner.entity'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { BaseEntity } from '../../base/Entity.base'
+import { Table, Column, BelongsTo, ForeignKey } from 'sequelize-typescript'
 
-@Entity('summoner_leagues')
-export class SummonerLeagueContextEntity extends BaseEntity {
+@Table({
+  tableName: 'summoner_leagues'
+})
+export class SummonerLeagueEntity extends BaseEntity {
   @ApiModelProperty()
-  @PrimaryGeneratedColumn()
-  idSummonerLeague?: number
+  id?: number
 
   @ApiModelProperty()
-  @ManyToOne(type => SummonerContextEntity, summoner => summoner.idSummoner)
-  @JoinColumn({
-    name: 'idSummoner'
+  @BelongsTo(() => SummonerEntity)
+  summoner!: SummonerEntity
+
+  @ApiModelProperty({
+    type: SummonerEntity
   })
-  idSummoner?: number
+  @ForeignKey(() => SummonerEntity)
+  summonerId?: number
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
+  @Column
   queueType!: string
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
+  @Column
   summonerName!: string
 
   @ApiModelProperty()
@@ -45,7 +49,7 @@ export class SummonerLeagueContextEntity extends BaseEntity {
   rank!: number
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
+  @Column
   leagueId!: string
 
   @ApiModelProperty()
@@ -57,12 +61,8 @@ export class SummonerLeagueContextEntity extends BaseEntity {
   freshBlood!: boolean
 
   @ApiModelProperty()
-  @Column({ type: 'varchar' })
+  @Column
   tier!: string
-
-  @ApiModelProperty()
-  @Column({ type: 'varchar' })
-  summonerId!: string
 
   @ApiModelProperty()
   @Column({ type: 'int' })

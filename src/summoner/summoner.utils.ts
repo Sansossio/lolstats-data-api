@@ -1,4 +1,4 @@
-import { SummonerContextEntity } from './summoner.entity'
+import { SummonerEntity } from '../entities/entities/summoner.entity'
 import Regions from '../enum/regions.enum'
 
 export enum SummonerUtilsEnum {
@@ -17,13 +17,15 @@ export function parseAccountId (accountId: string) {
   return accountId
 }
 
-export function baseInstance (instance: Partial<SummonerContextEntity> & { region: Regions }): SummonerContextEntity {
-  return {
+export function baseInstance (instance: Partial<SummonerEntity> & { region: Regions }): SummonerEntity {
+  const base = new SummonerEntity()
+  const object = {
     ...instance,
-    idSummoner: instance.idSummoner || 0,
+    id: instance.id || 0,
     leagues: instance.leagues || [],
     name: instance.name || SummonerUtilsEnum.BOT_NAME,
     profileIconId: instance.profileIconId || 0,
     region: instance.region
   }
+  return Object.assign(base, object)
 }

@@ -1,9 +1,8 @@
 import { config } from 'dotenv'
-import { databaseConnections } from './database/connections.config'
+
 config()
 
 export default {
-  database: databaseConnections,
   riot: {
     apiKey: process.env.RIOT_API_KEY,
     rateLimitRetry: process.env.RATE_LIMIT_RETRY,

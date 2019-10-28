@@ -1,17 +1,16 @@
-import { Injectable, NotFoundException, NotAcceptableException } from '@nestjs/common'
+import { Injectable, NotFoundException, NotAcceptableException, Inject } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { SummonerGetDTO } from './dto/summoner.dto'
-import { InjectRepository } from '@nestjs/typeorm'
-import { SummonerContextEntity } from './summoner.entity'
-import { Repository } from 'typeorm'
+import { SummonerEntity } from '../entities/entities/summoner.entity'
 import { LeaguesService } from '../leagues/leagues.service'
-import { DBConnection } from '../enum/database-connection.enum'
 import { ConfigService } from '../config/config.service'
 import * as _ from 'lodash'
 import * as summonerUtils from './summoner.utils'
 import { MatchService } from '../match/match.service'
 import Regions from '../enum/regions.enum'
-import { MatchParticipantsIdentitiesPlayerDto, SummonerV4DTO } from 'api-riot-games/dist/dto'
+import { MatchParticipantsIdentitiesPlayerDto, SummonerV4DTO, ApiResponseDTO } from 'api-riot-games/dist/dto'
+import { RepositoriesName } from '../entities/repositories.enum'
+import { FindOptions } from 'sequelize/types'
 
 @Injectable()
 export class SummonerService {
@@ -20,15 +19,15 @@ export class SummonerService {
   private readonly userIsBannedTag = this.configService.get('summoners.banTag.accountId')
 
   constructor (
-    @InjectRepository(SummonerContextEntity, DBConnection.CONTEXT)
-    private readonly repository: Repository<SummonerContextEntity>,
+    @Inject(RepositoriesName.SUMMONER)
+    private readonly repository: typeof SummonerEntity,
     private readonly riot: RiotApiService,
     private readonly leagueService: LeaguesService,
     private readonly configService: ConfigService,
     private readonly matchService: MatchService
   ) {}
 
-  private async saveSummoner (instance: SummonerContextEntity | SummonerGetDTO, onlyInstance: boolean = false): Promise<SummonerContextEntity> {
+  private async saveSummoner (instance: SummonerEntity | SummonerGetDTO): Promise<SummonerEntity> {
     const isParams = instance.hasOwnProperty('summonerName') && instance.hasOwnProperty('region')
     const region = instance.region
     if (isParams) {
@@ -36,26 +35,11 @@ export class SummonerService {
       instance = await this.getSummonerInfo(value)
     }
     instance.accountId = instance.accountId || ''
-    instance = instance as SummonerContextEntity
-    // Search id in database
-    const previous = await this.repository.findOne({
-      where: {
-        accountId: instance.accountId,
-        region
-      }
-    })
-    // Remove relational data
-    if (previous || onlyInstance) {
-      delete instance.leagues
-    }
-    const upsertInstance = this.repository.create({
-      ...instance,
-      idSummoner: _.get(previous, 'idSummoner', instance.idSummoner)
-    })
-    return this.repository.save(upsertInstance)
+    instance = instance as SummonerEntity
+    return instance.save()
   }
 
-  private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerContextEntity> {
+  private async getSummonerInfo (params: SummonerGetDTO): Promise<SummonerEntity> {
     let method = 'getByName'
     let value = params.summonerName
     if (typeof params.accountId === 'string') {
@@ -65,46 +49,47 @@ export class SummonerService {
     // Search summoner
     const {
       response: summoner
-    } = await this.api.Summoner[method](value, params.region)
+    } = await this.api.Summoner[method](value, params.region) as ApiResponseDTO<SummonerV4DTO>
+
     // Search summoner leagues
     const leagues = await this.leagueService.getBySummoner(summoner.id, params.region)
 
-    const response = this.repository.create({
-      ...summoner as SummonerV4DTO,
+    return this.repository.build({
+      ...summoner,
       region: params.region,
       leagues
     })
-
-    return response
   }
 
   private async search (params: SummonerGetDTO) {
-    let key = 'LOWER(name)'
-    let value = 'LOWER(:value)'
+    let key = 'name'
     if (typeof params.accountId === 'string') {
       key = 'accountId'
-      value = ':value'
     }
-    const whereString = `${key} = ${value} AND bot = 0`
-    return this.repository.createQueryBuilder('summoners')
-      .leftJoinAndSelect('summoners.leagues', 'summoner_leagues')
-      .where(whereString, { value: params.accountId || params.summonerName })
-      .andWhere('region = :region', { region: params.region })
-      .getOne()
+    const findOptions: FindOptions = {
+      where: {
+        bot: 0,
+        region: params.region
+      },
+      include: ['leagues']
+    }
+    _.set(findOptions, `where.${key}`, params.accountId || params.summonerName)
+
+    return this.repository.findOne(findOptions)
   }
 
-  private checkSummonerCanUpdate (user: SummonerContextEntity) {
-    const { updateAt } = user
+  private checkSummonerCanUpdate (user: SummonerEntity) {
+    const { updatedAt } = user
     const now = new Date().getTime()
-    const lastUpdate = (updateAt || new Date()).getTime()
+    const lastUpdate = (updatedAt || new Date()).getTime()
     const interval = Math.abs(now - lastUpdate)
     const checkTime = interval > this.userUpdateInternal
     if (!checkTime) {
-      throw new NotAcceptableException()
+      // throw new NotAcceptableException()
     }
   }
 
-  private async upsert (base: SummonerContextEntity, params: SummonerGetDTO) {
+  private async upsert (base: SummonerEntity, params: SummonerGetDTO) {
     const summoner = await this.getSummonerInfo(params)
     // Update existing user
     const baseUser = {
@@ -115,8 +100,7 @@ export class SummonerService {
       idSummoner: base.idSummoner
     }
     const updateInstance = Object.assign(base, summoner, baseUser)
-    const { idSummoner } = await this.saveSummoner(updateInstance, true)
-    await this.leagueService.upsertLeagues(summoner.leagues, idSummoner)
+    await this.repository.update(updateInstance, { where: { idSummoner: updateInstance.idSummoner } })
     return this.get(params)
   }
 
@@ -127,29 +111,34 @@ export class SummonerService {
       loading: false,
       region
     })
-    return this.repository.save(botInstance)
+    return this.repository.create(botInstance)
   }
 
   async create (params: SummonerGetDTO, checkTime: boolean = true) {
     const exists = await this.search(params)
-    let user: SummonerContextEntity
+    let user: SummonerEntity
+    // Upsert user
     if (!exists) {
-      await this.saveSummoner(params)
-      user = await this.get(params, false)
+      user = await this.saveSummoner(params)
     } else {
       if (checkTime) {
         this.checkSummonerCanUpdate(exists)
       }
       user = await this.upsert(exists, params)
     }
+    // If isn't a bot, search info
     if (!summonerUtils.isBot(params.accountId)) {
-      await this.setUserLoaded(user.idSummoner)
-      await this.matchService.updateMatches(user.idSummoner, true)
+      // User relations
+      await this.matchService.updateMatches(user)
+      // Remove loading
+      if (user.loading) {
+        await this.setUserLoaded(user)
+      }
     }
     return user
   }
 
-  async get (params: SummonerGetDTO, searchOnRiot: boolean = true): Promise<SummonerContextEntity> {
+  async get (params: SummonerGetDTO, searchOnRiot: boolean = true): Promise<SummonerEntity> {
     // Search in database
     const search = await this.search(params)
     if (search) {
@@ -192,16 +181,17 @@ export class SummonerService {
     }
     // Create new partial instance
     const accountId = summonerUtils.parseAccountId(currentAccountId)
-    const instance: SummonerContextEntity = summonerUtils.baseInstance({
+    const instance: SummonerEntity = summonerUtils.baseInstance({
       name: summonerName,
       profileIconId: profileIcon,
       accountId,
       region
     })
-    return this.repository.save(instance)
+    return this.repository.create(instance)
   }
 
-  async setUserLoaded (idSummoner: number) {
-    await this.repository.update({ idSummoner }, { loading: false })
+  async setUserLoaded (instance: SummonerEntity) {
+    instance.loading = false
+    await instance.save()
   }
 }
