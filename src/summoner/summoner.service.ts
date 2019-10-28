@@ -11,8 +11,7 @@ import * as _ from 'lodash'
 import * as summonerUtils from './summoner.utils'
 import { MatchService } from '../match/match.service'
 import Regions from '../enum/regions.enum'
-import { MatchParticipantsIdentitiesPlayerDto } from 'api-riot-games/dist/dto'
-import { SummonerV4DTO } from '../../../riot-games-api/src/dto/Summoner/Summoner.dto'
+import { MatchParticipantsIdentitiesPlayerDto, SummonerV4DTO } from 'api-riot-games/dist/dto'
 
 @Injectable()
 export class SummonerService {

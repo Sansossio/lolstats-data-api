@@ -8,11 +8,10 @@ import { SummonerContextEntity } from '../summoner/summoner.entity'
 import { sortBy, cloneDeep, set, merge } from 'lodash'
 import { MatchesFindParams } from './dto/summoner-matches.dto'
 import { MatchQueryDTO } from 'api-riot-games/dist/dto'
-import { MatchListingMatches } from '../../../riot-games-api/src/dto/Match/MatchListing/MatchListingMatches.dto'
 import { Regions } from 'api-riot-games/dist/constants'
 import { MatchParticipantsEntity } from './entities/match.participants.entity'
 import { SummonerGetDTO } from '../summoner/dto/summoner.dto'
-import { SummonerUtilsEnum } from '../summoner/summoner.utils'
+import { MatchListingMatches } from 'api-riot-games/dist/dto/Match/MatchListing/MatchListingMatches.dto'
 
 const findLimit = 100
 
