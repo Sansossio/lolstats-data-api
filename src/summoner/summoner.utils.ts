@@ -1,5 +1,9 @@
 import { SummonerEntity } from '../database/entities/entities/summoner.entity'
 import Regions from '../enum/regions.enum'
+import { ConfigService } from '../config/config.service'
+
+const config = new ConfigService()
+const userUpdateInterval = config.getNumber('update.userUpdateIntervalMin') * 60 * 1000
 
 export enum SummonerUtilsEnum {
   BOT_TAG = '0',
@@ -28,4 +32,15 @@ export function baseInstance (instance: Partial<SummonerEntity> & { region: Regi
     region: instance.region
   }
   return Object.assign(base, object)
+}
+
+export function checkSummonerCanUpdate (user: SummonerEntity) {
+  const { updatedAt } = user
+  const now = new Date().getTime()
+  const lastUpdate = (updatedAt || new Date()).getTime()
+  const interval = Math.abs(now - lastUpdate)
+  const checkTime = interval > userUpdateInterval
+  if (!checkTime) {
+    // throw new NotAcceptableException()
+  }
 }
