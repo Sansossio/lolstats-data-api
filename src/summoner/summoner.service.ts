@@ -16,7 +16,6 @@ import { DatabaseService } from '../database/database.service'
 @Injectable()
 export class SummonerService {
   private readonly api = this.riot.getLolApi()
-  private readonly userUpdateInternal = this.configService.getNumber('update.userUpdateIntervalMin') * 60 * 1000
 
   constructor (
     @Inject(RepositoriesName.SUMMONER)
@@ -52,13 +51,9 @@ export class SummonerService {
       response: summoner
     } = await this.api.Summoner[method](value, params.region) as ApiResponseDTO<SummonerV4DTO>
 
-    // Search summoner leagues
-    const leagues = await this.leagueService.getBySummoner(summoner.id, params.region)
-
     return this.repository.build({
       ...summoner,
-      region: params.region,
-      leagues
+      region: params.region
     })
   }
 
@@ -78,17 +73,6 @@ export class SummonerService {
     _.set(findOptions, `where.${key}`, params.accountId || params.summonerName)
 
     return this.repository.findOne(findOptions)
-  }
-
-  private checkSummonerCanUpdate (user: SummonerEntity) {
-    const { updatedAt } = user
-    const now = new Date().getTime()
-    const lastUpdate = (updatedAt || new Date()).getTime()
-    const interval = Math.abs(now - lastUpdate)
-    const checkTime = interval > this.userUpdateInternal
-    if (!checkTime) {
-      // throw new NotAcceptableException()
-    }
   }
 
   private async upsert (base: SummonerEntity, params: SummonerGetDTO, transaction?: Transaction) {
@@ -121,31 +105,41 @@ export class SummonerService {
     return this.repository.create(botInstance)
   }
 
+  private async saveUserData (summoner: SummonerEntity, transaction?: Transaction) {
+    // If isn't a bot, search info
+    if (summonerUtils.isBot(summoner.accountId)) {
+      return
+    }
+    // Search summoner leagues
+    await this.leagueService.upsertLeagues(summoner, transaction)
+    // User relations
+    await this.matchService.updateMatches(summoner, transaction)
+  }
+
   async create (params: SummonerGetDTO, checkTime: boolean = true, transaction?: Transaction) {
     transaction = await this.databaseService.getTransaction(transaction)
     try {
       const exists = await this.search(params, transaction)
-      let user: SummonerEntity
+      let summoner: SummonerEntity
       // Upsert user
       if (!exists) {
-        user = await this.saveSummoner(params, transaction)
+        summoner = await this.saveSummoner(params, transaction)
       } else {
         if (checkTime) {
-          this.checkSummonerCanUpdate(exists)
+          summonerUtils.checkSummonerCanUpdate(exists)
         }
-        user = await this.upsert(exists, params, transaction)
+        summoner = await this.upsert(exists, params, transaction)
       }
-      // If isn't a bot, search info
-      if (!summonerUtils.isBot(params.accountId)) {
-        // User relations
-        await this.matchService.updateMatches(user, transaction)
-        // Remove loading
-        if (user.loading) {
-          await this.setUserLoaded(user, transaction)
-        }
+      // Load user data
+      await this.saveUserData(summoner, transaction)
+      // Remove loading
+      if (summoner.loading) {
+        await this.setUserLoaded(summoner, transaction)
       }
+      // Save
       await transaction.commit()
-      return user
+
+      return summoner
     } catch (e) {
       await transaction.rollback()
       throw e

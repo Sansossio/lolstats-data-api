@@ -1,11 +1,11 @@
-import { Injectable, Inject } from '@nestjs/common'
+import { Injectable, Inject, BadGatewayException } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { SummonerLeagueEntity } from '../database/entities/entities/summoner-league.entity'
-import { Regions } from 'api-riot-games/dist/constants'
 import { SummonerLeagueDto } from 'api-riot-games/dist/dto'
 import { RepositoriesName } from '../database/database.enum'
-
-const RomanNumerals = require('js-roman-numerals')
+import { SummonerEntity } from '../database/entities/entities/summoner.entity'
+import { Transaction } from 'sequelize/types'
+import * as leaguesUtils from './leagues.utils'
 
 @Injectable()
 export class LeaguesService {
@@ -14,48 +14,45 @@ export class LeaguesService {
   constructor (
     @Inject(RepositoriesName.SUMMONER_LEAGUE)
     private readonly repository: typeof SummonerLeagueEntity,
+
     private readonly riot: RiotApiService
   ) {}
-
-  private romanToInt (roman: string): number {
-    return +new RomanNumerals(roman).toInt()
-  }
 
   private mapRank (data: SummonerLeagueDto[]) {
     return data.map(league => this.repository.build({
       ...league,
-      rank: this.romanToInt(league.rank)
+      rank: leaguesUtils.romanToInt(league.rank)
     }))
   }
 
-  async upsertLeagues (leagues: SummonerLeagueEntity[], summonerId: number) {
-    for (const league of leagues) {
-      league.summonerId = summonerId
+  async upsertLeagues (summoner: SummonerEntity, transaction?: Transaction) {
+    if (!summoner) {
+      throw new BadGatewayException('Bad summoner')
+    }
+    const {
+      idSummoner: summonerId,
+      id,
+      region
+    } = summoner
+    const {
+      response: leagues
+    } = await this.api.League.bySummoner(id, region)
+    const matchLeagues = this.mapRank(leagues)
+    for (const plainLeague of matchLeagues) {
+      let league = Object.assign(
+        plainLeague,
+        { summonerId }
+      )
       const exists = await this.repository.findOne({
         where: {
           queueType: league.queueType,
           summonerId
-        }
+        },
+        transaction
       })
-      if (exists) {
-        const upsertInstance = Object.assign(league, exists)
-        await upsertInstance.save()
-      } else {
-        await this.repository.create(league)
-      }
-    }
-  }
-
-  async getBySummoner (encryptedSummonerId: string, region: Regions) {
-    const {
-      response: leagues
-    } = await this.api.League.bySummoner(encryptedSummonerId, region)
-    return this.mapRank(leagues)
-  }
-
-  async create (leagues: SummonerLeagueEntity[]) {
-    for (const league of leagues) {
-      await league.save()
+      // Merge if exists
+      league = Object.assign(league, exists || {})
+      await league.save({ transaction })
     }
   }
 }
