@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, NotAcceptableException, Inject } from '@nestjs/common'
+import { Injectable, NotFoundException, Inject } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { SummonerGetDTO } from './dto/summoner.dto'
 import { SummonerEntity } from '../database/entities/entities/summoner.entity'
@@ -17,7 +17,6 @@ import { DatabaseService } from '../database/database.service'
 export class SummonerService {
   private readonly api = this.riot.getLolApi()
   private readonly userUpdateInternal = this.configService.getNumber('update.userUpdateIntervalMin') * 60 * 1000
-  private readonly userIsBannedTag = this.configService.get('summoners.banTag.accountId')
 
   constructor (
     @Inject(RepositoriesName.SUMMONER)
@@ -32,7 +31,6 @@ export class SummonerService {
 
   private async saveSummoner (instance: SummonerEntity | SummonerGetDTO, transaction?: Transaction): Promise<SummonerEntity> {
     const isParams = instance.hasOwnProperty('summonerName') && instance.hasOwnProperty('region')
-    const region = instance.region
     if (isParams) {
       const value = instance as SummonerGetDTO
       instance = await this.getSummonerInfo(value)

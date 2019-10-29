@@ -20,7 +20,8 @@
     "object-literal-sort-keys": false,
     "no-floating-promises": false,
     "variable-name": false,
-    "await-promise": false
+    "await-promise": false,
+    "no-unused-variable": true
   },
   "rulesDirectory": []
 }
