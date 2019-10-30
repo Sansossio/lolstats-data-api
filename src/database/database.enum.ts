@@ -2,11 +2,11 @@ import { SchemaOptions } from 'mongoose'
 
 export const ModelsEnum = {
   SUMMONER: {
-    name: 'SUMMONER',
-    collection: 'summoners'
+    name: 'summoners'
   }
 }
 
 export const ModelsOptions: SchemaOptions = {
-  timestamps: true
+  timestamps: true,
+  versionKey: false
 }

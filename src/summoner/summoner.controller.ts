@@ -1,5 +1,6 @@
-import { Controller, Post, Get } from '@nestjs/common'
+import { Controller, Post, Get, Query } from '@nestjs/common'
 import { SummonerService } from './summoner.service'
+import { GetSummonerQueryDTO } from './summoner.dto'
 
 @Controller('summoner')
 export class SummonerController {
@@ -8,8 +9,8 @@ export class SummonerController {
   ) {}
 
   @Get()
-  get () {
-    return this.service.get()
+  get (@Query() params: GetSummonerQueryDTO) {
+    return this.service.get(params)
   }
 
   @Post()

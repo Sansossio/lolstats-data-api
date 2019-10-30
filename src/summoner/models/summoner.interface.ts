@@ -9,8 +9,8 @@ export interface ISummonerModel extends Document {
   id: String
   puuid: String
   accountId: String
-  loading: Boolean
+  loading?: Boolean
   bot?: Boolean
   region: Regions
-  matchs: Map<String, Boolean>
+  matchs: Map<string, boolean>
 }
