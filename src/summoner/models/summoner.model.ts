@@ -1,6 +1,7 @@
 import * as mongoose from 'mongoose'
-import { ModelsEnum, ModelsOptions } from '../../database/database.enum'
+import { ModelsName, ModelsOptions } from '../../database/database.enum'
 import { IModels } from '../../database/database.types'
+import { SummonerLeagueModel } from '../../summoner-leagues/models/summoner-leagues.model'
 
 // Schema definition
 const schema = new mongoose.Schema({
@@ -66,12 +67,17 @@ const schema = new mongoose.Schema({
     type: Map,
     of: Boolean,
     required: true
+  },
+
+  leagues: {
+    type: [SummonerLeagueModel.schema],
+    required: true
   }
 }, ModelsOptions)
 
 // Model definition
 export const SummonerModel: IModels = {
-  name: ModelsEnum.SUMMONER.name,
-  collection: ModelsEnum.SUMMONER.name,
+  name: ModelsName.SUMMONER,
+  collection: ModelsName.SUMMONER,
   schema: schema
 }

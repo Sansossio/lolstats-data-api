@@ -1,9 +1,8 @@
 import { SchemaOptions } from 'mongoose'
 
-export const ModelsEnum = {
-  SUMMONER: {
-    name: 'summoners'
-  }
+export enum ModelsName {
+  SUMMONER = 'summoners',
+  SUMMONER_LEAGUES = 'summoner_leagues'
 }
 
 export const ModelsOptions: SchemaOptions = {

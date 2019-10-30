@@ -1,5 +1,6 @@
 import { Document } from 'mongoose'
 import { Regions } from 'api-riot-games/dist/constants'
+import { ISummonerLeagueModel } from '../../summoner-leagues/models/summoner-leagues.interface'
 
 export interface ISummonerModel extends Document {
   name: String
@@ -12,5 +13,6 @@ export interface ISummonerModel extends Document {
   loading?: Boolean
   bot?: Boolean
   region: Regions
-  matchs: Map<string, boolean>
+  matchs: Map<string, boolean>,
+  leagues: Partial<ISummonerLeagueModel>[]
 }

@@ -1,19 +1,21 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Model, ModelUpdateOptions } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
-import { ModelsEnum } from '../database/database.enum'
+import { ModelsName } from '../database/database.enum'
 import { ISummonerModel } from './models/summoner.interface'
 import { GetSummonerQueryDTO } from './summoner.dto'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import * as summonerMatch from './summoner.match'
+import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 
 @Injectable()
 export class SummonerService {
   private readonly api = this.riot.getLolApi().Summoner
 
   constructor (
-    @InjectModel(ModelsEnum.SUMMONER.name) private readonly repository: Model<ISummonerModel>,
+    @InjectModel(ModelsName.SUMMONER) private readonly repository: Model<ISummonerModel>,
 
+    private readonly summonerLeagueService: SummonerLeaguesService,
     private readonly riot: RiotApiService
   ) {}
 
@@ -38,9 +40,21 @@ export class SummonerService {
 
   async create (params: GetSummonerQueryDTO) {
     const onRiot = await this.findOnRiot(params)
-    const model = summonerMatch.riotToModel(onRiot, params.region)
+    const leagues = await this.summonerLeagueService.findOnRiot(onRiot.id, params.region)
+    const model = summonerMatch.riotToModel(onRiot, leagues, params.region)
     await this.upsert(model)
-    return this.get(params, false)
+    const response = await this.get(
+      {
+        summonerName: onRiot.name,
+        region: params.region
+      }
+      , false)
+    if (!response) {
+      throw new Error()
+    }
+    // Update based users models
+    await this.summonerLeagueService.create(response._id, leagues)
+    return response
   }
 
   async get (params: GetSummonerQueryDTO, findRiot: boolean = true) {

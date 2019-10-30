@@ -4,6 +4,7 @@ import { ConfigModule } from './config/config.module'
 import { SummonerModule } from './summoner/summoner.module'
 import { ConfigService } from './config/config.service'
 import { MongooseModule } from '@nestjs/mongoose'
+import { SummonerLeaguesModule } from './summoner-leagues/summoner-leagues.module'
 
 @Module({
   imports: [
@@ -13,7 +14,8 @@ import { MongooseModule } from '@nestjs/mongoose'
     }),
     ConfigModule,
     RiotApiModule,
-    SummonerModule
+    SummonerModule,
+    SummonerLeaguesModule
   ]
 })
 export class AppModule {}
