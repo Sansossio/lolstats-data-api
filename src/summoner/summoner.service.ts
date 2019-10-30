@@ -5,7 +5,7 @@ import { ModelsName } from '../database/database.enum'
 import { ISummonerModel } from './models/summoner.interface'
 import { GetSummonerQueryDTO } from './models/summoner.dto'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import * as summonerMatch from './summoner.match'
+import * as summonerUtils from './summoner.utils'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 
 @Injectable()
@@ -42,7 +42,7 @@ export class SummonerService {
   async update (params: GetSummonerQueryDTO) {
     const onRiot = await this.findOnRiot(params)
     const leagues = await this.summonerLeagueService.findOnRiot(onRiot.id, params.region)
-    const model = summonerMatch.riotToModel(onRiot, leagues, params.region)
+    const model = summonerUtils.riotToModel(onRiot, leagues, params.region)
     await this.upsert(model)
     const response = await this.get(
       {

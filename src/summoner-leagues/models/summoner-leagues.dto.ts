@@ -24,7 +24,7 @@ export class GetSummonerLeaguesDTO extends BaseDTO {
   losses!: number
 
   @ApiResponseModelProperty()
-  rank!: string
+  rank!: number
 
   @ApiResponseModelProperty()
   leagueId!: string

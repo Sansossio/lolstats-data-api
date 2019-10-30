@@ -35,7 +35,7 @@ const schema = new mongoose.Schema({
   },
 
   rank: {
-    type: String,
+    type: Number,
     required: true
   },
 
@@ -71,7 +71,7 @@ const schema = new mongoose.Schema({
 
   summoner: {
     type: mongoose.Schema.Types.ObjectId,
-    required: true
+    required: false
   }
 }, ModelsOptions)
 

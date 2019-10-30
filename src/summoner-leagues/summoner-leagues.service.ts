@@ -7,6 +7,7 @@ import { SummonerLeagueDto } from 'api-riot-games/dist/dto'
 import { castArray } from 'lodash'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { Regions } from 'api-riot-games/dist/constants'
+import * as utils from './summoner-leagues.utils'
 
 @Injectable()
 export class SummonerLeaguesService {
@@ -18,24 +19,28 @@ export class SummonerLeaguesService {
     private readonly riot: RiotApiService
   ) {}
 
-  private riotToModel (summoner: string, leagues: SummonerLeagueDto | SummonerLeagueDto[]): Partial<ISummonerLeagueModel>[] {
-    return castArray(leagues)
-      .map((league) => ({
-        ...league,
-        summoner
-      }))
+  private riotToModel (leagues: SummonerLeagueDto | SummonerLeagueDto[], summoner?: string): ISummonerLeagueModel[] {
+    const response: ISummonerLeagueModel[] = []
+    for (const item of castArray(leagues)) {
+      const createItem = {
+        ...item,
+        rank: utils.romanToInt(item.rank),
+        summoner: summoner
+      }
+      response.push(createItem as ISummonerLeagueModel)
+    }
+    return response
   }
 
   async findOnRiot (id: string, region: Regions) {
     const {
       response: leagues
     } = await this.api.bySummoner(id, region)
-    return leagues
+    return this.riotToModel(leagues)
   }
 
-  async create (summoner: string, leagues: SummonerLeagueDto | SummonerLeagueDto[]) {
-    const models = this.riotToModel(summoner, leagues)
-    return this.repository.create(models)
+  async create (summoner: string, leagues: ISummonerLeagueModel | ISummonerLeagueModel[]) {
+    return this.repository.create(leagues)
   }
 
   async findHistoric (summoner: string) {

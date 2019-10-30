@@ -1,8 +1,8 @@
-import { Document } from 'mongoose'
 import { Regions } from 'api-riot-games/dist/constants'
 import { ISummonerLeagueModel } from '../../summoner-leagues/models/summoner-leagues.interface'
+import { IBaseInterface } from '../../base/base.interface'
 
-export interface ISummonerModel extends Document {
+export interface ISummonerModel extends IBaseInterface {
   name: String
   profileIconId: Number
   summonerLevel: Number
@@ -15,6 +15,4 @@ export interface ISummonerModel extends Document {
   region: Regions
   matchs: Map<string, boolean>,
   leagues: Map<string, Partial<ISummonerLeagueModel>>
-  createdAt: Date
-  updatedAt: Date
 }
