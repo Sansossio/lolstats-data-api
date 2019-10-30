@@ -14,5 +14,5 @@ export interface ISummonerModel extends Document {
   bot?: Boolean
   region: Regions
   matchs: Map<string, boolean>,
-  leagues: Partial<ISummonerLeagueModel>[]
+  leagues: Map<string, Partial<ISummonerLeagueModel>>
 }

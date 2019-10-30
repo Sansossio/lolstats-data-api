@@ -59,7 +59,8 @@ export class SummonerService {
 
   async get (params: GetSummonerQueryDTO, findRiot: boolean = true) {
     const summoner = await this.repository.findOne({
-      name: params.summonerName,
+      // Case insensitive
+      name: new RegExp(params.summonerName, 'i'),
       region: params.region
     })
     if (summoner) {
