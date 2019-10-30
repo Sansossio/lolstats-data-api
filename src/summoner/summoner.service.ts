@@ -71,4 +71,10 @@ export class SummonerService {
     }
     return this.create(params)
   }
+
+  // External methods
+  async leaguesHistoric (params: GetSummonerQueryDTO) {
+    const summoner = await this.get(params)
+    return this.summonerLeagueService.findHistoric(summoner._id)
+  }
 }

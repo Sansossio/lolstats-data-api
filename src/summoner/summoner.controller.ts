@@ -17,4 +17,9 @@ export class SummonerController {
   create (@Body() body: GetSummonerQueryDTO) {
     return this.service.create(body)
   }
+
+  @Get('leagues/historic')
+  leagues (@Query() params: GetSummonerQueryDTO) {
+    return this.service.leaguesHistoric(params)
+  }
 }

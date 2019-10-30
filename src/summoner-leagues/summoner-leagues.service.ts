@@ -37,4 +37,8 @@ export class SummonerLeaguesService {
     const models = this.riotToModel(summoner, leagues)
     return this.repository.create(models)
   }
+
+  async findHistoric (summoner: string) {
+    return this.repository.find({ summoner })
+  }
 }

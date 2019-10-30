@@ -13,6 +13,7 @@ import { SummonerLeaguesModule } from '../summoner-leagues/summoner-leagues.modu
     SummonerLeaguesModule
   ],
   providers: [SummonerService],
-  controllers: [SummonerController]
+  controllers: [SummonerController],
+  exports: [SummonerService]
 })
 export class SummonerModule {}
