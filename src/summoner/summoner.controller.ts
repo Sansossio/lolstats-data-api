@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Query } from '@nestjs/common'
+import { Controller, Post, Get, Query, Body } from '@nestjs/common'
 import { SummonerService } from './summoner.service'
 import { GetSummonerQueryDTO } from './summoner.dto'
 
@@ -14,7 +14,7 @@ export class SummonerController {
   }
 
   @Post()
-  create () {
-    return this.service.create()
+  create (@Body() body: GetSummonerQueryDTO) {
+    return this.service.create(body)
   }
 }

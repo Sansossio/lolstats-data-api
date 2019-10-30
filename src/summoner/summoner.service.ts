@@ -36,8 +36,11 @@ export class SummonerService {
     return this.repository.updateOne(condition, model, options)
   }
 
-  create () {
-    return this.repository.create({})
+  async create (params: GetSummonerQueryDTO) {
+    const onRiot = await this.findOnRiot(params)
+    const model = summonerMatch.riotToModel(onRiot, params.region)
+    await this.upsert(model)
+    return this.get(params, false)
   }
 
   async get (params: GetSummonerQueryDTO, findRiot: boolean = true) {
@@ -51,9 +54,6 @@ export class SummonerService {
     if (!findRiot) {
       throw new NotFoundException('Summoner not found')
     }
-    const onRiot = await this.findOnRiot(params)
-    const model = summonerMatch.riotToModel(onRiot, params.region)
-    await this.upsert(model)
-    return this.get(params, false)
+    return this.create(params)
   }
 }
