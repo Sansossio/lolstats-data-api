@@ -1,23 +1,16 @@
 import { Module } from '@nestjs/common'
-import { SummonerController } from './summoner.controller'
 import { SummonerService } from './summoner.service'
-import { LeaguesModule } from '../leagues/leagues.module'
-import { MatchModule } from '../match/match.module'
-import { summonerLeagueProvider, summonerProvider } from '../database/entities/providers'
+import { SummonerController } from './summoner.controller'
+import { MongooseModule } from '@nestjs/mongoose'
+import { SummonerModel } from './models/summoner.model'
 
 @Module({
   imports: [
-    MatchModule,
-    LeaguesModule
+    MongooseModule.forFeature([
+      SummonerModel
+    ])
   ],
-  controllers: [SummonerController],
-  providers: [
-    // Database
-    summonerProvider,
-    summonerLeagueProvider,
-    // Service
-    SummonerService
-  ],
-  exports: [SummonerService]
+  providers: [SummonerService],
+  controllers: [SummonerController]
 })
 export class SummonerModule {}

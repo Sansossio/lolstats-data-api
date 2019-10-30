@@ -1,10 +1,12 @@
-export enum RepositoriesName {
-  SUMMONER = 'SUMMONER',
-  SUMMONER_LEAGUE = 'SUMMONER_LEAGUE',
-  MATCH = 'MATCH',
-  MATCH_PARTICIPANTS = 'MATCH_PARTICIPANTS'
+import { SchemaOptions } from 'mongoose'
+
+export const ModelsEnum = {
+  SUMMONER: {
+    name: 'SUMMONER',
+    collection: 'summoners'
+  }
 }
 
-export enum DatabaseEnum {
-  CONTEXT = 'CONTEXT_DATABASE'
+export const ModelsOptions: SchemaOptions = {
+  timestamps: true
 }

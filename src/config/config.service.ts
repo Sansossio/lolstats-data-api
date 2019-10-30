@@ -3,6 +3,8 @@ import * as dotenv from 'dotenv'
 import * as fs from 'fs'
 import * as defaultConfig from './configs/default'
 import { Injectable } from '@nestjs/common'
+import { MongooseModuleOptions } from '@nestjs/mongoose'
+
 export interface IConfig {
   [key: string]: any
 }
@@ -56,6 +58,10 @@ export class ConfigService {
     return true
   }
 
+  private parseMongoUri (host: string, port: number, user: string, password: string, dbname: string): string {
+    return `mongodb://${user}:${password}@${host}:${port}/${dbname}`
+  }
+
   get<T> (key: string): T {
     return _.get(this.config, key, key)
   }
@@ -66,5 +72,19 @@ export class ConfigService {
 
   getNumber (key: string): number {
     return +this.get<any>(key)
+  }
+
+  getConnection (): MongooseModuleOptions {
+    const host = this.get<string>('database.host')
+    const port = this.getNumber('database.port')
+    const user = this.get<string>('database.user')
+    const password = this.get<string>('database.password')
+    const dbname = this.get<string>('database.dbname')
+
+    return {
+      uri: this.parseMongoUri(host, port, user, password, dbname),
+      useNewUrlParser: true,
+      useUnifiedTopology: true
+    }
   }
 }
