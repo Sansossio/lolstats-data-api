@@ -15,4 +15,6 @@ export interface ISummonerModel extends Document {
   region: Regions
   matchs: Map<string, boolean>,
   leagues: Map<string, Partial<ISummonerLeagueModel>>
+  createdAt: Date
+  updatedAt: Date
 }
