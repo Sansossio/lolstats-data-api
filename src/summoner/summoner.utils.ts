@@ -42,7 +42,7 @@ export function riotToModel (
     puuid: riot.puuid,
     loading: false,
     bot: false,
-    matchs: new Map(),
+    matches: new Map(),
     leagues: matchLeagues(leagues),
     region
   }

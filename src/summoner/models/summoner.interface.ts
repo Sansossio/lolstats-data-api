@@ -13,6 +13,6 @@ export interface ISummonerModel extends IBaseInterface {
   loading?: Boolean
   bot?: Boolean
   region: Regions
-  matchs: Map<string, boolean>,
+  matches: Map<string, boolean>,
   leagues: Map<string, Partial<ISummonerLeagueModel>>
 }

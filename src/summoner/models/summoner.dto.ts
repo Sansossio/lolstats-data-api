@@ -71,7 +71,7 @@ export class GetSummonerDTO extends BaseDTO {
   @ApiResponseModelProperty({
     type: GetSummonerDTOMatches
   })
-  matchs!: Map<string, boolean>
+  matches!: Map<string, boolean>
 
   @ApiResponseModelProperty({
     type: GetSummonerDTOLeagues

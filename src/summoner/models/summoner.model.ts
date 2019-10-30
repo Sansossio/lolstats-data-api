@@ -63,7 +63,7 @@ const schema = new mongoose.Schema({
     required: true
   },
 
-  matchs: {
+  matches: {
     type: Map,
     of: Boolean,
     required: true
