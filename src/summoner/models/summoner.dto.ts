@@ -1,5 +1,5 @@
-import { ApiModelProperty, ApiResponseModelProperty } from '@nestjs/swagger'
-import { IsString, IsNotEmpty, IsEnum } from 'class-validator'
+import { ApiModelProperty, ApiResponseModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger'
+import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator'
 import { RegionsList } from '../../riot-api/riot-api.enum'
 import { Regions } from 'api-riot-games/dist/constants'
 import { GetSummonerLeaguesDTO } from '../../summoner-leagues/models/summoner-leagues.dto'
@@ -11,6 +11,11 @@ export class GetSummonerQueryDTO {
   @IsString()
   @IsNotEmpty()
   summonerName!: string
+
+  @ApiModelPropertyOptional()
+  @IsString()
+  @IsOptional()
+  summonerPUUID?: string
 
   @ApiModelProperty({
     enum: RegionsList

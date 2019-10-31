@@ -6,7 +6,9 @@ import { ISummonerModel } from './models/summoner.interface'
 import { GetSummonerQueryDTO } from './models/summoner.dto'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import * as summonerUtils from './summoner.utils'
+import * as _ from 'lodash'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
+import { SummonerV4DTO } from 'api-riot-games/dist/dto'
 
 @Injectable()
 export class SummonerService {
@@ -21,8 +23,20 @@ export class SummonerService {
 
   private async findOnRiot (params: GetSummonerQueryDTO) {
     const {
-      response: summoner
-    } = await this.api.getByName(params.summonerName, params.region)
+      region,
+      summonerName,
+      summonerPUUID
+    } = params
+    let summoner: SummonerV4DTO
+    // Find by puuid or summoner name
+    if (summonerPUUID) {
+      ({ response: summoner } =
+        await this.api.getByPUUID(summonerPUUID, region))
+    } else {
+      ({ response: summoner } =
+        await this.api.getByName(summonerName, region))
+    }
+
     return summoner
   }
 
@@ -59,11 +73,18 @@ export class SummonerService {
   }
 
   async get (params: GetSummonerQueryDTO, findRiot: boolean = true) {
-    const summoner = await this.repository.findOne({
+    // Find by name or puuid
+    const options = {
       // Case insensitive
       name: new RegExp(params.summonerName, 'i'),
       region: params.region
-    })
+    }
+    if (params.summonerPUUID) {
+      delete options.name
+      _.set(options, 'puuid', params.summonerPUUID)
+    }
+
+    const summoner = await this.repository.findOne(options)
     if (summoner) {
       return summoner
     }
