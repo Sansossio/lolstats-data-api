@@ -63,7 +63,13 @@ const schema = new mongoose.Schema({
     required: true
   },
 
-  matches: {
+  lolMatches: {
+    type: Map,
+    of: Boolean,
+    required: true
+  },
+
+  tftMatches: {
     type: Map,
     of: Boolean,
     required: true

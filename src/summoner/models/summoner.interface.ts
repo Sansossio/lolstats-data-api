@@ -13,6 +13,7 @@ export interface ISummonerModel extends IBaseInterface {
   loading?: boolean
   bot?: boolean
   region: Regions
-  matches: Map<string, boolean>,
+  lolMatches: Map<string, boolean>,
+  tftMatches: Map<string, boolean>
   leagues: Map<string, Partial<ISummonerLeagueModel>>
 }
