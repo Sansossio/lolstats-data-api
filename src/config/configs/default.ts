@@ -13,6 +13,7 @@ export default {
     port: process.env.DATABASE_PORT,
     user: process.env.DATABASE_USER,
     password: process.env.DATABASE_PASSWORD,
-    dbname: process.env.DATABASE_DBNAME
+    dbname: process.env.DATABASE_DBNAME,
+    adminAuth: process.env.DATABASE_ADMIN
   }
 }
