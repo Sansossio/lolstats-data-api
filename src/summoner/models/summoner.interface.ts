@@ -3,15 +3,15 @@ import { ISummonerLeagueModel } from '../../summoner-leagues/models/summoner-lea
 import { IBaseInterface } from '../../base/base.interface'
 
 export interface ISummonerModel extends IBaseInterface {
-  name: String
-  profileIconId: Number
-  summonerLevel: Number
-  revisionDate: Number
-  id: String
-  puuid: String
-  accountId: String
-  loading?: Boolean
-  bot?: Boolean
+  name: string
+  profileIconId: number
+  summonerLevel: number
+  revisionDate: number
+  id: string
+  puuid: string
+  accountId: string
+  loading?: boolean
+  bot?: boolean
   region: Regions
   matches: Map<string, boolean>,
   leagues: Map<string, Partial<ISummonerLeagueModel>>

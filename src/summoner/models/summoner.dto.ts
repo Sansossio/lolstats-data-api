@@ -23,7 +23,7 @@ export class GetSummonerQueryDTO {
 // Partial
 class GetSummonerDTOMatches {
   @ApiResponseModelProperty()
-  gameId!: Boolean
+  gameId!: boolean
 }
 
 class GetSummonerDTOLeagues {
@@ -36,34 +36,34 @@ class GetSummonerDTOLeagues {
 // DTO
 export class GetSummonerDTO extends BaseDTO {
   @ApiResponseModelProperty()
-  _id!: String
+  _id!: string
 
   @ApiResponseModelProperty()
-  name!: String
+  name!: string
 
   @ApiResponseModelProperty()
-  profileIconId!: Number
+  profileIconId!: number
 
   @ApiResponseModelProperty()
-  summonerLevel!: Number
+  summonerLevel!: number
 
   @ApiResponseModelProperty()
-  revisionDate!: Number
+  revisionDate!: number
 
   @ApiResponseModelProperty()
-  id!: String
+  id!: string
 
   @ApiResponseModelProperty()
-  puuid!: String
+  puuid!: string
 
   @ApiResponseModelProperty()
-  accountId!: String
+  accountId!: string
 
   @ApiResponseModelProperty()
-  loading!: Boolean
+  loading!: boolean
 
   @ApiResponseModelProperty()
-  bot!: Boolean
+  bot!: boolean
 
   @ApiResponseModelProperty()
   region!: Regions

@@ -1,5 +1,5 @@
-import { Regions } from 'api-riot-games/dist/constants'
+import { Constants } from 'api-riot-games'
 
 export const RegionsList = [
-  Regions.LAT_NORTH
+  Constants.Regions.LAT_NORTH
 ]
