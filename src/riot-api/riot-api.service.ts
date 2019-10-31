@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common'
-import { RiotApi } from 'api-riot-games'
+import { LolApi, TftApi } from 'api-riot-games'
 import { ConfigService } from '../config/config.service'
 
 @Injectable()
 export class RiotApiService {
-  private readonly api: RiotApi
+  private readonly lolApi: LolApi
+  private readonly tftApi: TftApi
 
   constructor (
     private readonly config: ConfigService
@@ -14,14 +15,15 @@ export class RiotApiService {
       rateLimitRetry: this.config.getBoolean('riot.rateLimitRetry'),
       rateLimitRetryAttempts: this.config.getNumber('riot.rateLimitCount')
     }
-    this.api = new RiotApi(params)
+    this.lolApi = new LolApi(params)
+    this.tftApi = new TftApi(params)
   }
 
-  getApi () {
-    return this.api
+  getTftApi (): TftApi {
+    return this.tftApi
   }
 
-  getLolApi (): typeof RiotApi.prototype.Lol {
-    return this.api.Lol
+  getLolApi (): LolApi {
+    return this.lolApi
   }
 }

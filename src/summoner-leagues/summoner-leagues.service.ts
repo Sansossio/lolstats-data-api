@@ -11,7 +11,7 @@ import * as utils from './summoner-leagues.utils'
 
 @Injectable()
 export class SummonerLeaguesService {
-  private readonly api = this.riot.getApi().Lol.League
+  private readonly api = this.riot.getLolApi().League
 
   constructor (
     @InjectModel(ModelsName.SUMMONER_LEAGUES) private readonly repository: Model<ISummonerLeagueModel>,
