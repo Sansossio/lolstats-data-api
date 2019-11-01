@@ -6,6 +6,7 @@ import { SummonerLeaguesModule } from './summoner-leagues/summoner-leagues.modul
 import { TftMatchModule } from './tft-match/tft-match.module'
 import { SeederModule } from './seeder/seeder.module'
 import { DatabaseConnection } from './database/database.connection'
+import { StaticDataModule } from './static-data/static-data.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { DatabaseConnection } from './database/database.connection'
     SummonerModule,
     SummonerLeaguesModule,
     TftMatchModule,
-    SeederModule
+    SeederModule,
+    StaticDataModule
   ]
 })
 export class AppModule {}
