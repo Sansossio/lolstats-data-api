@@ -1,4 +1,4 @@
-import { Constants } from 'api-riot-games'
+import { Constants } from 'twisted'
 
 export const RegionsList = [
   Constants.Regions.LAT_NORTH

@@ -1,6 +1,6 @@
-import { SummonerV4DTO } from 'api-riot-games/dist/dto'
+import { SummonerV4DTO } from 'twisted/dist/dto'
 import { ISummonerModel } from './models/summoner.interface'
-import { Regions } from 'api-riot-games/dist/constants'
+import { Regions } from 'twisted/dist/constants'
 import { ISummonerLeagueModel } from '../summoner-leagues/models/summoner-leagues.interface'
 
 export enum SummonerUtilsEnum {

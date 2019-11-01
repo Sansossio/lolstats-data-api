@@ -1,8 +1,8 @@
-import { MatchTFTDTO } from 'api-riot-games/dist/dto/Match/Tft/MatchTFT.dto'
+import { MatchTFTDTO } from 'twisted/dist/dto/Match/Tft/MatchTFT.dto'
 import { ITFTMatchModel } from './models/match/tft-match.interface'
 import { ISummonerModel } from '../summoner/models/summoner.interface'
 import { TftMatchParticipantsModel } from './models/participants/tft-match.participants.interface'
-import { Regions } from 'api-riot-games/dist/constants'
+import { Regions } from 'twisted/dist/constants'
 import { InternalServerErrorException } from '@nestjs/common'
 
 function timestampToDate (value: number): Date {

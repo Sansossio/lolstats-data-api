@@ -8,7 +8,7 @@ import { RiotApiService } from '../riot-api/riot-api.service'
 import * as summonerUtils from './summoner.utils'
 import * as _ from 'lodash'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
-import { SummonerV4DTO } from 'api-riot-games/dist/dto'
+import { SummonerV4DTO } from 'twisted/dist/dto'
 
 export enum SummonerServiceInsertMatch {
   LOL,

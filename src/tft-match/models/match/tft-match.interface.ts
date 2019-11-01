@@ -1,6 +1,6 @@
 import { IBaseInterface } from '../../../base/base.interface'
 import { TftMatchParticipantsModel } from '../participants/tft-match.participants.interface'
-import { Regions } from 'api-riot-games/dist/constants'
+import { Regions } from 'twisted/dist/constants'
 
 export interface ITFTMatchModel extends IBaseInterface {
   match_id: number

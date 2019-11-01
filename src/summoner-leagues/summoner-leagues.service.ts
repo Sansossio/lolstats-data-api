@@ -3,10 +3,10 @@ import { ISummonerLeagueModel } from './models/summoner-leagues.interface'
 import { ModelsName } from '../database/database.enum'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
-import { SummonerLeagueDto } from 'api-riot-games/dist/dto'
+import { SummonerLeagueDto } from 'twisted/dist/dto'
 import { castArray } from 'lodash'
 import { RiotApiService } from '../riot-api/riot-api.service'
-import { Regions } from 'api-riot-games/dist/constants'
+import { Regions } from 'twisted/dist/constants'
 import * as utils from './summoner-leagues.utils'
 
 @Injectable()

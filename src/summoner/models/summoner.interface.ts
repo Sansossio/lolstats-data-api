@@ -1,4 +1,4 @@
-import { Regions } from 'api-riot-games/dist/constants'
+import { Regions } from 'twisted/dist/constants'
 import { ISummonerLeagueModel } from '../../summoner-leagues/models/summoner-leagues.interface'
 import { IBaseInterface } from '../../base/base.interface'
 
