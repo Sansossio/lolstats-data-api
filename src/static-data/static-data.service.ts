@@ -8,13 +8,9 @@ import { QueuesDataDragonDTO } from 'twisted/dist/dto'
 
 @Injectable()
 export class StaticDataService {
-  private readonly api = this.riot.getLolApi().DataDragon
-
   constructor (
     // Database
     @InjectModel(ModelsName.STATIC_QUEUES) private readonly queuesRepository: Model<IQueueModel>,
-    // Services
-    private readonly riot: RiotApiService
   ) {}
 
   // Get queues
