@@ -2,22 +2,20 @@ import { Module } from '@nestjs/common'
 import { RiotApiModule } from './riot-api/riot-api.module'
 import { ConfigModule } from './config/config.module'
 import { SummonerModule } from './summoner/summoner.module'
-import { ConfigService } from './config/config.service'
-import { MongooseModule } from '@nestjs/mongoose'
 import { SummonerLeaguesModule } from './summoner-leagues/summoner-leagues.module'
-import { TftMatchModule } from './tft-match/tft-match.module';
+import { TftMatchModule } from './tft-match/tft-match.module'
+import { SeederModule } from './seeder/seeder.module'
+import { DatabaseConnection } from './database/database.connection'
 
 @Module({
   imports: [
-    MongooseModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => config.getConnection()
-    }),
+    DatabaseConnection,
     ConfigModule,
     RiotApiModule,
     SummonerModule,
     SummonerLeaguesModule,
-    TftMatchModule
+    TftMatchModule,
+    SeederModule
   ]
 })
 export class AppModule {}
