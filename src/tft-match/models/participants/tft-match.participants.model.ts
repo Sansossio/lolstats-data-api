@@ -3,6 +3,7 @@ import { ModelsOptions } from '../../../database/database.enum'
 import { TftMatchParticipantsCompanionModel } from './companion'
 import { TftMatchParticipantsUnitsModel } from './units'
 import { TftMatchParticipantsTraitsModel } from './traits'
+import { SummonerModel } from '../../../summoner/models/summoner.model'
 
 // Schema definition
 export const TftMatchParticipantsModel = new mongoose.Schema({
@@ -42,7 +43,7 @@ export const TftMatchParticipantsModel = new mongoose.Schema({
   },
 
   summoner: {
-    type: mongoose.Types.ObjectId,
+    type: SummonerModel.schema,
     required: true
   },
 

@@ -48,6 +48,11 @@ const schema = new mongoose.Schema({
   participants: {
     type: [TftMatchParticipantsModel],
     required: true
+  },
+
+  participantsIds: {
+    type: [mongoose.Types.ObjectId],
+    required: true
   }
 }, ModelsOptions)
 

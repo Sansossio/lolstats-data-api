@@ -9,12 +9,12 @@ function timestampToDate (value: number): Date {
   return new Date(value)
 }
 
-function getSummonerID (puuid: string, users: ISummonerModel[]): string {
+function getSummonerID (puuid: string, users: ISummonerModel[]): Partial<ISummonerModel> {
   const summoner = users.find(u => u.puuid === puuid)
   if (!summoner) {
     throw new InternalServerErrorException('Bad summoners match (tft)')
   }
-  return summoner._id
+  return summoner
 }
 
 function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[]): Partial<TftMatchParticipantsModel>[] {
@@ -62,10 +62,15 @@ function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[]): Partia
   return response
 }
 
+function parseParticipantsIds (users: ISummonerModel[]) {
+  return users.map(u => u._id)
+}
+
 export function riotToModel (match: MatchTFTDTO, region: Regions, users: ISummonerModel[]): Partial<ITFTMatchModel> {
   const { info, metadata } = match
   // Participants match
   const participants = parseParticipants(match, users)
+  const participantsIds = parseParticipantsIds(users)
   // Match
   return {
     match_id: metadata.match_id,
@@ -76,6 +81,7 @@ export function riotToModel (match: MatchTFTDTO, region: Regions, users: ISummon
     game_version: info.game_version,
     game_datetime: timestampToDate(info.game_datetime),
     participants,
+    participantsIds,
     region
   }
 }

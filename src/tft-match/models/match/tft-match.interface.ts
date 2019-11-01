@@ -12,4 +12,5 @@ export interface ITFTMatchModel extends IBaseInterface {
   game_version: string
   game_datetime: Date
   participants: Partial<TftMatchParticipantsModel>[]
+  participantsIds: string[]
 }

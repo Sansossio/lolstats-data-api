@@ -10,6 +10,7 @@ import { SummonerService, SummonerServiceInsertMatch } from '../summoner/summone
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 import { ISummonerModel } from '../summoner/models/summoner.interface'
 import * as tftMatchUtils from './tft-match.utils'
+import * as _ from 'lodash'
 import { ConfigService } from '../config/config.service'
 
 @Injectable()
@@ -88,7 +89,7 @@ export class TftMatchService {
   async getBySummoner (params: GetSummonerQueryDTO) {
     const { _id } = await this.summonerService.get(params)
     return this.repository.find({
-      'participants.summoner': _id
+      participantsIds: _id
     })
   }
 }
