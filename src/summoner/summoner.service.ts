@@ -10,6 +10,11 @@ import * as _ from 'lodash'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 import { SummonerV4DTO } from 'api-riot-games/dist/dto'
 
+export enum SummonerServiceInsertMatch {
+  LOL,
+  TFT
+}
+
 @Injectable()
 export class SummonerService {
   private readonly api = this.riot.getLolApi().Summoner
@@ -43,7 +48,7 @@ export class SummonerService {
   private async upsert (model: Partial<ISummonerModel>) {
     delete model._id
     const condition = {
-      accountId: model.accountId,
+      puuid: model.puuid,
       region: model.region
     }
     const options: ModelUpdateOptions = {
@@ -53,10 +58,15 @@ export class SummonerService {
   }
 
   // Public methods
-  async update (params: GetSummonerQueryDTO) {
+  async update (params: GetSummonerQueryDTO, loading: boolean = false): Promise<ISummonerModel> {
     const onRiot = await this.findOnRiot(params)
     const leagues = await this.summonerLeagueService.findOnRiot(onRiot.id, params.region)
-    const model = summonerUtils.riotToModel(onRiot, leagues, params.region)
+    const model = summonerUtils.riotToModel(
+      onRiot,
+      leagues,
+      params.region,
+      loading
+    )
     await this.upsert(model)
     const response = await this.get(
       {
@@ -72,7 +82,7 @@ export class SummonerService {
     return response
   }
 
-  async get (params: GetSummonerQueryDTO, findRiot: boolean = true) {
+  async get (params: GetSummonerQueryDTO, findRiot: boolean = true, loading: boolean = false) {
     // Find by name or puuid
     const options = {
       // Case insensitive
@@ -91,12 +101,28 @@ export class SummonerService {
     if (!findRiot) {
       throw new NotFoundException('Summoner not found')
     }
-    return this.update(params)
+    return this.update(params, loading)
   }
 
   // External methods
   async leaguesHistoric (params: GetSummonerQueryDTO) {
     const summoner = await this.get(params)
     return this.summonerLeagueService.findHistoric(summoner._id)
+  }
+
+  async insertMatches (ids: string[], matchId: number, type: SummonerServiceInsertMatch) {
+    const key =
+      type === SummonerServiceInsertMatch.LOL ? 'lolMatches' : 'tftMatches'
+    const condition = {
+      _id: {
+        $in: ids
+      }
+    }
+    const value = {
+      $set: {}
+    }
+
+    _.set(value, `$set.${key}.${matchId}`, true)
+    await this.repository.updateMany(condition, value, { upsert: true })
   }
 }

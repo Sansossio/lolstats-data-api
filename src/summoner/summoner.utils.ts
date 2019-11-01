@@ -30,7 +30,8 @@ export function parseAccountId (accountId: string) {
 export function riotToModel (
   riot: SummonerV4DTO,
   leagues: Partial<ISummonerLeagueModel>[],
-  region: Regions
+  region: Regions,
+  loading: boolean
 ): Partial<ISummonerModel> {
   return {
     name: riot.name,
@@ -40,11 +41,11 @@ export function riotToModel (
     id: riot.id,
     accountId: riot.accountId,
     puuid: riot.puuid,
-    loading: false,
-    bot: false,
+    bot: isBot(riot.accountId),
     lolMatches: new Map(),
     tftMatches: new Map(),
     leagues: matchLeagues(leagues),
+    loading,
     region
   }
 }

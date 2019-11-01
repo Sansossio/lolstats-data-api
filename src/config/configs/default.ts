@@ -15,5 +15,8 @@ export default {
     password: process.env.DATABASE_PASSWORD,
     dbname: process.env.DATABASE_DBNAME,
     adminAuth: process.env.DATABASE_ADMIN
+  },
+  concurrency: {
+    tft_matches: 4
   }
 }
