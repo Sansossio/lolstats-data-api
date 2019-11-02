@@ -2,6 +2,7 @@ import * as mongoose from 'mongoose'
 import { ModelsName, ModelsOptions } from '../../../database/database.enum'
 import { IModels } from '../../../database/database.types'
 import { TftMatchParticipantsModel } from '../participants/tft-match.participants.model'
+import { QueueModel } from '../../../static-data/models/queue/queue.model'
 
 // Schema definition
 const schema = new mongoose.Schema({
@@ -31,7 +32,7 @@ const schema = new mongoose.Schema({
   },
 
   queue: {
-    type: Number,
+    type: QueueModel,
     required: true
   },
 

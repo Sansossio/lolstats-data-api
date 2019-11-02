@@ -19,9 +19,9 @@ export class StaticDataService {
   ) {}
 
   // Controller methods
-  async getQueues (id: string): Promise<IQueueModel>
+  async getQueues (id: string | number): Promise<IQueueModel>
   async getQueues (): Promise<IQueueModel[]>
-  async getQueues (id?: string) {
+  async getQueues (id?: string | number) {
     if (id) {
       const instance = await this.queuesRepository.findOne({ queueId: id })
       if (!instance) {
@@ -32,9 +32,9 @@ export class StaticDataService {
     return this.queuesRepository.find()
   }
 
-  async getSeasons (id: string): Promise<ISeasonModel>
+  async getSeasons (id: string | number): Promise<ISeasonModel>
   async getSeasons (): Promise<ISeasonModel[]>
-  async getSeasons (id?: string) {
+  async getSeasons (id?: string | number) {
     if (id) {
       const instance = await this.seasonsRepository.findOne({ id })
       if (!instance) {
@@ -45,9 +45,9 @@ export class StaticDataService {
     return this.seasonsRepository.find()
   }
 
-  async getMaps (id: string): Promise<IMapsModel>
+  async getMaps (id: string | number): Promise<IMapsModel>
   async getMaps (): Promise<IMapsModel[]>
-  async getMaps (id?: string) {
+  async getMaps (id?: string | number) {
     if (id) {
       const instance = await this.mapsRepository.findOne({ mapId: id })
       if (!instance) {

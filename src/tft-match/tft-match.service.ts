@@ -12,6 +12,7 @@ import { ISummonerModel } from '../summoner/models/summoner.interface'
 import * as tftMatchUtils from './tft-match.utils'
 import * as _ from 'lodash'
 import { ConfigService } from '../config/config.service'
+import { StaticDataService } from '../static-data/static-data.service'
 
 @Injectable()
 export class TftMatchService {
@@ -23,6 +24,7 @@ export class TftMatchService {
 
     private readonly config: ConfigService,
     private readonly summonerService: SummonerService,
+    private readonly staticService: StaticDataService,
     private readonly riot: RiotApiService
   ) {}
 
@@ -57,7 +59,8 @@ export class TftMatchService {
     } = await this.api.get(match_id, parseRegion)
     // Match users
     const users = await this.matchSummoners(match.metadata.participants, region)
-    const model = tftMatchUtils.riotToModel(match, region, users)
+    const queue = await this.staticService.getQueues(match.info.queue_id)
+    const model = tftMatchUtils.riotToModel(match, region, users, queue)
     // Create game
     const instance = await this.repository.create(model)
     // Push game into users
@@ -78,7 +81,7 @@ export class TftMatchService {
     } = await this.api.list(puuid, parseRegion)
     // Get all models
     const models = await Promise.map(
-      matchIds,
+      [matchIds[0]],
       match => this.createMatch(match, params.region),
       { concurrency: this.concurrency }
     )
