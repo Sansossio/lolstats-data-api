@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, NotFoundException } from '@nestjs/common'
 import { IQueueModel } from './models/queue/queue.interface'
 import { Model } from 'mongoose'
 import { ModelsName } from '../database/database.enum'
@@ -15,12 +15,29 @@ export class StaticDataService {
   ) {}
 
   // Controller methods
-  // Get queues
-  async getQueues () {
+  async getQueues (id: string): Promise<IQueueModel>
+  async getQueues (): Promise<IQueueModel[]>
+  async getQueues (id?: string) {
+    if (id) {
+      const instance = this.queuesRepository.findOne({ queueId: id })
+      if (!instance) {
+        throw new NotFoundException()
+      }
+      return instance
+    }
     return this.queuesRepository.find()
   }
 
-  async getSeasons () {
+  async getSeasons (id: string): Promise<IQueueModel>
+  async getSeasons (): Promise<IQueueModel[]>
+  async getSeasons (id?: string) {
+    if (id) {
+      const instance = this.seasonsRepository.findOne({ id })
+      if (!instance) {
+        throw new NotFoundException()
+      }
+      return instance
+    }
     return this.seasonsRepository.find()
   }
 

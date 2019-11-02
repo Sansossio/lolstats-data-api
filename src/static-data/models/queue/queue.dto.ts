@@ -1,6 +1,7 @@
 import { ApiResponseModelProperty } from '@nestjs/swagger'
+import { BaseDTO } from '../../../base/base.dto'
 
-export class QueueDTO {
+export class QueueDTO extends BaseDTO {
   @ApiResponseModelProperty()
   queueId!: number
 

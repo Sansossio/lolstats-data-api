@@ -1,8 +1,9 @@
-import { Controller, Get } from '@nestjs/common'
+import { Controller, Get, Query } from '@nestjs/common'
 import { StaticDataService } from './static-data.service'
 import { ApiUseTags, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { QueueDTO } from './models/queue/queue.dto'
 import { SeasonDTO } from './models/seasons/seasons.dto'
+import { QueryStaticData } from './dto/query.static-data.dto'
 
 @Controller('static-data')
 @ApiUseTags('Static data')
@@ -16,8 +17,8 @@ export class StaticDataController {
   @ApiOperation({
     title: 'Get queues listing'
   })
-  async getQueues () {
-    return this.service.getQueues()
+  async getQueues (@Query() { id }: QueryStaticData) {
+    return this.service.getQueues(id)
   }
 
   @Get('seasons')
@@ -25,7 +26,7 @@ export class StaticDataController {
   @ApiOperation({
     title: 'Get seasons listing'
   })
-  async getSeasons () {
-    return this.service.getSeasons()
+  async getSeasons (@Query() { id }: QueryStaticData) {
+    return this.service.getSeasons(id)
   }
 }

@@ -4,8 +4,8 @@ const example = new Date().toISOString()
 
 export class BaseDTO {
   @ApiResponseModelProperty({ example })
-  createdAt!: Date
+  createdAt?: Date
 
   @ApiResponseModelProperty({ example })
-  updatedAt!: Date
+  updatedAt?: Date
 }
