@@ -13,6 +13,7 @@ import * as tftMatchUtils from './tft-match.utils'
 import * as _ from 'lodash'
 import { ConfigService } from '../config/config.service'
 import { StaticDataService } from '../static-data/static-data.service'
+import { QueryTftMatches } from './dto/query.tft-match.dto'
 
 @Injectable()
 export class TftMatchService {
@@ -90,10 +91,36 @@ export class TftMatchService {
     return models
   }
 
-  async getBySummoner (params: GetSummonerQueryDTO) {
+  async getBySummoner (params: QueryTftMatches) {
+    // Parse query params (is string)
+    params.limit = +params.limit
+    params.page = +params.page
+    // Variables
     const { _id } = await this.summonerService.get(params)
-    return this.repository.find({
-      participantsIds: _id
-    })
+    const skip = params.limit * params.page
+    const sort = [['game_datetime', -1]]
+    const condition = { participantsIds: _id }
+    const count = await this.repository.count(condition)
+    // Types
+    const baseObjectResponse = {
+      page: params.page,
+      limit: params.limit,
+      total: count,
+      data: []
+    }
+    // Page results isn't greater than total results
+    const requestLimit = skip + params.limit
+    const roundCount = Math.ceil(count / params.limit) * params.limit
+    if (roundCount >= requestLimit) {
+      const data = await this.repository.find(condition)
+        .limit(params.limit)
+        .skip(skip)
+        .sort(sort)
+      return {
+        ...baseObjectResponse,
+        data
+      }
+    }
+    return baseObjectResponse
   }
 }
