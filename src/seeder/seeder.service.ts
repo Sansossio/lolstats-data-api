@@ -25,6 +25,16 @@ export class SeederService {
     }
   }
 
+  private async maps () {
+    try {
+      const maps = await this.api.getMaps()
+      await this.staticData.createMaps(maps)
+      Logger.log('Maps finish', context)
+    } catch (e) {
+      Logger.error(e, context)
+    }
+  }
+
   private async queues () {
     try {
       const queues = await this.api.getQueues()
@@ -39,5 +49,6 @@ export class SeederService {
   async seed () {
     await this.queues()
     await this.seasons()
+    await this.maps()
   }
 }

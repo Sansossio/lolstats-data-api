@@ -1,4 +1,3 @@
-import { MongooseModule } from '@nestjs/mongoose'
 import { Schema } from 'mongoose'
 
 export interface IModels {

@@ -4,6 +4,7 @@ import { ApiUseTags, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { QueueDTO } from './models/queue/queue.dto'
 import { SeasonDTO } from './models/seasons/seasons.dto'
 import { QueryStaticData } from './dto/query.static-data.dto'
+import { MapsDTO } from './models/maps/maps.dto'
 
 @Controller('static-data')
 @ApiUseTags('Static data')
@@ -28,5 +29,14 @@ export class StaticDataController {
   })
   async getSeasons (@Query() { id }: QueryStaticData) {
     return this.service.getSeasons(id)
+  }
+
+  @Get('maps')
+  @ApiOkResponse({ type: [MapsDTO] })
+  @ApiOperation({
+    title: 'Get maps listing'
+  })
+  async getMaps (@Query() { id }: QueryStaticData) {
+    return this.service.getMaps(id)
   }
 }
