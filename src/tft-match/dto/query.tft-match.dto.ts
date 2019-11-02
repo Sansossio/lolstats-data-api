@@ -2,7 +2,7 @@ import { GetSummonerQueryDTO } from '../../summoner/models/summoner.dto'
 import { ApiModelProperty } from '@nestjs/swagger'
 import { IsInt, Max, Min, IsNotEmpty } from 'class-validator'
 import { Type } from 'class-transformer'
-import { LimitsEnum } from '../../config/config.enum'
+import { LimitsEnum } from '../../enums/limits.enum'
 
 export class QueryTftMatches extends GetSummonerQueryDTO {
   @ApiModelProperty()

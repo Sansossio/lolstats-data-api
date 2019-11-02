@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ITFTMatchModel } from './models/match/tft-match.interface'
-import { ModelsName } from '../database/database.enum'
+import { ModelsName } from '../enums/database.enum'
 import { InjectModel } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Promise } from 'bluebird'

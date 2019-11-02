@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions, ModelsName } from '../../../../database/database.enum'
+import { ModelsOptions, ModelsName } from '../../../../enums/database.enum'
 
 // Schema definition
 export const TftMatchParticipantsTraitsModel = new mongoose.Schema({

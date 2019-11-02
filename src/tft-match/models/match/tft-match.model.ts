@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsName, ModelsOptions } from '../../../database/database.enum'
+import { ModelsName, ModelsOptions } from '../../../enums/database.enum'
 import { IModels } from '../../../database/database.types'
 import { TftMatchParticipantsModel } from '../participants/tft-match.participants.model'
 import { QueueModel } from '../../../static-data/models/queue/queue.model'

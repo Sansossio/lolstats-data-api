@@ -1,6 +1,6 @@
 import { ApiModelProperty, ApiResponseModelProperty, ApiModelPropertyOptional } from '@nestjs/swagger'
 import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator'
-import { RegionsList } from '../../riot-api/riot-api.enum'
+import { RegionsList } from '../../enums/riot-api.enum'
 import { Regions } from 'twisted/dist/constants'
 import { GetSummonerLeaguesDTO } from '../../summoner-leagues/models/summoner-leagues.dto'
 import { BaseDTO } from '../../base/base.dto'

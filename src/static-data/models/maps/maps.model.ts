@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions, ModelsName } from '../../../database/database.enum'
+import { ModelsOptions, ModelsName } from '../../../enums/database.enum'
 import { IModels } from '../../../database/database.types'
 // Schema definition
 const schema = new mongoose.Schema({

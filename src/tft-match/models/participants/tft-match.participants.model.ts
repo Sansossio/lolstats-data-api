@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions } from '../../../database/database.enum'
+import { ModelsOptions } from '../../../enums/database.enum'
 import { TftMatchParticipantsCompanionModel } from './companion'
 import { TftMatchParticipantsUnitsModel } from './units'
 import { TftMatchParticipantsTraitsModel } from './traits'

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { Model, ModelUpdateOptions } from 'mongoose'
 import { InjectModel } from '@nestjs/mongoose'
-import { ModelsName } from '../database/database.enum'
+import { ModelsName } from '../enums/database.enum'
 import { ISummonerModel } from './models/summoner.interface'
 import { GetSummonerQueryDTO } from './models/summoner.dto'
 import { RiotApiService } from '../riot-api/riot-api.service'

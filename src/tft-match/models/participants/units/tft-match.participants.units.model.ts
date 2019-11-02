@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions, ModelsName } from '../../../../database/database.enum'
+import { ModelsOptions, ModelsName } from '../../../../enums/database.enum'
 import { StaticTftModel } from '../../../../static-data/models/static-tft-items/static-tft-items.model'
 
 // Schema definition

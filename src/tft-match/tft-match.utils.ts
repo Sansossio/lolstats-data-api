@@ -7,7 +7,7 @@ import { InternalServerErrorException } from '@nestjs/common'
 import { IQueueModel } from '../static-data/models/queue/queue.interface'
 import { IStaticTftItemsModel } from '../static-data/models/static-tft-items/static-tft-items.interface'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
-import { TftMatchEnum } from './tft-match.enum'
+import { TftMatchEnum } from '../enums/tft-match.enum'
 
 // Private methods
 function timestampToDate (value: number): Date {

@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { IQueueModel } from './models/queue/queue.interface'
 import { Model } from 'mongoose'
-import { ModelsName } from '../database/database.enum'
+import { ModelsName } from '../enums/database.enum'
 import { InjectModel } from '@nestjs/mongoose'
 import { QueuesDataDragonDTO } from 'twisted/dist/dto'
 import { SeasonDTO } from './models/seasons/seasons.dto'
