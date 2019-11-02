@@ -10,7 +10,7 @@ import { QueuesDataDragonDTO } from 'twisted/dist/dto'
 export class StaticDataService {
   constructor (
     // Database
-    @InjectModel(ModelsName.STATIC_QUEUES) private readonly queuesRepository: Model<IQueueModel>,
+    @InjectModel(ModelsName.STATIC_QUEUES) private readonly queuesRepository: Model<IQueueModel>
   ) {}
 
   // Get queues

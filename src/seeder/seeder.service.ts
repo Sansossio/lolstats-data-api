@@ -1,6 +1,8 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { StaticDataService } from '../static-data/static-data.service'
+
+const context = 'SEED'
 
 @Injectable()
 export class SeederService {
@@ -11,10 +13,16 @@ export class SeederService {
 
     private readonly riot: RiotApiService
   ) {}
+
   // Internal methods
   private async getQueues () {
-    const queues = await this.api.getQueues()
-    await this.staticData.createQueues(queues)
+    try {
+      const queues = await this.api.getQueues()
+      await this.staticData.createQueues(queues)
+      Logger.log('Queues finish', context)
+    } catch (e) {
+      Logger.error(e, context)
+    }
   }
 
   // Public
