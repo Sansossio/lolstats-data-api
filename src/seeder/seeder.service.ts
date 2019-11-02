@@ -15,7 +15,17 @@ export class SeederService {
   ) {}
 
   // Internal methods
-  private async getQueues () {
+  private async seasons () {
+    try {
+      const seasons = await this.api.getSeasons()
+      await this.staticData.createSeasons(seasons)
+      Logger.log('Seasons finish', context)
+    } catch (e) {
+      Logger.error(e, context)
+    }
+  }
+
+  private async queues () {
     try {
       const queues = await this.api.getQueues()
       await this.staticData.createQueues(queues)
@@ -27,6 +37,7 @@ export class SeederService {
 
   // Public
   async seed () {
-    await this.getQueues()
+    await this.queues()
+    await this.seasons()
   }
 }

@@ -4,11 +4,13 @@ import { RiotApiModule } from '../riot-api/riot-api.module'
 import { StaticDataController } from './static-data.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { QueueModel } from './models/queue/queue.model'
+import { SeasonsModel } from './models/seasons/seasons.model'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
-      QueueModel
+      QueueModel,
+      SeasonsModel
     ]),
     RiotApiModule
   ],
