@@ -82,7 +82,7 @@ export class TftMatchService {
     } = await this.api.list(puuid, parseRegion)
     // Get all models
     const models = await Promise.map(
-      [matchIds[0]],
+      matchIds,
       match => this.createMatch(match, params.region),
       { concurrency: this.concurrency }
     )
