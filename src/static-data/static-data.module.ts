@@ -6,13 +6,15 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { QueueModel } from './models/queue/queue.model'
 import { SeasonsModel } from './models/seasons/seasons.model'
 import { MapsModel } from './models/maps/maps.model'
+import { StaticTftModel } from './models/static-tft-items/static-tft-items.model'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       QueueModel,
       SeasonsModel,
-      MapsModel
+      MapsModel,
+      StaticTftModel
     ]),
     RiotApiModule
   ],

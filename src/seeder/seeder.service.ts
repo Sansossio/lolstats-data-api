@@ -7,6 +7,7 @@ const context = 'SEED'
 @Injectable()
 export class SeederService {
   private readonly api = this.riot.getLolApi().DataDragon
+  private readonly tftApi = this.riot.getTftApi().StaticFiles
 
   constructor (
     private readonly staticData: StaticDataService,
@@ -45,10 +46,21 @@ export class SeederService {
     }
   }
 
+  private async tftItems () {
+    try {
+      const items = this.tftApi.Items()
+      await this.staticData.createTftItems(items)
+      Logger.log('Tft items finish', context)
+    } catch (e) {
+      Logger.error(e, context)
+    }
+  }
+
   // Public
   async seed () {
     await this.queues()
     await this.seasons()
     await this.maps()
+    await this.tftItems()
   }
 }

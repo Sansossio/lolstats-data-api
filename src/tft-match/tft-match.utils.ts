@@ -5,6 +5,7 @@ import { TftMatchParticipantsModel } from './models/participants/tft-match.parti
 import { Regions } from 'twisted/dist/constants'
 import { InternalServerErrorException } from '@nestjs/common'
 import { IQueueModel } from '../static-data/models/queue/queue.interface'
+import { IStaticTftItemsModel } from '../static-data/models/static-tft-items/static-tft-items.interface'
 
 function timestampToDate (value: number): Date {
   return new Date(value)
@@ -18,7 +19,11 @@ function getSummonerID (puuid: string, users: ISummonerModel[]): Partial<ISummon
   return summoner
 }
 
-function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[]): Partial<TftMatchParticipantsModel>[] {
+function matchItems (ids: number[], items: IStaticTftItemsModel[]) {
+  return ids.map(id => items.find(i => i.id === id) as IStaticTftItemsModel)
+}
+
+function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: IStaticTftItemsModel[]): Partial<TftMatchParticipantsModel>[] {
   const response: Partial<TftMatchParticipantsModel>[] = []
   const {
     info: {
@@ -38,10 +43,16 @@ function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[]): Partia
       total_damage_to_players,
       gold_left,
       traits,
-      units,
       companion
     } = participant
     const summoner = getSummonerID(puuid, users)
+    const units = participant.units.map((unit) => {
+      const mapItems = matchItems(unit.items, items)
+      return {
+        ...unit,
+        items: mapItems
+      }
+    })
     // Set
     const parsedSummoner: Partial<TftMatchParticipantsModel> = {
       placement,
@@ -71,11 +82,12 @@ export function riotToModel (
   match: MatchTFTDTO,
   region: Regions,
   users: ISummonerModel[],
-  queue: IQueueModel
+  queue: IQueueModel,
+  items: IStaticTftItemsModel[]
   ): Partial<ITFTMatchModel> {
   const { info, metadata } = match
   // Participants match
-  const participants = parseParticipants(match, users)
+  const participants = parseParticipants(match, users, items)
   const participantsIds = parseParticipantsIds(users)
   // Match
   return {

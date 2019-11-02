@@ -8,6 +8,8 @@ import { SeasonDTO } from './models/seasons/seasons.dto'
 import { MapsDTO } from './models/maps/maps.dto'
 import { ISeasonModel } from './models/seasons/seasons.interface'
 import { IMapsModel } from './models/maps/maps.interface'
+import { IStaticTftItemsModel } from './models/static-tft-items/static-tft-items.interface'
+import { StaticTftItemsDTO } from './models/static-tft-items/static-tft-items.dto'
 
 @Injectable()
 export class StaticDataService {
@@ -15,7 +17,8 @@ export class StaticDataService {
     // Database
     @InjectModel(ModelsName.STATIC_QUEUES) private readonly queuesRepository: Model<IQueueModel>,
     @InjectModel(ModelsName.STATIC_SEASONS) private readonly seasonsRepository: Model<ISeasonModel>,
-    @InjectModel(ModelsName.STATIC_MAPS) private readonly mapsRepository: Model<IMapsModel>
+    @InjectModel(ModelsName.STATIC_MAPS) private readonly mapsRepository: Model<IMapsModel>,
+    @InjectModel(ModelsName.STATIC_TFT_ITEM) private readonly tftItemsRepository: Model<IStaticTftItemsModel>
   ) {}
 
   // Controller methods
@@ -58,6 +61,19 @@ export class StaticDataService {
     return this.mapsRepository.find()
   }
 
+  async getTftitems (id: string | number): Promise<IStaticTftItemsModel>
+  async getTftitems (): Promise<IStaticTftItemsModel[]>
+  async getTftitems (id?: string | number) {
+    if (id) {
+      const instance = await this.tftItemsRepository.findOne({ mapId: id })
+      if (!instance) {
+        throw new NotFoundException()
+      }
+      return instance
+    }
+    return this.tftItemsRepository.find()
+  }
+
   // External services mtehods
   async createQueues (queues: QueuesDataDragonDTO[]) {
     for (const queue of queues) {
@@ -74,6 +90,12 @@ export class StaticDataService {
   async createMaps (maps: MapsDTO[]) {
     for (const map of maps) {
       await this.mapsRepository.updateOne({ mapId: map.mapId }, map, { upsert: true })
+    }
+  }
+
+  async createTftItems (items: StaticTftItemsDTO[]) {
+    for (const item of items) {
+      await this.tftItemsRepository.updateOne({ id: item.id }, item, { upsert: true })
     }
   }
 }

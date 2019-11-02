@@ -5,6 +5,7 @@ import { QueueDTO } from './models/queue/queue.dto'
 import { SeasonDTO } from './models/seasons/seasons.dto'
 import { QueryStaticData } from './dto/query.static-data.dto'
 import { MapsDTO } from './models/maps/maps.dto'
+import { StaticTftItemsDTO } from './models/static-tft-items/static-tft-items.dto'
 
 @Controller('static-data')
 @ApiUseTags('Static data')
@@ -38,5 +39,14 @@ export class StaticDataController {
   })
   async getMaps (@Query() { id }: QueryStaticData) {
     return this.service.getMaps(id)
+  }
+
+  @Get('tft/items')
+  @ApiOkResponse({ type: [StaticTftItemsDTO] })
+  @ApiOperation({
+    title: 'Get tft items listing'
+  })
+  async getTftItems (@Query() { id }: QueryStaticData) {
+    return this.service.getTftitems(id)
   }
 }

@@ -32,7 +32,7 @@ const schema = new mongoose.Schema({
   },
 
   queue: {
-    type: QueueModel,
+    type: QueueModel.schema,
     required: true
   },
 

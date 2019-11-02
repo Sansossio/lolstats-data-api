@@ -1,5 +1,6 @@
 import * as mongoose from 'mongoose'
 import { ModelsOptions, ModelsName } from '../../../../database/database.enum'
+import { StaticTftModel } from '../../../../static-data/models/static-tft-items/static-tft-items.model'
 
 // Schema definition
 export const TftMatchParticipantsUnitsModel = new mongoose.Schema({
@@ -9,7 +10,7 @@ export const TftMatchParticipantsUnitsModel = new mongoose.Schema({
   },
 
   items: {
-    type: [Number],
+    type: [StaticTftModel.schema],
     required: true
   },
 

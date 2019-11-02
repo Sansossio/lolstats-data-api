@@ -1,5 +1,10 @@
 import { IBaseInterface } from '../../../../base/base.interface'
-import { UnitDto } from 'twisted/dist/dto/Match/Tft/UnitDto.dto'
+import { IStaticTftItemsModel } from '../../../../static-data/models/static-tft-items/static-tft-items.interface'
 
 // Interfae definition
-export interface ITftMatchUnitsModel extends UnitDto, IBaseInterface {}
+export interface ITftMatchUnitsModel extends IBaseInterface {
+  tier: number
+  items: IStaticTftItemsModel[]
+  character_id: string
+  rarity: number
+}

@@ -60,7 +60,8 @@ export class TftMatchService {
     // Match users
     const users = await this.matchSummoners(match.metadata.participants, region)
     const queue = await this.staticService.getQueues(match.info.queue_id)
-    const model = tftMatchUtils.riotToModel(match, region, users, queue)
+    const items = await this.staticService.getTftitems()
+    const model = tftMatchUtils.riotToModel(match, region, users, queue, items)
     // Create game
     const instance = await this.repository.create(model)
     // Push game into users
