@@ -31,7 +31,6 @@ export class TftMatchService {
   // Internal methods
   private async matchSummoners (puuids: string[], region: Regions): Promise<ISummonerModel[]> {
     const response: ISummonerModel[] = []
-    const userLoading = true
     const findOnRiot = true
     for (const puuid of puuids) {
       const params = {
@@ -40,7 +39,7 @@ export class TftMatchService {
         region
       }
       // Create user as "loading"
-      const summoner = await this.summonerService.get(params, findOnRiot, userLoading)
+      const summoner = await this.summonerService.get(params, findOnRiot)
 
       response.push(summoner)
     }
