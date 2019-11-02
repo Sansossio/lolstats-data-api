@@ -6,7 +6,10 @@ import { Regions } from 'twisted/dist/constants'
 import { InternalServerErrorException } from '@nestjs/common'
 import { IQueueModel } from '../static-data/models/queue/queue.interface'
 import { IStaticTftItemsModel } from '../static-data/models/static-tft-items/static-tft-items.interface'
+import { QueryTftMatches } from './dto/query.tft-match.dto'
+import { TftMatchEnum } from './tft-match.enum'
 
+// Private methods
 function timestampToDate (value: number): Date {
   return new Date(value)
 }
@@ -78,6 +81,7 @@ function parseParticipantsIds (users: ISummonerModel[]) {
   return users.map(u => u._id)
 }
 
+// Public methods
 export function riotToModel (
   match: MatchTFTDTO,
   region: Regions,
@@ -101,5 +105,24 @@ export function riotToModel (
     participants,
     participantsIds,
     region
+  }
+}
+
+export function getSearchParams (params: QueryTftMatches, id: string) {
+  // Parse query params (is string)
+  params.limit = +params.limit
+  params.page = +params.page
+
+  // Define
+  const skip = params.limit * params.page
+  const sort = [[TftMatchEnum.SORT_BY, TftMatchEnum.SORT_BY_ORDER]]
+  const condition = { participantsIds: id }
+  const requestLimit = skip + params.limit
+
+  return {
+    skip,
+    sort,
+    condition,
+    requestLimit
   }
 }

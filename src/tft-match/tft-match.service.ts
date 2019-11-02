@@ -92,30 +92,31 @@ export class TftMatchService {
   }
 
   async getBySummoner (params: QueryTftMatches) {
-    // Parse query params (is string)
-    params.limit = +params.limit
-    params.page = +params.page
-    // Variables
+    // Search params
     const { _id } = await this.summonerService.get(params)
-    const skip = params.limit * params.page
-    const sort = [['game_datetime', -1]]
-    const condition = { participantsIds: _id }
-    const count = await this.repository.count(condition)
-    // Types
+    const {
+      condition,
+      skip,
+      sort,
+      requestLimit
+    } = tftMatchUtils.getSearchParams(params, _id)
+
+    const count = await this.repository.countDocuments(condition)
     const baseObjectResponse = {
       page: params.page,
       limit: params.limit,
       total: count,
       data: []
     }
+
     // Page results isn't greater than total results
-    const requestLimit = skip + params.limit
     const roundCount = Math.ceil(count / params.limit) * params.limit
     if (roundCount >= requestLimit) {
       const data = await this.repository.find(condition)
         .limit(params.limit)
         .skip(skip)
         .sort(sort)
+
       return {
         ...baseObjectResponse,
         data
