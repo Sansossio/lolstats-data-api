@@ -60,10 +60,7 @@ export class SummonerService {
   // Public methods
   async update (params: GetSummonerQueryDTO, loading: boolean = false): Promise<ISummonerModel> {
     const onRiot = await this.findOnRiot(params)
-    // Find leagues only if is final instance
-    const leagues = loading ?
-      [] :
-      await this.summonerLeagueService.findOnRiot(onRiot.id, params.region)
+    const leagues = await this.summonerLeagueService.findOnRiot(onRiot.id, params.region)
     // Create model
     const model = summonerUtils.riotToModel(
       onRiot,
