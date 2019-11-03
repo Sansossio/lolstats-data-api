@@ -1,7 +1,7 @@
 import { ApiResponseModelProperty } from '@nestjs/swagger'
 
 export class TftMatchParticipantsTraitsDTO {
-  @ApiResponseModelProperty()  
+  @ApiResponseModelProperty()
   tier_total!: number
 
   @ApiResponseModelProperty()
