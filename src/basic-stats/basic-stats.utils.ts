@@ -1,6 +1,6 @@
-import { TftMatchEnum } from "../enums/tft-match.enum"
-import { TftMatchParticipantsModel } from "../tft-match/models/participants/tft-match.participants.interface"
-import { ITFTMatchModel } from "../tft-match/models/match/tft-match.interface"
+import { TftMatchEnum } from '../enums/tft-match.enum'
+import { TftMatchParticipantsModel } from '../tft-match/models/participants/tft-match.participants.interface'
+import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
 
 // Private
 function isWin (placement?: number) {
