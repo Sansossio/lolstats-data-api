@@ -42,7 +42,6 @@ export class TftMatchService {
       }
       // Create user as "loading"
       const summoner = await this.summonerService.get(params, findOnRiot, userLoading)
-
       response.push(summoner)
     }
     return response

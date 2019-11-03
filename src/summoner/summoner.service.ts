@@ -123,7 +123,9 @@ export class SummonerService {
       $set: {}
     }
 
-    _.set(value, `$set.${key}.${matchId}`, true)
-    await this.repository.updateMany(condition, value, { upsert: true })
+    const matchKey = `$set.["${key}\.${matchId}"]`
+    const matchValue = true
+    _.set(value, matchKey, matchValue)
+    await this.repository.updateMany(condition, value)
   }
 }
