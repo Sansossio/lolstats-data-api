@@ -4,13 +4,15 @@ import { SummonerController } from './summoner.controller'
 import { MongooseModule } from '@nestjs/mongoose'
 import { SummonerModel } from './models/summoner.model'
 import { SummonerLeaguesModule } from '../summoner-leagues/summoner-leagues.module'
+import { BasicStatsModule } from '../basic-stats/basic-stats.module'
 
 @Module({
   imports: [
     MongooseModule.forFeature([
       SummonerModel
     ]),
-    SummonerLeaguesModule
+    SummonerLeaguesModule,
+    BasicStatsModule
   ],
   providers: [SummonerService],
   controllers: [SummonerController],

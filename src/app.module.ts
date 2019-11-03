@@ -7,6 +7,7 @@ import { TftMatchModule } from './tft-match/tft-match.module'
 import { SeederModule } from './seeder/seeder.module'
 import { DatabaseConnection } from './database/database.connection'
 import { StaticDataModule } from './static-data/static-data.module'
+import { BasicStatsModule } from './basic-stats/basic-stats.module'
 
 @Module({
   imports: [
@@ -17,7 +18,8 @@ import { StaticDataModule } from './static-data/static-data.module'
     SummonerLeaguesModule,
     TftMatchModule,
     SeederModule,
-    StaticDataModule
+    StaticDataModule,
+    BasicStatsModule
   ]
 })
 export class AppModule {}
