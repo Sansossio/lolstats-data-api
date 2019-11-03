@@ -6,6 +6,7 @@ import { Model } from 'mongoose'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
 import * as _ from 'lodash'
 import { calculateWinRate, findSummoner } from './basic-stats.utils'
+import { IQueueModel } from '../static-data/models/queue/queue.interface'
 
 @Injectable()
 export class BasicTftStatsService {
@@ -17,22 +18,25 @@ export class BasicTftStatsService {
   ) {}
 
   private winRatePerQueue (puuid: string, matches: ITFTMatchModel[]) {
-    const queues = matches.reduce<number[]>((prev, curr) => {
+    const queues = matches.reduce<{ queueId: number, queue: Partial<IQueueModel>}[]>((prev, curr) => {
       const {
-        queue: {
-          queueId
-        }
+        queue
       } = curr
-      if (queueId && prev.indexOf(queueId) === -1) {
-        prev.push(queueId)
+      const { queueId = 0 } = queue
+      if (!prev.find(p => p.queueId === queueId)) {
+        prev.push({
+          queueId,
+          queue
+        })
       }
       return prev
     }, [])
     const perQueue = queues.map((queue) => {
-      const filterMatches = matches.filter(m => m.queue.queueId === queue)
+      const filterMatches = matches.filter(m => m.queue.queueId === queue.queueId)
       const winrate = calculateWinRate(puuid, filterMatches)
       return {
-        queue,
+        queue: queue.queue.description,
+        queueId: queue.queueId,
         winrate
       }
     })
