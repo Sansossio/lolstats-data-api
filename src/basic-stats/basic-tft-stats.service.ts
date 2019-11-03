@@ -37,6 +37,7 @@ export class BasicTftStatsService {
       return {
         queue: queue.queue.description,
         queueId: queue.queueId,
+        games: filterMatches.length,
         winrate
       }
     })
@@ -44,7 +45,11 @@ export class BasicTftStatsService {
   }
 
   private mostTraitsUsed (puuid: string, matches: ITFTMatchModel[]) {
-    const response: { name: string, num_units: number }[] = []
+    let response: {
+      name: string,
+      num_units: number,
+      games: number
+    }[] = []
     for (const match of matches) {
       // Find traits
       const { traits } = findSummoner(puuid, match.participants)
@@ -61,17 +66,25 @@ export class BasicTftStatsService {
         } else {
           response.push({
             name,
-            num_units
+            num_units,
+            games: 0
           })
         }
       }
+      response = response.map((val) => {
+        val.games++
+        return val
+      })
     }
 
     return _.orderBy(response, v => -v.num_units)
   }
 
-  private globalWinRate (puuid: string, matches: ITFTMatchModel[]): number {
-    return calculateWinRate(puuid, matches)
+  private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
+    return {
+      games: matches.length,
+      winrate: calculateWinRate(puuid, matches)
+    }
   }
 
   async updateSummoner ({ _id, puuid }: ISummonerModel) {
