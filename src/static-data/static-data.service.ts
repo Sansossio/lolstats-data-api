@@ -28,7 +28,7 @@ export class StaticDataService {
     if (id) {
       const instance = await this.queuesRepository.findOne({ queueId: id })
       if (!instance) {
-        throw new NotFoundException()
+        throw new NotFoundException(`Queue ${id} not found`)
       }
       return instance
     }
@@ -41,7 +41,7 @@ export class StaticDataService {
     if (id) {
       const instance = await this.seasonsRepository.findOne({ id })
       if (!instance) {
-        throw new NotFoundException()
+        throw new NotFoundException(`Season ${id} not found`)
       }
       return instance
     }
@@ -54,7 +54,7 @@ export class StaticDataService {
     if (id) {
       const instance = await this.mapsRepository.findOne({ mapId: id })
       if (!instance) {
-        throw new NotFoundException()
+        throw new NotFoundException(`Map ${id} not found`)
       }
       return instance
     }
