@@ -4,9 +4,8 @@ import { ModelsName } from '../enums/database.enum'
 import { ISummonerModel } from '../summoner/models/summoner.interface'
 import { Model } from 'mongoose'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
-import { TftMatchEnum } from '../enums/tft-match.enum'
-import { TftMatchParticipantsModel } from '../tft-match/models/participants/tft-match.participants.interface'
 import * as _ from 'lodash'
+import { calculateWinRate, findSummoner } from './basic-stats.utils'
 
 @Injectable()
 export class BasicTftStatsService {
@@ -16,30 +15,6 @@ export class BasicTftStatsService {
 
     @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>
   ) {}
-
-  private isWin (placement?: number) {
-    if (!placement) {
-      return false
-    }
-    return placement <= TftMatchEnum.PLACEMENT_WIN
-  }
-
-  private findSummoner (puuid: string, participants: Partial<TftMatchParticipantsModel>[]) {
-    const participant = participants.find(p => !!p.summoner && p.summoner.puuid === puuid)
-    if (!participant) {
-      throw new Error('Summoner not found')
-    }
-    return participant
-  }
-
-  private calculateWinRate (puuid: string, matches: ITFTMatchModel[]) {
-    const wins = matches.filter((m) => {
-      const summoner = this.findSummoner(puuid, m.participants)
-      return summoner && this.isWin(summoner.placement)
-    }).length
-    const percentage = wins / matches.length * 100
-    return percentage
-  }
 
   private winRatePerQueue (puuid: string, matches: ITFTMatchModel[]) {
     const queues = matches.reduce<number[]>((prev, curr) => {
@@ -55,7 +30,7 @@ export class BasicTftStatsService {
     }, [])
     const perQueue = queues.map((queue) => {
       const filterMatches = matches.filter(m => m.queue.queueId === queue)
-      const winrate = this.calculateWinRate(puuid, filterMatches)
+      const winrate = calculateWinRate(puuid, filterMatches)
       return {
         queue,
         winrate
@@ -68,7 +43,7 @@ export class BasicTftStatsService {
     const response: { name: string, num_units: number }[] = []
     for (const match of matches) {
       // Find traits
-      const { traits } = this.findSummoner(puuid, match.participants)
+      const { traits } = findSummoner(puuid, match.participants)
       if (!traits) {
         throw new Error('Invalid model')
       }
@@ -92,7 +67,7 @@ export class BasicTftStatsService {
   }
 
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]): number {
-    return this.calculateWinRate(puuid, matches)
+    return calculateWinRate(puuid, matches)
   }
 
   async updateSummoner ({ _id, puuid }: ISummonerModel) {
