@@ -14,7 +14,7 @@ export class BasicTftStatsService {
     // Database
     @InjectModel(ModelsName.SUMMONER) private readonly summonersRepository: Model<ISummonerModel>,
 
-    @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>,
+    @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>
   ) {}
 
   private isWin (placement?: number) {
@@ -32,7 +32,7 @@ export class BasicTftStatsService {
     return participant
   }
 
-  private calculateWinRate(puuid: string, matches: ITFTMatchModel[]) {
+  private calculateWinRate (puuid: string, matches: ITFTMatchModel[]) {
     const wins = matches.filter((m) => {
       const summoner = this.findSummoner(puuid, m.participants)
       return summoner && this.isWin(summoner.placement)
@@ -74,7 +74,7 @@ export class BasicTftStatsService {
       }
       // Iterate over traits
       for (const trait of traits) {
-        const { name = '', num_units = 0} = trait
+        const { name = '', num_units = 0 } = trait
         const findIndex = response.findIndex(r => r.name === name)
         // Upsert
         if (findIndex !== -1) {

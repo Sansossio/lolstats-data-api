@@ -133,6 +133,6 @@ export class SummonerService {
 
   async test (params: GetSummonerQueryDTO) {
     const summoner = await this.get(params)
-    return await this.tftStats.updateSummoner(summoner)
+    return this.tftStats.updateSummoner(summoner)
   }
 }

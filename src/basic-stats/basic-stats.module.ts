@@ -9,7 +9,7 @@ import { TftMatchModel } from '../tft-match/models/match/tft-match.model'
     MongooseModule.forFeature([
       SummonerModel,
       TftMatchModel
-    ]),
+    ])
   ],
   providers: [
     BasicTftStatsService
