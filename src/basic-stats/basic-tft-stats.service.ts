@@ -77,7 +77,7 @@ export class BasicTftStatsService {
       })
     }
 
-    return _.orderBy(response, v => -v.num_units)
+    return _.orderBy(response, v => -v.games)
   }
 
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
