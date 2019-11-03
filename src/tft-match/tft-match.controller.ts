@@ -3,6 +3,7 @@ import { TftMatchService } from './tft-match.service'
 import { ApiUseTags, ApiOkResponse, ApiOperation } from '@nestjs/swagger'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { TftMatchModelDTO } from './models/match/tft-match.dto'
+import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 
 @Controller('tft-match')
 @ApiUseTags('Teamfight tactics')
@@ -16,7 +17,7 @@ export class TftMatchController {
   @ApiOperation({
     title: 'Update summoner matches'
   })
-  async update (@Query() params: QueryTftMatches) {
+  async update (@Query() params: GetSummonerQueryDTO) {
     return this.service.updateSummoner(params)
   }
 
