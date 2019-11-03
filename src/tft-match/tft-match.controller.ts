@@ -12,7 +12,7 @@ export class TftMatchController {
   ) {}
 
   @Post('summoner')
-  @ApiOkResponse({ type: TftMatchModelDTO })
+  @ApiOkResponse({ type: [TftMatchModelDTO] })
   @ApiOperation({
     title: 'Update summoner matches'
   })
@@ -21,7 +21,7 @@ export class TftMatchController {
   }
 
   @Get('summoner')
-  @ApiOkResponse({ type: TftMatchModelDTO })
+  @ApiOkResponse({ type: [TftMatchModelDTO] })
   @ApiOperation({
     title: 'Get summoner matcehs'
   })
