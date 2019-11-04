@@ -72,7 +72,6 @@ export class TftMatchService {
     return instance
   }
 
-  @Cache()
   private async getMatchListing (puuid: string, region: TftRegions) {
     const {
       response: matchIds
