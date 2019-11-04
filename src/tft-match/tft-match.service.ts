@@ -15,6 +15,7 @@ import { ConfigService } from '../config/config.service'
 import { StaticDataService } from '../static-data/static-data.service'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { Cache } from '../cache/cache.decorator'
+import { CacheEnum } from '../enums/cache.enum'
 
 @Injectable()
 export class TftMatchService {
@@ -48,7 +49,9 @@ export class TftMatchService {
     return response
   }
 
-  @Cache()
+  @Cache({
+    expiration: CacheEnum.TFT_MATCH
+  })
   private async getMatch (match_id: string, region: TftRegions) {
     const {
       response: match

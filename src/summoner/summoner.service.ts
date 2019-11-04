@@ -10,6 +10,8 @@ import * as _ from 'lodash'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 import { SummonerV4DTO } from 'twisted/dist/dto'
 import { BasicTftStatsService } from '../basic-stats/basic-tft-stats.service'
+import { Cache } from '../cache/cache.decorator'
+import { CacheEnum } from '../enums/cache.enum'
 
 export enum SummonerServiceInsertMatch {
   LOL,
@@ -28,6 +30,9 @@ export class SummonerService {
     private readonly riot: RiotApiService
   ) {}
 
+  @Cache({
+    expiration: CacheEnum.SUMMONER
+  })
   private async findOnRiot (params: GetSummonerQueryDTO) {
     const {
       region,

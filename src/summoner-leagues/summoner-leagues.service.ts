@@ -8,6 +8,8 @@ import { castArray } from 'lodash'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { Regions } from 'twisted/dist/constants'
 import * as utils from './summoner-leagues.utils'
+import { Cache } from '../cache/cache.decorator'
+import { CacheEnum } from '../enums/cache.enum'
 
 @Injectable()
 export class SummonerLeaguesService {
@@ -32,6 +34,9 @@ export class SummonerLeaguesService {
     return response
   }
 
+  @Cache({
+    expiration: CacheEnum.SUMMONER
+  })
   async findOnRiot (id: string, region: Regions) {
     const {
       response: leagues
