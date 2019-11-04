@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import * as Redis from 'redis'
 import { ConfigService } from '../config/config.service'
-import { CacheEnum } from '../enums/cache.enum'
+import { CacheTimes } from '../enums/cache.enum'
 
 @Injectable()
 export class CacheService {
@@ -54,7 +54,7 @@ export class CacheService {
         key,
         parsedValue,
         command,
-        expiration || CacheEnum.DEFAULT,
+        expiration || CacheTimes.DEFAULT,
         (err) => {
           if (err) reject(err)
           else resolve()

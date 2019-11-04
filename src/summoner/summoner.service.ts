@@ -11,7 +11,7 @@ import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.ser
 import { SummonerV4DTO } from 'twisted/dist/dto'
 import { BasicTftStatsService } from '../basic-stats/basic-tft-stats.service'
 import { Cache } from '../cache/cache.decorator'
-import { CacheEnum } from '../enums/cache.enum'
+import { CacheTimes } from '../enums/cache.enum'
 
 export enum SummonerServiceInsertMatch {
   LOL,
@@ -31,7 +31,7 @@ export class SummonerService {
   ) {}
 
   @Cache({
-    expiration: CacheEnum.SUMMONER
+    expiration: CacheTimes.SUMMONER
   })
   private async findOnRiot (params: GetSummonerQueryDTO) {
     const {

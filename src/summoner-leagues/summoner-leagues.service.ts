@@ -9,7 +9,7 @@ import { RiotApiService } from '../riot-api/riot-api.service'
 import { Regions } from 'twisted/dist/constants'
 import * as utils from './summoner-leagues.utils'
 import { Cache } from '../cache/cache.decorator'
-import { CacheEnum } from '../enums/cache.enum'
+import { CacheTimes } from '../enums/cache.enum'
 
 @Injectable()
 export class SummonerLeaguesService {
@@ -35,7 +35,7 @@ export class SummonerLeaguesService {
   }
 
   @Cache({
-    expiration: CacheEnum.SUMMONER
+    expiration: CacheTimes.SUMMONER
   })
   async findOnRiot (id: string, region: Regions) {
     const {
