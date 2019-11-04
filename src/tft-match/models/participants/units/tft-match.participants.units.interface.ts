@@ -7,4 +7,5 @@ export interface ITftMatchUnitsModel extends IBaseInterface {
   items: IStaticTftItemsModel[]
   character_id: string
   rarity: number
+  name: string
 }
