@@ -25,5 +25,5 @@ export function calculateWinRate (puuid: string, matches: ITFTMatchModel[]) {
     return summoner && isWin(summoner.placement)
   }).length
   const percentage = wins / matches.length * 100
-  return percentage
+  return percentage || 0
 }

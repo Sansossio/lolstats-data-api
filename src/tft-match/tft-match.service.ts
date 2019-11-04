@@ -32,11 +32,11 @@ export class TftMatchService {
   ) {}
 
   // Internal methods
-  private async matchSummoners (puuids: string[], region: Regions): Promise<ISummonerModel[]> {
+  private async matchSummoners (currentPuuid: string, puuids: string[], region: Regions): Promise<ISummonerModel[]> {
     const response: ISummonerModel[] = []
-    const userLoading = true
     const findOnRiot = true
     for (const puuid of puuids) {
+      const userLoading = puuid !== currentPuuid
       const params = {
         summonerName: '',
         summonerPUUID: puuid,
@@ -59,7 +59,7 @@ export class TftMatchService {
     return match
   }
 
-  private async createMatch (match_id: string, region: Regions) {
+  private async createMatch (puuid: string, match_id: string, region: Regions) {
     const parseRegion = regionToTftRegions(region)
     // Not recreate
     const exists = await this.repository.findOne({ match_id, region })
@@ -68,7 +68,7 @@ export class TftMatchService {
     }
     const match = await this.getMatch(match_id, parseRegion)
     // Match users
-    const users = await this.matchSummoners(match.metadata.participants, region)
+    const users = await this.matchSummoners(puuid, match.metadata.participants, region)
     const queue = await this.staticService.getQueues(match.info.queue_id)
     const items = await this.staticService.getTftitems()
     const model = tftMatchUtils.riotToModel(match, region, users, queue, items)
@@ -98,7 +98,7 @@ export class TftMatchService {
     // Get all models
     const models = await Promise.map(
       matchIds,
-      match => this.createMatch(match, params.region),
+      match => this.createMatch(puuid, match, params.region),
       { concurrency: this.concurrency }
     )
     // Response
