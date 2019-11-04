@@ -122,7 +122,7 @@ export function levelAverage (puuid: string, matches: ITFTMatchModel[]) {
 export function lastRoundAverage (puuid: string, matches: ITFTMatchModel[]) {
   let totalLastRound = 0
   for (const match of matches) {
-    const { last_round  } = findSummoner(puuid, match.participants)
+    const { last_round } = findSummoner(puuid, match.participants)
     totalLastRound += last_round || 0
   }
   return totalLastRound / matches.length
