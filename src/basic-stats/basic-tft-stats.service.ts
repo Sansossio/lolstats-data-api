@@ -135,9 +135,18 @@ export class BasicTftStatsService {
     let totalLevel = 0
     for (const match of matches) {
       const { level } = findSummoner(puuid, match.participants)
-      totalLevel += level|| 0
+      totalLevel += level || 0
     }
     return totalLevel / matches.length
+  }
+
+  private averageLastRound (puuid: string, matches: ITFTMatchModel[]) {
+    let totalLastRound = 0
+    for (const match of matches) {
+      const { last_round  } = findSummoner(puuid, match.participants)
+      totalLastRound += last_round || 0
+    }
+    return totalLastRound / matches.length
   }
 
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
@@ -158,7 +167,8 @@ export class BasicTftStatsService {
     return {
       globalAverage: {
         goldLeft: this.averageGoldLeft(puuid, matchHistory),
-        level: this.averageLevel(puuid, matchHistory)
+        level: this.averageLevel(puuid, matchHistory),
+        lastRound: this.averageLastRound(puuid, matchHistory)
       },
       global: {
         winrate: this.globalWinRate(puuid, matchHistory),
