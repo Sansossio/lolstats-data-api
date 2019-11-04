@@ -14,6 +14,7 @@ import * as _ from 'lodash'
 import { ConfigService } from '../config/config.service'
 import { StaticDataService } from '../static-data/static-data.service'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
+import { Cache } from '../cache/cache.decorator'
 
 @Injectable()
 export class TftMatchService {
@@ -71,15 +72,21 @@ export class TftMatchService {
     return instance
   }
 
+  @Cache()
+  private async getMatchListing (puuid: string, region: TftRegions) {
+    const {
+      response: matchIds
+    } = await this.api.list(puuid, region)
+    return matchIds
+  }
+
   // Public methods
   async updateSummoner (params: GetSummonerQueryDTO) {
     const parseRegion = regionToTftRegions(params.region)
     // Summoner details
     const { puuid } = await this.summonerService.get(params)
     // Listing by user
-    const {
-      response: matchIds
-    } = await this.api.list(puuid, parseRegion)
+    const matchIds = this.getMatchListing(puuid, parseRegion)
     // Get all models
     const models = await Promise.map(
       matchIds,

@@ -8,6 +8,7 @@ import { SeederModule } from './seeder/seeder.module'
 import { DatabaseConnection } from './database/database.connection'
 import { StaticDataModule } from './static-data/static-data.module'
 import { BasicStatsModule } from './basic-stats/basic-stats.module'
+import { CacheService } from './cache/cache.service'
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { BasicStatsModule } from './basic-stats/basic-stats.module'
     SeederModule,
     StaticDataModule,
     BasicStatsModule
-  ]
+  ],
+  providers: [CacheService]
 })
 export class AppModule {}

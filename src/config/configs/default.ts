@@ -18,5 +18,10 @@ export default {
   },
   concurrency: {
     tft_matches: 4
+  },
+  redis: {
+    enable: process.env.REDIS_ENABLE,
+    url: process.env.REDIS_URL,
+    defaultExpiration: 10 * 60 // 10 Minutes
   }
 }
