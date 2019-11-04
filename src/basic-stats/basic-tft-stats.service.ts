@@ -113,6 +113,15 @@ export class BasicTftStatsService {
       .slice(0, TftMatchEnum.MOST_UNITS_TOTAL)
   }
 
+  private playersElimited (puuid: string, matches: ITFTMatchModel[]) {
+    let playersEliminated = 0
+    for (const match of matches) {
+      const { players_eliminated } = findSummoner(puuid, match.participants)
+      playersEliminated += players_eliminated || 0
+    }
+    return playersEliminated
+  }
+
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
     return {
       games: matches.length,
@@ -131,8 +140,10 @@ export class BasicTftStatsService {
     const perQueueWinrate = this.winRatePerQueue(puuid, matchHistory)
     const mostTraits = this.mostTraitsUsed(puuid, matchHistory)
     const mostUnits = this.mostUnits(puuid, matchHistory)
+    const playersEliminated = this.playersElimited(puuid, matchHistory)
 
     return {
+      playersEliminated,
       globalWinrate,
       perQueueWinrate,
       mostUnits,
