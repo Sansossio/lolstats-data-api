@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import * as Redis from 'redis'
 import { ConfigService } from '../config/config.service'
+import { CacheEnum } from '../enums/cache.enum'
 
 @Injectable()
 export class CacheService {
   private client?: Redis.RedisClient
   private readonly config = new ConfigService()
-  private readonly defaultExpiration = this.config.getNumber('redis.defaultExpiration')
 
   constructor () {
     const available = this.config.getBoolean('redis.enable')
@@ -14,6 +14,9 @@ export class CacheService {
 
     if (available) {
       this.client = Redis.createClient({ url })
+      this.client.on('error', () => {
+        (this.client as Redis.RedisClient).quit()
+      })
     }
   }
 
@@ -51,7 +54,7 @@ export class CacheService {
         key,
         parsedValue,
         command,
-        expiration || this.defaultExpiration,
+        expiration || CacheEnum.DEFAULT,
         (err) => {
           if (err) reject(err)
           else resolve()

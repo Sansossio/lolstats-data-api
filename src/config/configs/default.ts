@@ -21,7 +21,6 @@ export default {
   },
   redis: {
     enable: process.env.REDIS_ENABLE,
-    url: process.env.REDIS_URL,
-    defaultExpiration: 10 * 60 // 10 Minutes
+    url: process.env.REDIS_URL
   }
 }
