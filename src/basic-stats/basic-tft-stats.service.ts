@@ -122,6 +122,15 @@ export class BasicTftStatsService {
     return playersEliminated
   }
 
+  private averageGoldLeft (puuid: string, matches: ITFTMatchModel[]) {
+    let totalGold = 0
+    for (const match of matches) {
+      const { gold_left } = findSummoner(puuid, match.participants)
+      totalGold += gold_left || 0
+    }
+    return totalGold / matches.length
+  }
+
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
     return {
       games: matches.length,
@@ -141,9 +150,11 @@ export class BasicTftStatsService {
     const mostTraits = this.mostTraitsUsed(puuid, matchHistory)
     const mostUnits = this.mostUnits(puuid, matchHistory)
     const playersEliminated = this.playersElimited(puuid, matchHistory)
+    const averageGoldLeft = this.averageGoldLeft(puuid, matchHistory)
 
     return {
       playersEliminated,
+      averageGoldLeft,
       globalWinrate,
       perQueueWinrate,
       mostUnits,
