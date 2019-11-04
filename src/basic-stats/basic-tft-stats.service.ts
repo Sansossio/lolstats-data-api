@@ -29,8 +29,8 @@ export class BasicTftStatsService {
         winrate: utils.winrate(puuid, matches)
       },
       mostUsed: {
-        traits: utils.mostUnits(puuid, matches),
-        units: utils.mostTraitsUsed(puuid, matches)
+        units: utils.mostUnits(puuid, matches),
+        traits: utils.mostTraitsUsed(puuid, matches)
       }
     }
   }

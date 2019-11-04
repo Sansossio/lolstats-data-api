@@ -2,7 +2,6 @@ import { TftMatchEnum } from '../enums/tft-match.enum'
 import { TftMatchParticipantsModel } from '../tft-match/models/participants/tft-match.participants.interface'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
 import * as _ from 'lodash'
-import { IQueueModel } from '../static-data/models/queue/queue.interface'
 
 // Private
 function isWin (placement?: number) {
