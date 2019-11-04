@@ -6,3 +6,8 @@ export enum CacheTimes {
   TFT_MATCH_LISTING = ms('20m'),
   DEFAULT = ms('1h')
 }
+
+export enum CacheMessages {
+  CONTEXT = 'CacheService',
+  DISCONNECTED = 'Service is disabled'
+}
