@@ -1,6 +1,8 @@
+const ms = require('ms')
+
 export enum CacheTimes {
-  SUMMONER = 2 * 3600, // two hours
-  TFT_MATCH_DETAILS = 10 * 24 * 3600, // 10 days,
-  TFT_MATCH_LISTING = 20 * 60 * 60, // 20 minutes
-  DEFAULT = 3600 // one hour
+  SUMMONER = ms('2h'),
+  TFT_MATCH_DETAILS = ms('10d'),
+  TFT_MATCH_LISTING = ms('20m'),
+  DEFAULT = ms('1h')
 }
