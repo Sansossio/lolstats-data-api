@@ -129,10 +129,7 @@ export function lastRoundAverage (puuid: string, matches: ITFTMatchModel[]) {
 }
 
 export function winrate (puuid: string, matches: ITFTMatchModel[]) {
-  return {
-    games: matches.length,
-    winrate: calculateWinRate(puuid, matches)
-  }
+  return calculateWinRate(puuid, matches)
 }
 
 export function findSummoner (puuid: string, participants: Partial<TftMatchParticipantsModel>[]) {

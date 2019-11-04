@@ -19,6 +19,7 @@ export class BasicTftStatsService {
 
   private objectResponse (puuid: string, matches: ITFTMatchModel[]) {
     return {
+      games: matches.length,
       averages: {
         goldLeft: utils.goldLeftAverage(puuid, matches),
         level: utils.levelAverage(puuid, matches),
@@ -45,7 +46,7 @@ export class BasicTftStatsService {
 
     const queues = utils.getQueues(matchHistory)
     const response = {}
-    
+
     for (const queue of queues) {
       let data = {}
       let key = queue
