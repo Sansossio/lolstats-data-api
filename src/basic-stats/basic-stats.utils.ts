@@ -13,31 +13,16 @@ function isWin (placement?: number) {
 }
 
 // Public
-export function winRatePerQueue (puuid: string, matches: ITFTMatchModel[]) {
-  const queues = matches.reduce<{ queueId: number, queue: Partial<IQueueModel>}[]>((prev, curr) => {
-    const {
-      queue
-    } = curr
-    const { queueId = 0 } = queue
-    if (!prev.find(p => p.queueId === queueId)) {
-      prev.push({
-        queueId,
-        queue
-      })
+export function getQueues (matches: ITFTMatchModel[]) {
+  return matches.reduce<string[]>((prev, curr) => {
+    const name = String(curr.queue.queueId || 0)
+    const exists = !!prev.find(cName => cName === name)
+    if (exists) {
+      return prev
     }
+    prev.push(name)
     return prev
-  }, [])
-  const perQueue = queues.map((queue) => {
-    const filterMatches = matches.filter(m => m.queue.queueId === queue.queueId)
-    const winrate = calculateWinRate(puuid, filterMatches)
-    return {
-      queue: queue.queue.description,
-      queueId: queue.queueId,
-      games: filterMatches.length,
-      winrate
-    }
-  })
-  return perQueue
+  }, [TftMatchEnum.STATS_GLOBAL as string])
 }
 
 export function mostTraitsUsed (puuid: string, matches: ITFTMatchModel[]) {
