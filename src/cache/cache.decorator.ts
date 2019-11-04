@@ -19,11 +19,13 @@ export function Cache (params: ICacheParams = {}) {
     propertyName: string,
     propertyDesciptor: PropertyDescriptor): PropertyDescriptor {
     const method = propertyDesciptor.value
+    const className = target.constructor.name
     propertyDesciptor.value = async function (...args: any[]) {
       // Create unique key
       const key =
         [
           version,
+          className,
           propertyName,
           ...args.map(a => JSON.stringify(a))
         ].join()
