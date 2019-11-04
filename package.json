@@ -1,6 +1,6 @@
 {
   "name": "lolstats-riot-api",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "license": "MIT",
@@ -40,7 +40,7 @@
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
     "swagger-ui-express": "^4.1.2",
-    "twisted": "^1.1.1"
+    "twisted": "^1.1.2"
   },
   "devDependencies": {
     "@nestjs/testing": "^6.0.0",

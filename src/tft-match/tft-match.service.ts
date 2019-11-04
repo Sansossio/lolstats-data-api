@@ -48,6 +48,14 @@ export class TftMatchService {
     return response
   }
 
+  @Cache()
+  private async getMatch (match_id: string, region: TftRegions) {
+    const {
+      response: match
+    } = await this.api.get(match_id, region)
+    return match
+  }
+
   private async createMatch (match_id: string, region: Regions) {
     const parseRegion = regionToTftRegions(region)
     // Not recreate
@@ -55,9 +63,7 @@ export class TftMatchService {
     if (exists) {
       return exists
     }
-    const {
-      response: match
-    } = await this.api.get(match_id, parseRegion)
+    const match = await this.getMatch(match_id, parseRegion)
     // Match users
     const users = await this.matchSummoners(match.metadata.participants, region)
     const queue = await this.staticService.getQueues(match.info.queue_id)

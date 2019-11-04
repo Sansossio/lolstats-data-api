@@ -41,7 +41,7 @@ function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: 
       level,
       last_round,
       time_eliminated,
-      players_eliminated,
+      players_eliminated = 0,
       puuid,
       total_damage_to_players,
       gold_left,
