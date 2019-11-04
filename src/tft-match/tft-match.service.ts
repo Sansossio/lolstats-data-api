@@ -15,7 +15,7 @@ import { ConfigService } from '../config/config.service'
 import { StaticDataService } from '../static-data/static-data.service'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { Cache } from '../cache/cache.decorator'
-import { CacheEnum } from '../enums/cache.enum'
+import { CacheTimes } from '../enums/cache.enum'
 
 @Injectable()
 export class TftMatchService {
@@ -50,7 +50,7 @@ export class TftMatchService {
   }
 
   @Cache({
-    expiration: CacheEnum.TFT_MATCH
+    expiration: CacheTimes.TFT_MATCH_DETAILS
   })
   private async getMatch (match_id: string, region: TftRegions) {
     const {
@@ -81,6 +81,9 @@ export class TftMatchService {
     return instance
   }
 
+  @Cache({
+    expiration: CacheTimes.TFT_MATCH_LISTING
+  })
   private async getMatchListing (puuid: string, region: TftRegions) {
     const {
       response: matchIds
@@ -94,7 +97,7 @@ export class TftMatchService {
     // Summoner details
     const { puuid } = await this.summonerService.get(params)
     // Listing by user
-    const matchIds = this.getMatchListing(puuid, parseRegion)
+    const matchIds = await this.getMatchListing(puuid, parseRegion)
     // Get all models
     const models = await Promise.map(
       matchIds,
