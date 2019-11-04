@@ -131,6 +131,15 @@ export class BasicTftStatsService {
     return totalGold / matches.length
   }
 
+  private averageLevel (puuid: string, matches: ITFTMatchModel[]) {
+    let totalLevel = 0
+    for (const match of matches) {
+      const { level } = findSummoner(puuid, match.participants)
+      totalLevel += level|| 0
+    }
+    return totalLevel / matches.length
+  }
+
   private globalWinRate (puuid: string, matches: ITFTMatchModel[]) {
     return {
       games: matches.length,
@@ -145,20 +154,23 @@ export class BasicTftStatsService {
     if (!Array.isArray(matchHistory)) {
       return
     }
-    const globalWinrate = this.globalWinRate(puuid, matchHistory)
-    const perQueueWinrate = this.winRatePerQueue(puuid, matchHistory)
-    const mostTraits = this.mostTraitsUsed(puuid, matchHistory)
-    const mostUnits = this.mostUnits(puuid, matchHistory)
-    const playersEliminated = this.playersElimited(puuid, matchHistory)
-    const averageGoldLeft = this.averageGoldLeft(puuid, matchHistory)
 
     return {
-      playersEliminated,
-      averageGoldLeft,
-      globalWinrate,
-      perQueueWinrate,
-      mostUnits,
-      mostTraits
+      globalAverage: {
+        goldLeft: this.averageGoldLeft(puuid, matchHistory),
+        level: this.averageLevel(puuid, matchHistory)
+      },
+      global: {
+        winrate: this.globalWinRate(puuid, matchHistory),
+        playersEliminated: this.playersElimited(puuid, matchHistory)
+      },
+      perQueue: {
+        winrate: this.winRatePerQueue(puuid, matchHistory)
+      },
+      mostUsed: {
+        traits: this.mostUnits(puuid, matchHistory),
+        units: this.mostTraitsUsed(puuid, matchHistory)
+      }
     }
   }
 }
