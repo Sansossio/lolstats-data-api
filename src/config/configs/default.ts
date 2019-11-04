@@ -5,8 +5,13 @@ config()
 export default {
   riot: {
     apiKey: process.env.RIOT_API_KEY,
-    rateLimitRetry: process.env.RATE_LIMIT_RETRY,
-    rateLimitCount: process.env.RATE_LIMIT_COUNT
+    rateLimitRetry: process.env.RIOT_RATE_LIMIT_RETRY,
+    rateLimitCount: process.env.RIOT_RATE_LIMIT_COUNT,
+    concurrency: process.env.RIOT_CONCURRENCY,
+    debug: {
+      url: process.env.RIOT_DEBUG_URL,
+      rateLimits: process.env.RIOT_DEBUG_RATELIMITS
+    }
   },
   database: {
     host: process.env.DATABASE_HOST,
