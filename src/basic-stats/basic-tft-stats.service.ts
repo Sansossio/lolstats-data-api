@@ -171,8 +171,8 @@ export class BasicTftStatsService {
         lastRound: this.averageLastRound(puuid, matchHistory)
       },
       global: {
-        winrate: this.globalWinRate(puuid, matchHistory),
-        playersEliminated: this.playersElimited(puuid, matchHistory)
+        playersEliminated: this.playersElimited(puuid, matchHistory),
+        winrate: this.globalWinRate(puuid, matchHistory)
       },
       perQueue: {
         winrate: this.winRatePerQueue(puuid, matchHistory)
