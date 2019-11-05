@@ -148,7 +148,7 @@ describe('Tft algorithms', () => {
     it('should return only global queue', () => {
       const matches = []
       const queues = getQueues(matches)
-      expect(queues).toEqual([TftMatchEnum.STATS_GLOBAL])
+      expect(queues).toEqual([TftMatchEnum.STATS_TOTAL])
     })
 
     it('should return list of queues', () => {
@@ -165,7 +165,7 @@ describe('Tft algorithms', () => {
         }
       ]
       const queues = getQueues(matches)
-      expect(queues).toEqual([TftMatchEnum.STATS_GLOBAL, '0', '1'])
+      expect(queues).toEqual([TftMatchEnum.STATS_TOTAL, '0', '1'])
     })
 
     it('should return list of queues when someone of them hasn\'t queue field', () => {
@@ -180,7 +180,7 @@ describe('Tft algorithms', () => {
         }
       ]
       const queues = getQueues(matches)
-      expect(queues).toEqual([TftMatchEnum.STATS_GLOBAL, '0'])
+      expect(queues).toEqual([TftMatchEnum.STATS_TOTAL, '0'])
     })
   })
 

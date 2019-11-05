@@ -26,7 +26,7 @@ export class BasicTftStatsService {
       let data = {}
       let key = queue
       // All queues
-      if (queue === TftMatchEnum.STATS_GLOBAL) {
+      if (queue === TftMatchEnum.STATS_TOTAL) {
         data = utils.objectResponse(puuid, matches)
       } else {
         // Filter by queueId

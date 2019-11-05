@@ -10,5 +10,5 @@ export function getQueues (matches: Partial<ITFTMatchModel>[]) {
     }
     prev.push(name)
     return prev
-  }, [TftMatchEnum.STATS_GLOBAL as string])
+  }, [TftMatchEnum.STATS_TOTAL as string])
 }

@@ -4,5 +4,5 @@ export enum TftMatchEnum {
   PLACEMENT_WIN = 4,
   MOST_TRAITS_TOTAL = 4,
   MOST_UNITS_TOTAL = 10,
-  STATS_GLOBAL = 'global'
+  STATS_TOTAL = 'total'
 }
