@@ -22,9 +22,9 @@ export class StaticDataService {
   ) {}
 
   // Controller methods
-  async getQueues (id: string | number): Promise<IQueueModel>
-  async getQueues (): Promise<IQueueModel[]>
-  async getQueues (id?: string | number) {
+  async getQueue (id: string | number): Promise<IQueueModel>
+  async getQueue (): Promise<IQueueModel[]>
+  async getQueue (id?: string | number) {
     if (id) {
       const instance = await this.queuesRepository.findOne({ queueId: id })
       if (!instance) {

@@ -20,7 +20,7 @@ export class StaticDataController {
     title: 'Get queues listing'
   })
   async getQueues (@Query() { id }: QueryStaticData) {
-    return this.service.getQueues(id)
+    return this.service.getQueue(id)
   }
 
   @Get('seasons')
