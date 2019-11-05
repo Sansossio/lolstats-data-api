@@ -8,9 +8,7 @@ export function getQueues (matches: Partial<ITFTMatchModel>[]) {
     if (exists) {
       return prev
     }
-    if (name) {
-      prev.push(name)
-    }
+    prev.push(name)
     return prev
   }, [TftMatchEnum.STATS_GLOBAL as string])
 }
