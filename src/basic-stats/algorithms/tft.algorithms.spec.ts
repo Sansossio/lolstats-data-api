@@ -6,7 +6,8 @@ import {
   playersElimited,
   keyAverage,
   mostUsedTraits,
-  mostUsedUnits
+  mostUsedUnits,
+  getTraits
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
 
@@ -64,7 +65,7 @@ describe('Tft algorithms', () => {
           }
         },
         {
-          summoner : {
+          summoner: {
             puuid: '12'
           }
         }
@@ -201,6 +202,91 @@ describe('Tft algorithms', () => {
     })
   })
 
+  describe('GetTraits', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        getTraits(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should return an empty array', () => {
+      const matches = []
+      const queues = getTraits(puuid, matches)
+      expect(queues).toEqual([])
+    })
+
+    it('should return list of traits', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              traits: [
+                {
+                  name: 'Demon',
+                  tier_current: 1
+                }
+              ],
+              summoner: {
+                puuid,
+              }
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: {
+                puuid
+              }
+            }
+          ]
+        }
+      ]
+      const queues = getTraits(puuid, matches)
+      expect(queues).toEqual(['Demon'])
+    })
+
+    it('should return list of traits (multiple)', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              traits: [
+                {
+                  name: 'Demon',
+                  tier_current: 1
+                },
+                {}
+              ],
+              summoner: {
+                puuid,
+              }
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: {
+                puuid
+              }
+            }
+          ]
+        }
+      ]
+      const queues = getTraits(puuid, matches)
+      expect(queues).toEqual(['Demon'])
+    })
+  })
+
   describe('PlayersElimited', () => {
     it('should return error when participants doesn\'t exists', done => {
       const matches = [
@@ -263,7 +349,7 @@ describe('Tft algorithms', () => {
         }
       ]
       const players = playersElimited(puuid, matches)
-      expect(players).toEqual(1)
+      expect(players).toEqual(0)
     })
 
     it('should return 20 elimited players (multiple matches)', () => {

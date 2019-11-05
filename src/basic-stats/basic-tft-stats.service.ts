@@ -40,6 +40,17 @@ export class BasicTftStatsService {
     return response
   }
 
+  private byTraits (puuid: string, matches: ITFTMatchModel[]) {
+    const traits = algorithms.getTraits(puuid, matches)
+    const response = {}
+    for (const trait of traits) {
+      const matchFilter = utils.filterByTrait(trait, puuid, matches)
+      const data = this.byQueue(puuid, matchFilter)
+      _.set(response, trait, data)
+    }
+    return response
+  }
+
   async updateSummoner ({ _id, puuid }: ISummonerModel) {
     const matchHistory = await this.tftRepository.find({
       participantsIds: _id
@@ -49,6 +60,7 @@ export class BasicTftStatsService {
     }
 
     return {
+      byTraits: this.byTraits(puuid, matchHistory),
       byQueues: this.byQueue(puuid, matchHistory)
     }
   }
