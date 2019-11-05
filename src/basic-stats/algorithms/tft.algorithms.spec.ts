@@ -3,11 +3,12 @@ import {
   findSummoner,
   winrate,
   getQueues,
-  playersElimited,
+  playersEliminated,
   keyAverage,
   mostUsedTraits,
   mostUsedUnits,
-  getTraits
+  getTraits,
+  percentagePerPlacement
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
 
@@ -31,6 +32,80 @@ describe('Tft algorithms', () => {
 
     it(`should return false when param is greater than ${minWin}`, () => {
       expect(isWin(5)).toEqual(false)
+    })
+  })
+
+  describe('Percentage per placement', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        percentagePerPlacement(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should response unique placement 100%', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            placement: 1
+          }
+        ]
+      }
+      const [result] = percentagePerPlacement(puuid, [match])
+      expect(result).toEqual({ placement: 1, percentage: 100, total: 1 })
+    })
+
+    it('should response placements (2/3)%', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              placement: 1
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              placement: 1
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              placement: 3
+            }
+          ]
+        }
+      ]
+      const [result] = percentagePerPlacement(puuid, matches)
+      expect(result).toEqual({ placement: 1, percentage: 2 / 3 * 100, total: 1 })
+    })
+
+    it('should response empty placements when placement is undefined', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid }
+            }
+          ]
+        }
+      ]
+      const result = percentagePerPlacement(puuid, matches)
+      expect(result).toEqual([])
     })
   })
 
@@ -235,7 +310,7 @@ describe('Tft algorithms', () => {
                 }
               ],
               summoner: {
-                puuid,
+                puuid
               }
             }
           ]
@@ -267,7 +342,7 @@ describe('Tft algorithms', () => {
                 {}
               ],
               summoner: {
-                puuid,
+                puuid
               }
             }
           ]
@@ -287,14 +362,14 @@ describe('Tft algorithms', () => {
     })
   })
 
-  describe('PlayersElimited', () => {
+  describe('PlayersEliminated', () => {
     it('should return error when participants doesn\'t exists', done => {
       const matches = [
         {
         }
       ]
       try {
-        playersElimited(puuid, matches)
+        playersEliminated(puuid, matches)
         done(new Error())
       } catch (e) {
         expect(e).toBeInstanceOf(Error)
@@ -302,13 +377,13 @@ describe('Tft algorithms', () => {
       }
     })
 
-    it('should return zero elimited players', () => {
+    it('should return zero Eliminated players', () => {
       const matches = []
-      const players = playersElimited(puuid, matches)
+      const players = playersEliminated(puuid, matches)
       expect(players).toEqual(0)
     })
 
-    it('should return 1 elimited players', () => {
+    it('should return 1 Eliminated players', () => {
       const matches = [
         {
           participants: [
@@ -327,7 +402,7 @@ describe('Tft algorithms', () => {
           ]
         }
       ]
-      const players = playersElimited(puuid, matches)
+      const players = playersEliminated(puuid, matches)
       expect(players).toEqual(1)
     })
 
@@ -348,11 +423,11 @@ describe('Tft algorithms', () => {
           ]
         }
       ]
-      const players = playersElimited(puuid, matches)
+      const players = playersEliminated(puuid, matches)
       expect(players).toEqual(0)
     })
 
-    it('should return 20 elimited players (multiple matches)', () => {
+    it('should return 20 Eliminated players (multiple matches)', () => {
       const match = {
         participants: [
           {
@@ -370,11 +445,11 @@ describe('Tft algorithms', () => {
         ]
       }
       const matches = [match, match]
-      const players = playersElimited(puuid, matches)
+      const players = playersEliminated(puuid, matches)
       expect(players).toEqual(20)
     })
 
-    it('should return error when elimited players is lower than 0', done => {
+    it('should return error when Eliminated players is lower than 0', done => {
       const matches = [
         {
           participants: [
@@ -394,7 +469,7 @@ describe('Tft algorithms', () => {
         }
       ]
       try {
-        playersElimited(puuid, matches)
+        playersEliminated(puuid, matches)
         done(new Error())
       } catch (e) {
         expect(e).toBeInstanceOf(Error)

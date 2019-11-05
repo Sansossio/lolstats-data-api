@@ -18,9 +18,10 @@ export function objectResponse (puuid: string, matches: ITFTMatchModel[]) {
       lastRound: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LAST_ROUND)
     },
     global: {
-      playersEliminated: algorithms.playersElimited(puuid, matches),
+      playersEliminated: algorithms.playersEliminated(puuid, matches),
       winrate: algorithms.winrate(puuid, matches)
     },
+    placements: algorithms.percentagePerPlacement(puuid, matches),
     mostUsed: {
       units: algorithms.mostUsedUnits(puuid, matches),
       traits: algorithms.mostUsedTraits(puuid, matches)
