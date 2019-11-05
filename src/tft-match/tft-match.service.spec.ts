@@ -12,9 +12,9 @@ import { Regions } from 'twisted/dist/constants'
 
 describe('TftMatchService', () => {
   let service: any & TftMatchService
-
+  let module: TestingModule
   beforeAll(async () => {
-    const module: TestingModule = await Test.createTestingModule({
+    module = await Test.createTestingModule({
       imports: [
         ConfigModule
       ],
@@ -30,6 +30,11 @@ describe('TftMatchService', () => {
     }).compile()
     service = module.get<TftMatchService>(TftMatchService)
   })
+
+  afterAll(async () => {
+    await module.close()
+  })
+
   it('should be defined', () => {
     expect(service).toBeDefined()
   })
