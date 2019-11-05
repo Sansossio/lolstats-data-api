@@ -51,13 +51,11 @@ export class CacheService {
     }
     const client = this.client as Redis.RedisClient
     const parsedValue = JSON.stringify(value)
-    const command = 'EX' // Expiration
     return new Promise<void>((resolve, reject) => {
-      client.set(
+      client.setex(
         key,
-        parsedValue,
-        command,
         expiration || CacheTimes.DEFAULT,
+        parsedValue,
         (err) => {
           if (err) reject(err)
           else resolve()

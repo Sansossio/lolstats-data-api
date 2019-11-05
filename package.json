@@ -1,6 +1,6 @@
 {
   "name": "lolstats-riot-api",
-  "version": "0.0.2",
+  "version": "0.0.4",
   "description": "Lolstats base api",
   "author": "Julio Sansossio",
   "license": "MIT",

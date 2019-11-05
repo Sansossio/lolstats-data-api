@@ -1,10 +1,18 @@
 const ms = require('ms')
 
+/**
+ * String to seconds
+ * @param val String to convert
+ */
+function convert (val: string) {
+  return ms(val) / 1000
+}
+
 export enum CacheTimes {
-  SUMMONER = ms('2h'),
-  TFT_MATCH_DETAILS = ms('10d'),
-  TFT_MATCH_LISTING = ms('20m'),
-  DEFAULT = ms('1h')
+  SUMMONER = convert('2h'),
+  TFT_MATCH_DETAILS = convert('10d'),
+  TFT_MATCH_LISTING = convert('20m'),
+  DEFAULT = convert('1h')
 }
 
 export enum CacheMessages {
