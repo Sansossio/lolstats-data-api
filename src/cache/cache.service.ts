@@ -1,7 +1,8 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import * as Redis from 'redis'
 import { ConfigService } from '../config/config.service'
-import { CacheTimes, CacheMessages } from '../enums/cache.enum'
+import { CacheTimes } from '../enums/cache.enum'
+import * as utils from './cache.utils'
 
 @Injectable()
 export class CacheService {
@@ -16,11 +17,10 @@ export class CacheService {
       this.client = Redis.createClient({ url })
       this.client.on('error', () => {
         (this.client as Redis.RedisClient).quit()
-        Logger.warn(
-          CacheMessages.DISCONNECTED,
-          CacheMessages.CONTEXT
-        )
+        utils.serviceDisabled()
       })
+    } else {
+      utils.serviceDisabled()
     }
   }
 
@@ -28,7 +28,6 @@ export class CacheService {
     return this.client && this.client.connected
   }
 
-  // Public
   async get<T> (key: string) {
     if (!this.redisIsAvailable()) {
       return
