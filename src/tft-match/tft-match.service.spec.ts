@@ -112,6 +112,15 @@ describe('TftMatchService', () => {
         expect(response).toEqual(newMatch)
         restore()
       })
+
+      it('should return a valid match listing', async () => {
+        const list = [0, 1, 2]
+        stub(service.api, 'list')
+          .callsFake(() => Promise.resolve({ response: list }))
+
+        const response = await service.getMatchListing()
+        expect(response).toEqual(list)
+      })
     })
   })
 
