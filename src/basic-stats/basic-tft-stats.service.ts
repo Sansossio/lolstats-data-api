@@ -60,6 +60,7 @@ export class BasicTftStatsService {
     }
 
     return {
+      matches: matchHistory.length,
       byTraits: this.byTraits(puuid, matchHistory),
       byQueues: this.byQueue(puuid, matchHistory)
     }
