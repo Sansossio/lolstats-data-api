@@ -7,6 +7,7 @@ import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
 import * as utils from './basic-stats.utils'
 import { TftMatchEnum } from '../enums/tft-match.enum'
 import * as _ from 'lodash'
+import * as algorithms from './algorithms/tft'
 
 @Injectable()
 export class BasicTftStatsService {
@@ -17,25 +18,6 @@ export class BasicTftStatsService {
     @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>
   ) {}
 
-  private objectResponse (puuid: string, matches: ITFTMatchModel[]) {
-    return {
-      games: matches.length,
-      averages: {
-        goldLeft: utils.goldLeftAverage(puuid, matches),
-        level: utils.levelAverage(puuid, matches),
-        lastRound: utils.lastRoundAverage(puuid, matches)
-      },
-      global: {
-        playersEliminated: utils.playersElimited(puuid, matches),
-        winrate: utils.winrate(puuid, matches)
-      },
-      mostUsed: {
-        units: utils.mostUnits(puuid, matches),
-        traits: utils.mostTraitsUsed(puuid, matches)
-      }
-    }
-  }
-
   async updateSummoner ({ _id, puuid }: ISummonerModel) {
     const matchHistory = await this.tftRepository.find({
       participantsIds: _id
@@ -44,7 +26,7 @@ export class BasicTftStatsService {
       return
     }
 
-    const queues = utils.getQueues(matchHistory)
+    const queues = algorithms.getQueues(matchHistory)
     const response = {}
 
     for (const queue of queues) {
@@ -52,11 +34,11 @@ export class BasicTftStatsService {
       let key = queue
       // All queues
       if (queue === TftMatchEnum.STATS_GLOBAL) {
-        data = this.objectResponse(puuid, matchHistory)
+        data = utils.objectResponse(puuid, matchHistory)
       } else {
         // Filter by queueId
         const matchesFiltered = matchHistory.filter(match => match.queue.queueId === +queue)
-        data = this.objectResponse(puuid, matchesFiltered)
+        data = utils.objectResponse(puuid, matchesFiltered)
       }
 
       _.set(response, key, data)
