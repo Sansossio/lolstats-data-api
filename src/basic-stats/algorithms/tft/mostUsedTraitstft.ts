@@ -3,7 +3,7 @@ import { orderBy } from 'lodash'
 import { TftMatchEnum } from '../../../enums/tft-match.enum'
 import { findSummoner } from '.'
 
-export function mostUsedTraits (puuid: string, matches: ITFTMatchModel[]) {
+export function mostUsedTraits (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   let response: {
     name: string,
     num_units: number,
@@ -11,7 +11,7 @@ export function mostUsedTraits (puuid: string, matches: ITFTMatchModel[]) {
   }[] = []
   for (const match of matches) {
     // Find traits
-    const { traits } = findSummoner(puuid, match.participants)
+    const { traits } = findSummoner(puuid, match.participants || [])
     if (!traits) {
       throw new Error('Invalid model (participant traits)')
     }

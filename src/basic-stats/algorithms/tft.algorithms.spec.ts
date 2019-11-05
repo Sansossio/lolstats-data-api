@@ -1,9 +1,18 @@
 import {
-  isWin, findSummoner, winrate, getQueues, playersElimited, keyAverage
+  isWin,
+  findSummoner,
+  winrate,
+  getQueues,
+  playersElimited,
+  keyAverage,
+  mostUsedTraits,
+  mostUsedUnits
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
 
 describe('Tft algorithms', () => {
+  const puuid = '123'
+
   describe('IsWin', () => {
     const minWin = TftMatchEnum.PLACEMENT_WIN
 
@@ -26,7 +35,6 @@ describe('Tft algorithms', () => {
 
   describe('FindSummoner', () => {
     it('should return error when summoner doesn\'t exists', done => {
-      const puuid = '123'
       const participants = []
       try {
         findSummoner(puuid, participants)
@@ -38,7 +46,6 @@ describe('Tft algorithms', () => {
     })
 
     it('should return error when summoner doesn\'t has a puuid', done => {
-      const puuid = '123'
       const participants = [{ summoner: {} }]
       try {
         findSummoner(puuid, participants)
@@ -50,7 +57,6 @@ describe('Tft algorithms', () => {
     })
 
     it('should return the user filtered', () => {
-      const puuid = '123'
       const participants = [
         {
           summoner: {
@@ -69,8 +75,21 @@ describe('Tft algorithms', () => {
   })
 
   describe('Winrate', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        winrate(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
     it('should return 100% winrate percent', () => {
-      const puuid = '123'
       const matches = [
         {
           participants: [
@@ -88,7 +107,6 @@ describe('Tft algorithms', () => {
     })
 
     it('should return 0% winrate percent', () => {
-      const puuid = '123'
       const matches = [
         {
           participants: [
@@ -106,7 +124,6 @@ describe('Tft algorithms', () => {
     })
 
     it('should return 33.33% winrate percent', () => {
-      const puuid = '123'
       const matches = [
         {
           participants: [
@@ -185,15 +202,27 @@ describe('Tft algorithms', () => {
   })
 
   describe('PlayersElimited', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        playersElimited(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
     it('should return zero elimited players', () => {
-      const puuid = '213'
       const matches = []
       const players = playersElimited(puuid, matches)
       expect(players).toEqual(0)
     })
 
     it('should return 1 elimited players', () => {
-      const puuid = '213'
       const matches = [
         {
           participants: [
@@ -216,8 +245,28 @@ describe('Tft algorithms', () => {
       expect(players).toEqual(1)
     })
 
+    it('should return 0 when key doesn\'t exists', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: {
+                puuid
+              }
+            },
+            {
+              summoner: {
+                puuid: '123'
+              }
+            }
+          ]
+        }
+      ]
+      const players = playersElimited(puuid, matches)
+      expect(players).toEqual(1)
+    })
+
     it('should return 20 elimited players (multiple matches)', () => {
-      const puuid = '213'
       const match = {
         participants: [
           {
@@ -240,7 +289,6 @@ describe('Tft algorithms', () => {
     })
 
     it('should return error when elimited players is lower than 0', done => {
-      const puuid = '213'
       const matches = [
         {
           participants: [
@@ -270,8 +318,19 @@ describe('Tft algorithms', () => {
   })
 
   describe('Key average', () => {
+    it('should return error when participants is undefined', done => {
+      const match = {
+        participants: undefined
+      }
+      try {
+        keyAverage(puuid, [match], 'gold_left')
+        done(new Error())
+      } catch (e) {
+        done()
+      }
+    })
+
     it('should return a valid sum of key', () => {
-      const puuid = '123'
       const match = {
         participants: [
           {
@@ -289,6 +348,274 @@ describe('Tft algorithms', () => {
       const result = keyAverage(puuid, matches, 'gold_left')
       const sumExpected = 4
       expect(result).toEqual(sumExpected / matches.length)
+    })
+
+    it('should return 0 when the key doesn\'t exists', () => {
+      const match = {
+        participants: [
+          {
+            gold_left: 1
+          },
+          {
+            gold_left: 2,
+            summoner: {
+              puuid
+            }
+          }
+        ]
+      }
+      const matches = [match, match]
+      const result = keyAverage(puuid, matches, 'gold_lefts')
+      const sumExpected = 0
+      expect(result).toEqual(0)
+    })
+  })
+
+  describe('Most used traits', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        mostUsedTraits(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should return error when traits key doesn\'t exists', done => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid }
+            }
+          ]
+        }
+      ]
+      try {
+        mostUsedTraits(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should return an empty array when matches.length is zero', () => {
+      const matches = []
+      const result = mostUsedTraits(puuid, matches)
+      expect(result).toEqual([])
+    })
+
+    it('should return a simple traits most used array (empty name and num_units)', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            traits: [
+              {
+              }
+            ]
+          }
+        ]
+      }
+      const matches = [match, match]
+      const result = mostUsedTraits(puuid, matches)
+      const totalTraits = result.reduce<number>((prev, curr) => {
+        prev += curr.num_units
+        return prev
+      }, 0)
+      expect(totalTraits).toEqual(0)
+    })
+
+    it('should return a simple traits most used array', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            traits: [
+              {
+                name: 'Pirate',
+                num_units: 1
+              }
+            ]
+          }
+        ]
+      }
+      const matches = [match, match]
+      const result = mostUsedTraits(puuid, matches)
+      const totalPirates = result.reduce<number>((prev, curr) => {
+        prev += curr.num_units
+        return prev
+      }, 0)
+      expect(totalPirates).toEqual(2)
+    })
+
+    it('should return a ordered traits array', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              traits: [
+                {
+                  name: 'Pirate',
+                  num_units: 1
+                }
+              ]
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              traits: [
+                {
+                  name: 'Pirate',
+                  num_units: 1
+                },
+                {
+                  name: 'Sorcerrer',
+                  num_units: 1
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      const result = mostUsedTraits(puuid, matches)
+      const expected = [
+        {
+          name: 'Pirate',
+          num_units: 2,
+          games: 2
+        },
+        {
+          name: 'Sorcerrer',
+          num_units: 1,
+          games: 1
+        }
+      ]
+      expect(result).toEqual(expected)
+    })
+  })
+
+  describe('Most used units', () => {
+    it('should return error when participants doesn\'t exists', done => {
+      const matches = [
+        {
+        }
+      ]
+      try {
+        mostUsedUnits(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should return error when units key doesn\'t exists', done => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid }
+            }
+          ]
+        }
+      ]
+      try {
+        mostUsedUnits(puuid, matches)
+        done(new Error())
+      } catch (e) {
+        expect(e).toBeInstanceOf(Error)
+        done()
+      }
+    })
+
+    it('should return an empty array when matches.length is zero', () => {
+      const matches = []
+      const result = mostUsedUnits(puuid, matches)
+      expect(result).toEqual([])
+    })
+
+    it('should return a simple units most used array', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            units: [
+              {
+                name: 'Twisted',
+                character_id: '1',
+                num_units: 1
+              }
+            ]
+          }
+        ]
+      }
+      const matches = [match, match]
+      const result = mostUsedUnits(puuid, matches)
+      const totalTwisted = result.reduce<number>((prev, curr) => {
+        prev += curr.games
+        return prev
+      }, 0)
+      expect(totalTwisted).toEqual(2)
+    })
+
+    it('should return a ordered units array', () => {
+      const matches = [
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              units: [
+                {
+                  name: 'Twisted',
+                  character_id: '1'
+                }
+              ]
+            }
+          ]
+        },
+        {
+          participants: [
+            {
+              summoner: { puuid },
+              units: [
+                {
+                  name: 'Twisted',
+                  character_id: '1'
+                },
+                {
+                  name: 'Aurelion',
+                  character_id: '2'
+                }
+              ]
+            }
+          ]
+        }
+      ]
+      const result = mostUsedUnits(puuid, matches)
+      const expected = [
+        {
+          name: 'Twisted',
+          character_id: '1',
+          games: 2
+        },
+        {
+          name: 'Aurelion',
+          character_id: '2',
+          games: 1
+        }
+      ]
+      expect(result).toEqual(expected)
     })
   })
 })
