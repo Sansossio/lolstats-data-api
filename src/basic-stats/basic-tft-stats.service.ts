@@ -18,6 +18,28 @@ export class BasicTftStatsService {
     @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>
   ) {}
 
+  private byQueue (puuid: string, matches: ITFTMatchModel[]) {
+    const queues = algorithms.getQueues(matches)
+    const response = {}
+
+    for (const queue of queues) {
+      let data = {}
+      let key = queue
+      // All queues
+      if (queue === TftMatchEnum.STATS_GLOBAL) {
+        data = utils.objectResponse(puuid, matches)
+      } else {
+        // Filter by queueId
+        const matchesFiltered = matches.filter(match => match.queue.queueId === +queue)
+        data = utils.objectResponse(puuid, matchesFiltered)
+      }
+
+      _.set(response, key, data)
+    }
+
+    return response
+  }
+
   async updateSummoner ({ _id, puuid }: ISummonerModel) {
     const matchHistory = await this.tftRepository.find({
       participantsIds: _id
@@ -26,24 +48,8 @@ export class BasicTftStatsService {
       return
     }
 
-    const queues = algorithms.getQueues(matchHistory)
-    const response = {}
-
-    for (const queue of queues) {
-      let data = {}
-      let key = queue
-      // All queues
-      if (queue === TftMatchEnum.STATS_GLOBAL) {
-        data = utils.objectResponse(puuid, matchHistory)
-      } else {
-        // Filter by queueId
-        const matchesFiltered = matchHistory.filter(match => match.queue.queueId === +queue)
-        data = utils.objectResponse(puuid, matchesFiltered)
-      }
-
-      _.set(response, key, data)
+    return {
+      byQueues: this.byQueue(puuid, matchHistory)
     }
-
-    return response
   }
 }
