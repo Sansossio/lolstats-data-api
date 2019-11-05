@@ -14,35 +14,35 @@
       "name": "Current TS File",
       "type": "node",
       "request": "launch",
-      "args": [
-        "${relativeFile}"
-      ],
-      "runtimeArgs": [
-        "--nolazy",
-        "-r",
-        "ts-node/register"
-      ],
+      "args": ["${relativeFile}"],
+      "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
       "sourceMaps": true,
       "cwd": "${workspaceRoot}",
-      "protocol": "inspector",
+      "protocol": "inspector"
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Jest Tests",
       "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
-      "args": [
-        "--config",
-        "package.json",
-        "--runInBand"
-      ],
-      "runtimeArgs": [
-        "--nolazy"
-      ],
+      "args": ["--config", "package.json", "--runInBand"],
+      "runtimeArgs": ["--nolazy"],
       "console": "internalConsole",
       "env": {
         "NODE_ENV": "test"
       }
-    }
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Jest - Current file",
+      "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+      "args": ["${fileBasename}", "--config", "package.json", "--runInBand"],
+      "runtimeArgs": ["--nolazy"],
+      "console": "internalConsole",
+      "env": {
+        "NODE_ENV": "test"
+      }
+    },
   ]
 }
