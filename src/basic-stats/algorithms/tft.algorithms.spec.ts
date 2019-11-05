@@ -1,5 +1,5 @@
 import {
-  isWin, findSummoner, winrate, getQueues, playersElimited
+  isWin, findSummoner, winrate, getQueues, playersElimited, keyAverage
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
 
@@ -266,6 +266,29 @@ describe('Tft algorithms', () => {
         expect(e).toBeInstanceOf(Error)
         done()
       }
+    })
+  })
+
+  describe('Key average', () => {
+    it('should return a valid sum of key', () => {
+      const puuid = '123'
+      const match = {
+        participants: [
+          {
+            gold_left: 1
+          },
+          {
+            gold_left: 2,
+            summoner: {
+              puuid
+            }
+          }
+        ]
+      }
+      const matches = [match, match]
+      const result = keyAverage(puuid, matches, 'gold_left')
+      const sumExpected = 4
+      expect(result).toEqual(sumExpected / matches.length)
     })
   })
 })
