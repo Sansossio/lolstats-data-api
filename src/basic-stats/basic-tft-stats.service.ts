@@ -27,11 +27,11 @@ export class BasicTftStatsService {
       let key = queue
       // All queues
       if (queue === TftMatchEnum.STATS_TOTAL) {
-        data = utils.objectResponse(puuid, matches)
+        data = utils.tftObjectResponse(puuid, matches)
       } else {
         // Filter by queueId
         const matchesFiltered = matches.filter(match => match.queue.queueId === +queue)
-        data = utils.objectResponse(puuid, matchesFiltered)
+        data = utils.tftObjectResponse(puuid, matchesFiltered)
       }
 
       _.set(response, key, data)
@@ -44,7 +44,7 @@ export class BasicTftStatsService {
     const traits = algorithms.getTraits(puuid, matches)
     const response = {}
     for (const trait of traits) {
-      const matchFilter = utils.filterByTrait(trait, puuid, matches)
+      const matchFilter = utils.tftFilterByTrait(trait, puuid, matches)
       const data = this.byQueue(puuid, matchFilter)
       _.set(response, trait, data)
     }

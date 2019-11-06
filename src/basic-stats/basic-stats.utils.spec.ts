@@ -13,7 +13,7 @@ describe('Basic stats utils', () => {
           }
         ]
         try {
-          utils.filterByTrait(trait, puuid, matches)
+          utils.tftFilterByTrait(trait, puuid, matches)
           done(new Error())
         } catch (e) {
           expect(e).toBeInstanceOf(NotFoundException)
@@ -35,7 +35,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.filterByTrait(trait, puuid, [match])
+        const result = utils.tftFilterByTrait(trait, puuid, [match])
         expect(result.length).toEqual(1)
       })
 
@@ -53,7 +53,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.filterByTrait(trait, puuid, [match])
+        const result = utils.tftFilterByTrait(trait, puuid, [match])
         expect(result.length).toEqual(0)
       })
 
@@ -71,7 +71,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.filterByTrait(trait, puuid, [match, match])
+        const result = utils.tftFilterByTrait(trait, puuid, [match, match])
         expect(result.length).toEqual(2)
       })
 
@@ -83,7 +83,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.filterByTrait(trait, puuid, [match, match])
+        const result = utils.tftFilterByTrait(trait, puuid, [match, match])
         expect(result.length).toEqual(0)
       })
 
@@ -101,7 +101,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.filterByTrait(trait, puuid, [match, match])
+        const result = utils.tftFilterByTrait(trait, puuid, [match, match])
         expect(result.length).toEqual(0)
       })
     })
@@ -117,7 +117,7 @@ describe('Basic stats utils', () => {
             }
           ]
         }
-        const result = utils.objectResponse(puuid, [match])
+        const result = utils.tftObjectResponse(puuid, [match])
         expect(result.games).toEqual(1)
         expect(result).toHaveProperty('games')
         expect(result).toHaveProperty('averages')
