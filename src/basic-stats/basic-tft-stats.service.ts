@@ -18,7 +18,7 @@ export class BasicTftStatsService {
     @InjectModel(ModelsName.TFT_MATCH) private readonly tftRepository: Model<ITFTMatchModel>
   ) {}
 
-  private byQueue (puuid: string, matches: ITFTMatchModel[]) {
+  private byQueue (puuid: string, matches: Partial<ITFTMatchModel>[]) {
     const queues = algorithms.getQueues(matches)
     const response = {}
 
@@ -30,7 +30,7 @@ export class BasicTftStatsService {
         data = utils.ObjectResponse(puuid, matches)
       } else {
         // Filter by queueId
-        const matchesFiltered = matches.filter(match => match.queue.queueId === +queue)
+        const matchesFiltered = matches.filter(match => match.queue && match.queue.queueId === +queue)
         data = utils.ObjectResponse(puuid, matchesFiltered)
       }
 
