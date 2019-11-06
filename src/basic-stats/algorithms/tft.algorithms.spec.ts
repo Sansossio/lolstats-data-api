@@ -11,6 +11,7 @@ import {
   percentagePerPlacement
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
+import { NotFoundException } from '@nestjs/common'
 
 describe('Tft algorithms', () => {
   const puuid = '123'
@@ -45,7 +46,7 @@ describe('Tft algorithms', () => {
         percentagePerPlacement(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
@@ -91,7 +92,7 @@ describe('Tft algorithms', () => {
         }
       ]
       const [result] = percentagePerPlacement(puuid, matches)
-      expect(result).toEqual({ placement: 1, percentage: 2 / 3 * 100, total: 1 })
+      expect(result).toEqual({ placement: 1, percentage: 2 / 3 * 100, total: 2 })
     })
 
     it('should response empty placements when placement is undefined', () => {
@@ -160,7 +161,7 @@ describe('Tft algorithms', () => {
         winrate(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
@@ -287,7 +288,7 @@ describe('Tft algorithms', () => {
         getTraits(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
@@ -372,7 +373,7 @@ describe('Tft algorithms', () => {
         playersEliminated(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
@@ -542,7 +543,7 @@ describe('Tft algorithms', () => {
         mostUsedTraits(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
@@ -676,7 +677,7 @@ describe('Tft algorithms', () => {
         mostUsedUnits(puuid, matches)
         done(new Error())
       } catch (e) {
-        expect(e).toBeInstanceOf(Error)
+        expect(e).toBeInstanceOf(NotFoundException)
         done()
       }
     })
