@@ -97,7 +97,7 @@ describe('TftMatchService', () => {
           }))
 
         stub(service, 'matchSummoners')
-          .callsFake(() => Promise.resolve([]))
+          .callsFake(() => Promise.resolve([{ _id: 1 }]))
 
         stub(service.staticService, 'getQueue')
           .callsFake(() => ({}))
