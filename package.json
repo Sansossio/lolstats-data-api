@@ -78,6 +78,10 @@
     ],
     "rootDir": "src",
     "testRegex": ".spec.ts$",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "(.*).dto.ts"
+    ],
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
