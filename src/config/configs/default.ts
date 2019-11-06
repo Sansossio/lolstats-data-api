@@ -3,6 +3,9 @@ import { config } from 'dotenv'
 config()
 
 export default {
+  app: {
+    acceptanceHost: process.env.ACCEPTANCE_HOST
+  },
   riot: {
     apiKey: process.env.RIOT_API_KEY,
     rateLimitRetry: process.env.RIOT_RATE_LIMIT_RETRY,

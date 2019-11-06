@@ -9,7 +9,7 @@ export function getTraits (puuid: string, matches: Partial<ITFTMatchModel>[]) {
     }
     for (const trait of traits) {
       const findIndex = prev.findIndex(name => trait.name === name)
-      if (findIndex === -1 && trait.name && !!trait.tier_current) {
+      if (findIndex === -1 && trait.name) {
         prev.push(trait.name)
       }
     }

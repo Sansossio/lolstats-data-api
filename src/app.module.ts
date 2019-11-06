@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common'
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common'
 import { RiotApiModule } from './riot-api/riot-api.module'
 import { ConfigModule } from './config/config.module'
 import { SummonerModule } from './summoner/summoner.module'
@@ -9,6 +9,7 @@ import { DatabaseConnection } from './database/database.connection'
 import { StaticDataModule } from './static-data/static-data.module'
 import { BasicStatsModule } from './basic-stats/basic-stats.module'
 import { CacheService } from './cache/cache.service'
+import { OriginMiddleware } from './middlewares/origin.middleware'
 
 @Module({
   imports: [
@@ -24,4 +25,10 @@ import { CacheService } from './cache/cache.service'
   ],
   providers: [CacheService]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure (consumer: MiddlewareConsumer) {
+    consumer
+      .apply(OriginMiddleware)
+      .forRoutes('*')
+  }
+}
