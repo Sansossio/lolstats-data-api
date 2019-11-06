@@ -15,24 +15,21 @@ export class CacheService {
 
     if (available) {
       this.client = Redis.createClient({ url })
-      this.client.on('error', () => {
-        (this.client as Redis.RedisClient).quit()
-        utils.serviceDisabled()
-      })
+      this.client.on('error', () => utils.tryQuit(this.client))
     } else {
       utils.serviceDisabled()
     }
   }
 
-  private redisIsAvailable () {
-    return this.client && this.client.connected
+  private getClient () {
+    return this.client as Redis.RedisClient
   }
 
   async get<T> (key: string) {
-    if (!this.redisIsAvailable()) {
+    if (!utils.redisIsAvailable(this.client)) {
       return
     }
-    const client = this.client as Redis.RedisClient
+    const client = this.getClient()
     return new Promise<T>((resolve, reject) => {
       client.get(key, (err, result) => {
         if (err) {
@@ -46,11 +43,11 @@ export class CacheService {
   }
 
   async set<T> (key: string, value: T, expiration?: number): Promise<void> {
-    if (!this.redisIsAvailable()) {
+    if (!utils.redisIsAvailable(this.client)) {
       return
     }
-    const client = this.client as Redis.RedisClient
     const parsedValue = JSON.stringify(value)
+    const client = this.getClient()
     return new Promise<void>((resolve, reject) => {
       client.setex(
         key,
