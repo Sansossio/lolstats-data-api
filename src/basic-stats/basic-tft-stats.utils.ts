@@ -8,7 +8,7 @@ enum TFTMatchKeys {
   LAST_ROUND = 'last_round'
 }
 
-export function tftObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
+export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   return {
     games: matches.length,
     averages: {
@@ -28,7 +28,7 @@ export function tftObjectResponse (puuid: string, matches: Partial<ITFTMatchMode
   }
 }
 
-export function tftFilterByTrait (trait: string, puuid: string, matches: Partial<ITFTMatchModel>[]) {
+export function FilterByTrait (trait: string, puuid: string, matches: Partial<ITFTMatchModel>[]) {
   return matches.filter(match => {
     const { traits } = algorithms.findSummoner(puuid, match.participants || [])
     if (!traits) {

@@ -4,7 +4,7 @@ import { ModelsName } from '../enums/database.enum'
 import { ISummonerModel } from '../summoner/models/summoner.interface'
 import { Model } from 'mongoose'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
-import * as utils from './basic-stats.utils'
+import * as utils from './basic-tft-stats.utils'
 import { TftMatchEnum } from '../enums/tft-match.enum'
 import * as _ from 'lodash'
 import * as algorithms from './algorithms/tft'
@@ -27,11 +27,11 @@ export class BasicTftStatsService {
       let key = queue
       // All queues
       if (queue === TftMatchEnum.STATS_TOTAL) {
-        data = utils.tftObjectResponse(puuid, matches)
+        data = utils.ObjectResponse(puuid, matches)
       } else {
         // Filter by queueId
         const matchesFiltered = matches.filter(match => match.queue.queueId === +queue)
-        data = utils.tftObjectResponse(puuid, matchesFiltered)
+        data = utils.ObjectResponse(puuid, matchesFiltered)
       }
 
       _.set(response, key, data)
@@ -44,7 +44,7 @@ export class BasicTftStatsService {
     const traits = algorithms.getTraits(puuid, matches)
     const response = {}
     for (const trait of traits) {
-      const matchFilter = utils.tftFilterByTrait(trait, puuid, matches)
+      const matchFilter = utils.FilterByTrait(trait, puuid, matches)
       const data = this.byQueue(puuid, matchFilter)
       _.set(response, trait, data)
     }
