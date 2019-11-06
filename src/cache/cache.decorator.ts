@@ -1,5 +1,6 @@
 import { CacheService } from './cache.service'
 import { version } from '../../package.json'
+import * as utils from './cache.utils'
 
 const service = new CacheService()
 
@@ -22,13 +23,7 @@ export function Cache (params: ICacheParams = {}) {
     const className = target.constructor.name
     propertyDesciptor.value = async function (...args: any[]) {
       // Create unique key
-      const key =
-        [
-          version,
-          className,
-          propertyName,
-          ...args.map(a => JSON.stringify(a))
-        ].join()
+      const key = utils.generateKey(className, propertyName, args)
       // Find in redis
       const cacheValue = await service.get(key)
       if (cacheValue) {
