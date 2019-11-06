@@ -4,7 +4,7 @@ import * as fs from 'fs'
 import * as defaultConfig from './configs/default'
 import { Injectable } from '@nestjs/common'
 import { MongooseModuleOptions } from '@nestjs/mongoose'
-
+import * as utils from './config.utils'
 export interface IConfig {
   [key: string]: any
 }
@@ -58,21 +58,6 @@ export class ConfigService {
     return true
   }
 
-  private parseMongoUri (
-    host: string,
-    port: number,
-    user: string,
-    password: string,
-    dbname: string,
-    adminAuth: boolean
-  ): string {
-    let response = `mongodb://${user}:${password}@${host}:${port}/${dbname}`
-    if (adminAuth) {
-      response += '?authSource=admin'
-    }
-    return response
-  }
-
   get<T> (key: string): T {
     return _.get(this.config, key, key)
   }
@@ -94,7 +79,7 @@ export class ConfigService {
     const adminAuth = this.getBoolean('database.adminAuth')
 
     return {
-      uri: this.parseMongoUri(host, port, user, password, dbname, adminAuth),
+      uri: utils.parseMongoUri(host, port, user, password, dbname, adminAuth),
       useNewUrlParser: true,
       useUnifiedTopology: true
     }

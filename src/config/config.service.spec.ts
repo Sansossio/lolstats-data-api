@@ -5,7 +5,7 @@ import { get } from 'lodash'
 describe('ConfigService', () => {
   let service: ConfigService
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [ConfigService]
     }).compile()
@@ -120,6 +120,28 @@ describe('ConfigService', () => {
       const n = -10
       const value = service.getNumber(n.toString())
       expect(value).toEqual(n)
+    })
+  })
+
+  describe('Database connection', () => {
+    it('should return valid database connection', () => {
+      const configuration = {
+        database: {
+          host: '',
+          port: 0,
+          user: '',
+          password: '',
+          dbname: '',
+          adminAuth: 'true'
+        }
+      }
+      const load = get(service, 'loadConfiguration').bind(service)
+      load(configuration)
+      const connection = service.getConnection()
+      expect(connection).toBeDefined()
+      expect(connection).toHaveProperty('uri')
+      expect(connection).toHaveProperty('useNewUrlParser')
+      expect(connection).toHaveProperty('useUnifiedTopology')
     })
   })
 })
