@@ -10,7 +10,7 @@ describe('Cache utils', () => {
         .callsFake((message, context) => {
           return `[${context}] ${message}`
         })
-      const response = utils.serviceDisabled()
+      const response = utils.serviceDisabled(true)
       expect(typeof response).toEqual('string')
       restore()
     })

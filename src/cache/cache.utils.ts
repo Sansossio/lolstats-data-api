@@ -1,8 +1,12 @@
 import { Logger } from '@nestjs/common'
 import { CacheMessages } from '../enums/cache.enum'
 import { version } from '../../package.json'
+import { EnvEnum } from '../enums/env.enum'
 
-export function serviceDisabled () {
+export function serviceDisabled (force?: boolean) {
+  if (!force && process.env.NODE_ENV === EnvEnum.TEST) {
+    return
+  }
   return Logger.warn(
     CacheMessages.DISCONNECTED,
     CacheMessages.CONTEXT
