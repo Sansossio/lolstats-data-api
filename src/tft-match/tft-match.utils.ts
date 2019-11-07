@@ -77,11 +77,11 @@ function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: 
   return response
 }
 
-function parseParticipantsIds (users: ISummonerModel[]) {
-  return users.map(u => u._id)
+// Public methods
+export function parseParticipantsIds (users: Partial<ISummonerModel>[]) {
+  return users.map(u => u._id as string)
 }
 
-// Public methods
 export function riotToModel (
   match: MatchTFTDTO,
   region: Regions,
