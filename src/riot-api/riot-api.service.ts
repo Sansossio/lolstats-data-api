@@ -14,7 +14,7 @@ export class RiotApiService {
       key: this.config.get<string>('riot.apiKey'),
       rateLimitRetry: this.config.getBoolean('riot.rateLimitRetry'),
       rateLimitRetryAttempts: this.config.getNumber('riot.rateLimitCount'),
-      concurrency: +this.config.get<number>('riot.concurrency') || undefined,
+      concurrency: +this.config.getNumber('riot.concurrency'),
       debug: {
         logUrls: this.config.getBoolean('riot.debug.url'),
         logRatelimits: this.config.getBoolean('riot.debug.rateLimits')
