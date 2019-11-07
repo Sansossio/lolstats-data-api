@@ -76,4 +76,20 @@ describe('Tft match utils', () => {
       expect(() => utils.getSummonerID(puuid, users)).toThrowError(InternalServerErrorException)
     })
   })
+
+  describe('Get match items', () => {
+    const items = [
+      {
+        id: 1,
+        name: 'filo'
+      },
+      {
+        id: 2,
+        name: 'test'
+      }
+    ]
+    const response = utils.matchItems([1], items)
+    expect(response.length).toEqual(1)
+    expect(response[0].name).toEqual('filo')
+  })
 })

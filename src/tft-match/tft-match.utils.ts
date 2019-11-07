@@ -21,7 +21,7 @@ export function getSummonerID (puuid: string, users: Partial<ISummonerModel>[]):
   return summoner
 }
 
-export function matchItems (ids: number[], items: IStaticTftItemsModel[]) {
+export function matchItems (ids: number[], items: Partial<IStaticTftItemsModel>[]) {
   return ids.map(id => items.find(i => i.id === id) as IStaticTftItemsModel)
 }
 
