@@ -51,7 +51,7 @@ export class BasicTftStatsService {
     return response
   }
 
-  async updateSummoner ({ _id, puuid }: ISummonerModel) {
+  async updateSummoner ({ _id, puuid }) {
     const matchHistory = await this.tftRepository.find({
       participantsIds: _id
     })
