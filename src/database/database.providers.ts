@@ -1,7 +1,7 @@
 import { getModelToken } from '@nestjs/mongoose'
 import { ModelsName } from '../enums/database.enum'
 
-const useValue = {
+export const useValue = {
   findOne: () => Promise.resolve(),
   find: () => Promise.resolve(),
   create: () => Promise.resolve(),
