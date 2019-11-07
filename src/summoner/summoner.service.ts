@@ -86,7 +86,7 @@ export class SummonerService {
       throw new Error()
     }
     // Update based users models
-    await this.summonerLeagueService.create(response._id, leagues)
+    await this.summonerLeagueService.create(leagues)
     return response
   }
 
