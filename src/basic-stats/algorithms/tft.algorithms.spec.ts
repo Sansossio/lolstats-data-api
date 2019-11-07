@@ -37,18 +37,12 @@ describe('Tft algorithms', () => {
   })
 
   describe('Percentage per placement', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        percentagePerPlacement(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => percentagePerPlacement(puuid, matches)).toThrowError(NotFoundException)
     })
 
     it('should response unique placement 100%', () => {
@@ -111,26 +105,14 @@ describe('Tft algorithms', () => {
   })
 
   describe('FindSummoner', () => {
-    it('should return error when summoner doesn\'t exists', done => {
+    it('should return error when summoner doesn\'t exists', () => {
       const participants = []
-      try {
-        findSummoner(puuid, participants)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-        done()
-      }
+      expect(() => findSummoner(puuid, participants)).toThrowError(NotFoundException)
     })
 
-    it('should return error when summoner doesn\'t has a puuid', done => {
+    it('should return error when summoner doesn\'t has a puuid', () => {
       const participants = [{ summoner: {} }]
-      try {
-        findSummoner(puuid, participants)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-        done()
-      }
+      expect(() => findSummoner(puuid, participants)).toThrowError(NotFoundException)
     })
 
     it('should return the user filtered', () => {
@@ -152,18 +134,12 @@ describe('Tft algorithms', () => {
   })
 
   describe('Winrate', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        winrate(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => winrate(puuid, matches)).toThrowError(NotFoundException)
     })
 
     it('should return 100% winrate percent', () => {
@@ -279,18 +255,12 @@ describe('Tft algorithms', () => {
   })
 
   describe('GetTraits', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        getTraits(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => getTraits(puuid, matches)).toThrowError(NotFoundException)
     })
 
     it('should return an empty array', () => {
@@ -364,18 +334,12 @@ describe('Tft algorithms', () => {
   })
 
   describe('PlayersEliminated', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        playersEliminated(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => playersEliminated(puuid, matches)).toThrowError(NotFoundException)
     })
 
     it('should return zero Eliminated players', () => {
@@ -450,7 +414,7 @@ describe('Tft algorithms', () => {
       expect(players).toEqual(20)
     })
 
-    it('should return error when Eliminated players is lower than 0', done => {
+    it('should return error when Eliminated players is lower than 0', () => {
       const matches = [
         {
           participants: [
@@ -469,27 +433,16 @@ describe('Tft algorithms', () => {
           ]
         }
       ]
-      try {
-        playersEliminated(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-        done()
-      }
+      expect(() => playersEliminated(puuid, matches)).toThrowError()
     })
   })
 
   describe('Key average', () => {
-    it('should return error when participants is undefined', done => {
+    it('should return error when participants is undefined', () => {
       const match = {
         participants: undefined
       }
-      try {
-        keyAverage(puuid, [match], 'gold_left')
-        done(new Error())
-      } catch (e) {
-        done()
-      }
+      expect(() => keyAverage(puuid, [match], 'gold_left')).toThrowError()
     })
 
     it('should return a valid sum of key', () => {
@@ -534,21 +487,15 @@ describe('Tft algorithms', () => {
   })
 
   describe('Most used traits', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        mostUsedTraits(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => mostUsedTraits(puuid, matches)).toThrowError(NotFoundException)
     })
 
-    it('should return error when traits key doesn\'t exists', done => {
+    it('should return error when traits key doesn\'t exists', () => {
       const matches = [
         {
           participants: [
@@ -558,13 +505,7 @@ describe('Tft algorithms', () => {
           ]
         }
       ]
-      try {
-        mostUsedTraits(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-        done()
-      }
+      expect(() => mostUsedTraits(puuid, matches)).toThrowError()
     })
 
     it('should return an empty array when matches.length is zero', () => {
@@ -668,21 +609,15 @@ describe('Tft algorithms', () => {
   })
 
   describe('Most used units', () => {
-    it('should return error when participants doesn\'t exists', done => {
+    it('should return error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        mostUsedUnits(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => mostUsedUnits(puuid, matches)).toThrowError(NotFoundException)
     })
 
-    it('should return error when units key doesn\'t exists', done => {
+    it('should return error when units key doesn\'t exists', () => {
       const matches = [
         {
           participants: [
@@ -692,13 +627,7 @@ describe('Tft algorithms', () => {
           ]
         }
       ]
-      try {
-        mostUsedUnits(puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(Error)
-        done()
-      }
+      expect(() => mostUsedUnits(puuid, matches)).toThrowError()
     })
 
     it('should return an empty array when matches.length is zero', () => {

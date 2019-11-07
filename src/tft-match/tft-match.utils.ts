@@ -9,12 +9,11 @@ import { IStaticTftItemsModel } from '../static-data/models/static-tft-items/sta
 import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { TftMatchEnum } from '../enums/tft-match.enum'
 
-// Private methods
 function timestampToDate (value: number): Date {
   return new Date(value)
 }
 
-function getSummonerID (puuid: string, users: ISummonerModel[]): Partial<ISummonerModel> {
+export function getSummonerID (puuid: string, users: Partial<ISummonerModel>[]): Partial<ISummonerModel> {
   const summoner = users.find(u => u.puuid === puuid)
   if (!summoner) {
     throw new InternalServerErrorException('Bad summoners match (tft)')
@@ -22,11 +21,11 @@ function getSummonerID (puuid: string, users: ISummonerModel[]): Partial<ISummon
   return summoner
 }
 
-function matchItems (ids: number[], items: IStaticTftItemsModel[]) {
+export function matchItems (ids: number[], items: IStaticTftItemsModel[]) {
   return ids.map(id => items.find(i => i.id === id) as IStaticTftItemsModel)
 }
 
-function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: IStaticTftItemsModel[]): Partial<TftMatchParticipantsModel>[] {
+export function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: IStaticTftItemsModel[]): Partial<TftMatchParticipantsModel>[] {
   const response: Partial<TftMatchParticipantsModel>[] = []
   const {
     info: {
@@ -77,7 +76,6 @@ function parseParticipants (match: MatchTFTDTO, users: ISummonerModel[], items: 
   return response
 }
 
-// Public methods
 export function parseParticipantsIds (users: Partial<ISummonerModel>[]) {
   return users.map(u => u._id as string)
 }

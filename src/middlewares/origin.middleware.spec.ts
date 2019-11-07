@@ -30,17 +30,11 @@ describe('Origin middleware', () => {
     middleware.use(req, res, next)
   })
 
-  it('should return error', done => {
+  it('should return forbidden error', () => {
     const req: any = {
       headers: {},
       hostname: 'google.com'
     }
-    try {
-      middleware.use(req, res, next)
-      done(new Error())
-    } catch (e) {
-      expect(e).toBeInstanceOf(ForbiddenException)
-      done()
-    }
+    expect(() => middleware.use(req, res, next)).toThrowError(ForbiddenException)
   })
 })

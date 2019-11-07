@@ -6,18 +6,13 @@ describe('Basic tft stats utils', () => {
 
   describe('Filter by trait', () => {
     const trait = 'demon'
-    it('should return error when participants doesn\'t exists', done => {
+    it('should catch error when participants doesn\'t exists', () => {
       const matches = [
         {
         }
       ]
-      try {
-        utils.FilterByTrait(trait, puuid, matches)
-        done(new Error())
-      } catch (e) {
-        expect(e).toBeInstanceOf(NotFoundException)
-        done()
-      }
+      expect(() => utils.FilterByTrait(trait, puuid, matches))
+        .toThrowError(NotFoundException)
     })
 
     it('should return matches filtered (length: 1)', () => {

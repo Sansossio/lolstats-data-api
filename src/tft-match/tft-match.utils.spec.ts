@@ -1,5 +1,6 @@
 import * as utils from './tft-match.utils'
 import { Regions } from 'twisted/dist/constants'
+import { InternalServerErrorException } from '@nestjs/common'
 
 describe('Tft match utils', () => {
   describe('Get search params', () => {
@@ -40,6 +41,39 @@ describe('Tft match utils', () => {
       const users = []
       const response = utils.parseParticipantsIds(users)
       expect(response).toEqual([])
+    })
+  })
+
+  describe('Get summoner', () => {
+    const puuid = '123'
+    it('should return a valid summoner instance', () => {
+      const users = [
+        {
+          puuid,
+          name: 'testing'
+        },
+        {
+          puuid: '1233',
+          name: 'aa'
+        }
+      ]
+      const summoner = utils.getSummonerID(puuid, users)
+      expect(summoner).toBeDefined()
+      expect(summoner.name).toEqual('testing')
+    })
+
+    it('should throw error when user find has failed', () => {
+      const users = [
+        {
+          puuid: '1232',
+          name: 'testing'
+        },
+        {
+          puuid: '1233',
+          name: 'aa'
+        }
+      ]
+      expect(() => utils.getSummonerID(puuid, users)).toThrowError(InternalServerErrorException)
     })
   })
 })

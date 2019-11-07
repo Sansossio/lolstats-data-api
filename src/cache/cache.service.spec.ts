@@ -46,6 +46,10 @@ describe('CacheService', () => {
   })
 
   describe('Get', () => {
+    beforeEach(() => {
+      restore()
+    })
+
     it('should return mocked value', async () => {
       stub(service as any, 'getClient')
         .callsFake(() => ({
@@ -57,7 +61,6 @@ describe('CacheService', () => {
       const key = '123'
       const response = await service.get(key)
       expect(response).toEqual(+key)
-      restore()
     })
 
     it('should return undefined when service is disabled', async () => {
@@ -71,10 +74,9 @@ describe('CacheService', () => {
       const key = '123'
       const response = await service.get(key)
       expect(response).toEqual(undefined)
-      restore()
     })
 
-    it('should catch error when client return error', done => {
+    it('should catch error when client return doesnt exists', () => {
       stub(service as any, 'getClient')
         .callsFake(() => ({
           get: (_, cb: Function) => {
@@ -83,13 +85,7 @@ describe('CacheService', () => {
         }))
       forceAvailable(service)
       const key = '123'
-      service.get(key)
-        .then(() => done(new Error('Bad response')))
-        .catch((e) => {
-          expect(e).toBeInstanceOf(InternalServerErrorException)
-          done()
-        })
-        .finally(() => restore())
+      expect(service.get(key)).rejects.toBeInstanceOf(InternalServerErrorException)
     })
   })
 
@@ -110,7 +106,6 @@ describe('CacheService', () => {
       const key = '123'
       await service.set(key, 123)
       expect(storage[key].value).toEqual('123')
-      restore()
     })
 
     it('should set a value with expiration', async () => {
@@ -130,29 +125,23 @@ describe('CacheService', () => {
       await service.set(key, 123, 1)
       expect(storage[key].value).toEqual('123')
       expect(storage[key].expiration).toEqual(1)
-      restore()
     })
 
-    it('should doesn\'t set a value when response error', done => {
+    it('should doesn\'t set a value when response error', () => {
       const storage: any = {}
       stub(service as any, 'getClient')
         .callsFake(() => ({
           setex: (key: string, expiration: number, value: any, cb: Function) => {
-            cb(new Error())
+            cb(new InternalServerErrorException())
           }
         }))
       forceAvailable(service)
       const key = '123'
-      service.set(key, 123)
-        .then(() => done(new Error('error expected')))
-        .catch(() => {
-          expect(storage[key]).toEqual(undefined)
-          done()
-        })
-        .finally(() => restore())
+      expect(service.set(key, 123)).rejects.toBeInstanceOf(InternalServerErrorException)
+      expect(storage[key]).toEqual(undefined)
     })
 
-    it('should doesn\'t set a value when redis is disable', done => {
+    it('should doesn\'t set a value when redis is disable', async () => {
       const storage: any = {}
       stub(service as any, 'getClient')
         .callsFake(() => ({
@@ -166,13 +155,8 @@ describe('CacheService', () => {
         }))
       forceAvailable(service, false)
       const key = '123'
-      service.set(key, 123)
-        .then(() => {
-          expect(storage[key]).toEqual(undefined)
-          done()
-        })
-        .catch(done)
-        .finally(() => restore())
+      await service.set(key, 123)
+      expect(storage[key]).toEqual(undefined)
     })
   })
 
