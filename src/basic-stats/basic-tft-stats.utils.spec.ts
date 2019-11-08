@@ -100,6 +100,73 @@ describe('Basic tft stats utils', () => {
     })
   })
 
+  describe('Filter by item', () => {
+    it('should catch error when participants doesn\'t exists', () => {
+      const matches = [
+        {
+        }
+      ]
+      expect(() => utils.FilterByItem(0, puuid, matches))
+        .toThrowError(NotFoundException)
+    })
+
+    it('should return matches filtered (length: 1)', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            units: [
+              {
+                items: [
+                  {
+                    id: 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+      const result = utils.FilterByItem(1, puuid, [match])
+      expect(result.length).toEqual(1)
+    })
+
+    it('should return matches filtered when units key doesnt exists (length: 0)', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid }
+          }
+        ]
+      }
+      const result = utils.FilterByItem(1, puuid, [match])
+      expect(result.length).toEqual(0)
+    })
+
+    it('should return matches filtered when one of them doesnt has items key(length: 1)', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            units: [
+              {
+                items: [
+                  {
+                    id: 1
+                  }
+                ]
+              },
+              {
+              }
+            ]
+          }
+        ]
+      }
+      const result = utils.FilterByItem(1, puuid, [match])
+      expect(result.length).toEqual(1)
+    })
+  })
+
   describe('Object response', () => {
     it('should return a valid response', () => {
       const match = {

@@ -11,7 +11,6 @@ enum TFTMatchKeys {
 export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   return {
     games: matches.length,
-    items: algorithms.getItems(puuid, matches),
     averages: {
       goldLeft: algorithms.keyAverage(puuid, matches, TFTMatchKeys.GOLD),
       level: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LEVEL),
@@ -36,6 +35,23 @@ export function FilterByTrait (trait: string, puuid: string, matches: Partial<IT
       return false
     }
     const index = traits.findIndex(t => t.name === trait && !!t.tier_current)
+    return index !== -1
+  })
+}
+
+export function FilterByItem (item: number, puuid: string, matches: Partial<ITFTMatchModel>[]) {
+  return matches.filter(match => {
+    const { units } = algorithms.findSummoner(puuid, match.participants || [])
+    if (!units) {
+      return false
+    }
+    let index = -1
+    for (const unit of units) {
+      index = (unit.items || []).findIndex(i => i.id === item)
+      if (index !== -1) {
+        break
+      }
+    }
     return index !== -1
   })
 }
