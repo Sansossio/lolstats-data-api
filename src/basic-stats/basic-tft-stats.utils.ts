@@ -11,6 +11,7 @@ enum TFTMatchKeys {
 export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   return {
     games: matches.length,
+    items: algorithms.getItems(puuid, matches),
     averages: {
       goldLeft: algorithms.keyAverage(puuid, matches, TFTMatchKeys.GOLD),
       level: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LEVEL),

@@ -8,7 +8,8 @@ import {
   mostUsedTraits,
   mostUsedUnits,
   getTraits,
-  percentagePerPlacement
+  percentagePerPlacement,
+  getItems
 } from './tft'
 import { TftMatchEnum } from '../../enums/tft-match.enum'
 import { NotFoundException } from '@nestjs/common'
@@ -707,6 +708,81 @@ describe('Tft algorithms', () => {
         }
       ]
       expect(result).toEqual(expected)
+    })
+  })
+
+  describe('Get items', () => {
+    it('should return error when participants doesn\'t exists', () => {
+      const matches = [
+        {
+        }
+      ]
+      expect(() => getItems(puuid, matches)).toThrowError(NotFoundException)
+    })
+
+    it('should return correct item list', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid },
+            units: [
+              {
+                tier: 0,
+                character_id: '1',
+                rarity: 1,
+                name: '',
+                items: [
+                  {
+                    name: 'idk',
+                    id: 8
+                  }
+                ]
+              },
+              {
+                tier: 0,
+                character_id: '1',
+                rarity: 1,
+                name: '',
+                items: [
+                  {
+                    name: 'idk',
+                    id: 9
+                  }
+                ]
+              },
+              {
+                tier: 0,
+                character_id: '1',
+                rarity: 1,
+                name: '',
+                items: [
+                  {
+                    name: 'idk',
+                    id: 9
+                  }
+                ]
+              },
+              {}
+            ]
+          }
+        ]
+      }
+      const items = getItems(puuid, [match])
+      const itemIds = items.map(i => i.id)
+      expect(itemIds).toEqual([8, 9])
+    })
+
+    it('should return an empty array when units doesnt exists', () => {
+      const match = {
+        participants: [
+          {
+            summoner: { puuid }
+          }
+        ]
+      }
+      const items = getItems(puuid, [match])
+      const itemIds = items.map(i => i.id)
+      expect(itemIds).toEqual([])
     })
   })
 })
