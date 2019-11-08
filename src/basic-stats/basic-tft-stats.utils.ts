@@ -47,7 +47,7 @@ export function FilterByItem (item: number, puuid: string, matches: Partial<ITFT
     }
     let index = -1
     for (const unit of units) {
-      index = (unit.items || []).findIndex(i => i.id === item)
+      index = (unit.items || []).findIndex(i => i && i.id === item)
       if (index !== -1) {
         break
       }

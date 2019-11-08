@@ -19,5 +19,5 @@ export function getItems (puuid: string, matches: Partial<ITFTMatchModel>[]) {
     }, [])
     response.push(..._.uniqBy(listOfItems, 'id'))
   }
-  return response
+  return response.filter(r => !!r)
 }
