@@ -17,6 +17,7 @@ import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { Cache } from '../cache/cache.decorator'
 import { CacheTimes } from '../enums/cache.enum'
 import { UpdateSummonerTFTMatchDTO } from './dto/update-summoner.tft-match.dto'
+import { TotalTFTMatchesDTO } from './dto/total.tft-match.dto'
 
 @Injectable()
 export class TftMatchService {
@@ -148,5 +149,14 @@ export class TftMatchService {
       }
     }
     return baseObjectResponse
+  }
+
+  async total (): Promise<TotalTFTMatchesDTO> {
+    const matches = await this.repository.find()
+    const size = JSON.stringify(matches).length
+    return {
+      count: matches.length,
+      size
+    }
   }
 }

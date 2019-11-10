@@ -5,6 +5,7 @@ import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { TftMatchModelDTO } from './models/match/tft-match.dto'
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 import { UpdateSummonerTFTMatchDTO } from './dto/update-summoner.tft-match.dto'
+import { TotalTFTMatchesDTO } from './dto/total.tft-match.dto'
 
 @Controller('tft-match')
 @ApiUseTags('Teamfight tactics')
@@ -29,5 +30,14 @@ export class TftMatchController {
   })
   async getBySummoner (@Query() params: QueryTftMatches) {
     return this.service.getBySummoner(params)
+  }
+
+  @Get('total')
+  @ApiOkResponse({ type: TotalTFTMatchesDTO })
+  @ApiOperation({
+    title: 'Get total values'
+  })
+  async total () {
+    return this.service.total()
   }
 }
