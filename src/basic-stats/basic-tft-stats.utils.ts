@@ -11,16 +11,14 @@ enum TFTMatchKeys {
 export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   return {
     games: matches.length,
+    winrate: algorithms.winrate(puuid, matches),
+    playersEliminated: algorithms.playersEliminated(puuid, matches),
+    placements: algorithms.percentagePerPlacement(puuid, matches),
     averages: {
       goldLeft: algorithms.keyAverage(puuid, matches, TFTMatchKeys.GOLD),
       level: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LEVEL),
       lastRound: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LAST_ROUND)
     },
-    global: {
-      playersEliminated: algorithms.playersEliminated(puuid, matches),
-      winrate: algorithms.winrate(puuid, matches)
-    },
-    placements: algorithms.percentagePerPlacement(puuid, matches),
     mostUsed: {
       units: algorithms.mostUsedUnits(puuid, matches),
       traits: algorithms.mostUsedTraits(puuid, matches)

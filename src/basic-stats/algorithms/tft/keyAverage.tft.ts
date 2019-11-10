@@ -3,6 +3,9 @@ import { findSummoner } from '.'
 
 export function keyAverage (puuid: string, matches: Partial<ITFTMatchModel>[], key: string) {
   let total = 0
+  if (!matches.length) {
+    return 0
+  }
   for (const match of matches) {
     let value = findSummoner(puuid, match.participants || [])[key] as number
     if (!value) {

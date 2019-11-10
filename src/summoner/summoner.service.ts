@@ -9,7 +9,6 @@ import * as summonerUtils from './summoner.utils'
 import * as _ from 'lodash'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 import { SummonerV4DTO } from 'twisted/dist/dto'
-import { BasicTftStatsService } from '../basic-stats/basic-tft-stats.service'
 import { Cache } from '../cache/cache.decorator'
 import { CacheTimes } from '../enums/cache.enum'
 
@@ -24,8 +23,6 @@ export class SummonerService {
 
   constructor (
     @InjectModel(ModelsName.SUMMONER) private readonly repository: Model<ISummonerModel>,
-
-    private readonly tftStats: BasicTftStatsService,
     private readonly summonerLeagueService: SummonerLeaguesService,
     private readonly riot: RiotApiService
   ) {}
@@ -134,10 +131,5 @@ export class SummonerService {
     const matchValue = true
     _.set(value, matchKey, matchValue)
     await this.repository.updateMany(condition, value)
-  }
-
-  async test (params: GetSummonerQueryDTO) {
-    const summoner = await this.get(params)
-    return this.tftStats.updateSummoner(summoner)
   }
 }

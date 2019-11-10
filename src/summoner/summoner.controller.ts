@@ -38,9 +38,4 @@ export class SummonerController {
   leagues (@Query() params: GetSummonerQueryDTO) {
     return this.service.leaguesHistoric(params)
   }
-
-  @Get('ss')
-  t (@Query() params: GetSummonerQueryDTO) {
-    return this.service.test(params)
-  }
 }

@@ -2,6 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { stub, restore } from 'sinon'
 import { BasicTftStatsService } from './basic-tft-stats.service'
 import { DatabaseTestProviders } from '../database/database.providers'
+import { Regions } from 'twisted/dist/constants'
+import { SummonerService } from '../summoner/summoner.service'
+import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
+import { RiotApiService } from '../riot-api/riot-api.service'
+import { ConfigService } from '../config/config.service'
 
 describe('BasicStatsService', () => {
   let service: BasicTftStatsService
@@ -10,7 +15,11 @@ describe('BasicStatsService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ...DatabaseTestProviders,
-        BasicTftStatsService
+        ConfigService,
+        BasicTftStatsService,
+        SummonerService,
+        SummonerLeaguesService,
+        RiotApiService
       ]
     }).compile()
 
@@ -19,32 +28,5 @@ describe('BasicStatsService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined()
-  })
-
-  describe('Update summoner', () => {
-    it('should return undefined when match history isn\'t an array', async () => {
-      stub((service as any).tftRepository, 'find')
-        .onFirstCall()
-        .returns(Promise.resolve(1))
-      const summoner = await service.updateSummoner({ _id: '', puuid: '' })
-      expect(summoner).toEqual(undefined)
-      restore()
-    })
-
-    it('should return object when match history lenght is zero', async () => {
-      stub((service as any).tftRepository, 'find')
-        .onFirstCall()
-        .returns(Promise.resolve([]))
-
-      const summoner = await service.updateSummoner({ _id: '', puuid: '' })
-      if (!summoner) {
-        throw new Error('Bad response')
-      }
-      expect(summoner).toBeDefined()
-      expect(summoner.matches).toEqual(0)
-      expect(summoner).toHaveProperty('byTraits')
-      expect(summoner).toHaveProperty('byQueues')
-      restore()
-    })
   })
 })

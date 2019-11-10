@@ -36,5 +36,9 @@ export const DatabaseTestProviders = [
   {
     provide: getModelToken(ModelsName.STATIC_TFT_ITEM),
     useValue
+  },
+  {
+    provide: getModelToken(ModelsName.TFT_SUMMONER_STATS),
+    useValue
   }
 ]

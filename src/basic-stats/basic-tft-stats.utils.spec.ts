@@ -182,7 +182,6 @@ describe('Basic tft stats utils', () => {
       expect(result.games).toEqual(1)
       expect(result).toHaveProperty('games')
       expect(result).toHaveProperty('averages')
-      expect(result).toHaveProperty('global')
       expect(result).toHaveProperty('placements')
       expect(result).toHaveProperty('mostUsed')
     })

@@ -40,6 +40,9 @@ describe('TftMatchService', () => {
   })
 
   describe('Match', () => {
+    beforeEach(() => {
+      restore()
+    })
     it('should return valid match instance', async () => {
       const match = { matchId: 1 }
       stub(service.api, 'get')
@@ -47,7 +50,6 @@ describe('TftMatchService', () => {
         .returns(Promise.resolve({ response: { match } }))
       const response = await service.getMatch()
       expect(response).toEqual({ match })
-      restore()
     })
 
     it('should return summoners mappers', async () => {
@@ -61,55 +63,10 @@ describe('TftMatchService', () => {
       const puuids = [1]
       const mapUsers = await service.matchSummoners(currentPuuid, puuids)
       expect(mapUsers).toEqual([user])
-      restore()
     })
 
     describe('Create match', () => {
-      it('should return existing instance', async () => {
-        const match = { match: 1 }
-        stub(service.repository, 'findOne')
-          .onFirstCall()
-          .returns(Promise.resolve(match))
-        const response = await service.createMatch(undefined, undefined, Regions.AMERICA_NORTH)
-        expect(response).toEqual(match)
-        restore()
-      })
-
-      it('should return new match', async () => {
-        const newMatch = { match: 1 }
-        stub(service.repository, 'findOne')
-          .onFirstCall()
-          .returns(Promise.resolve(null))
-
-        stub(service.repository, 'create')
-          .onFirstCall()
-          .returns(Promise.resolve(newMatch))
-
-        stub(service, 'getMatch')
-          .callsFake(() => Promise.resolve({
-            metadata: {
-              participants: []
-            },
-            info: {
-              queue_id: 1,
-              participants: []
-            }
-          }))
-
-        stub(service, 'matchSummoners')
-          .callsFake(() => Promise.resolve([{ _id: 1 }]))
-
-        stub(service.staticService, 'getQueue')
-          .callsFake(() => ({}))
-
-        stub(service.staticService, 'getTftitems')
-          .callsFake(() => [])
-
-        stub(service.summonerService, 'insertMatches')
-          .callsFake(() => Promise.resolve())
-
-        const response = await service.createMatch(undefined, undefined, Regions.AMERICA_NORTH)
-        expect(response).toEqual(newMatch)
+      beforeEach(() => {
         restore()
       })
 
@@ -125,6 +82,9 @@ describe('TftMatchService', () => {
   })
 
   describe('Summoner', () => {
+    beforeEach(() => {
+      restore()
+    })
     describe('Update', () => {
       it('should return a valid user updated data', async () => {
         stub(service.summonerService, 'get')
@@ -137,8 +97,7 @@ describe('TftMatchService', () => {
           .callsFake((_, match) => Promise.resolve({ match }))
 
         const response = await service.updateSummoner({ region: Regions.AMERICA_NORTH })
-        expect(response).toEqual([{ match: 1 }, { match: 2 }, { match: 3 }])
-        restore()
+        expect(response).toEqual({ msg: 'OK' })
       })
     })
 
@@ -152,10 +111,9 @@ describe('TftMatchService', () => {
 
         const { data } = await service.getBySummoner({ limit: 1, page: 2 })
         expect(data).toEqual([])
-        restore()
       })
 
-      it('should return vlaid array when limit is lower than results', async () => {
+      it('should return valid array when limit is lower than results', async () => {
         const matches = [1, 2]
         stub(service.summonerService, 'get')
           .callsFake(() => Promise.resolve({ _id: 1 }))
@@ -174,7 +132,6 @@ describe('TftMatchService', () => {
 
         const { data } = await service.getBySummoner({ limit: 1, page: 2 })
         expect(data).toEqual(matches)
-        restore()
       })
     })
   })
