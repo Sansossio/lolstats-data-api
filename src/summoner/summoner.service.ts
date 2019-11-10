@@ -87,7 +87,7 @@ export class SummonerService {
     }
     // Update based users models
     await this.summonerLeagueService.create(leagues)
-    return response
+    return this.get(params, false)
   }
 
   async get (params: GetSummonerQueryDTO, findRiot: boolean = true, loading: boolean = false) {
@@ -118,7 +118,7 @@ export class SummonerService {
     return this.summonerLeagueService.findHistoric(summoner._id)
   }
 
-  async insertMatches (ids: string[], matchId: number, type: SummonerServiceInsertMatch) {
+  async insertMatches (ids: string[], matchId: string, type: SummonerServiceInsertMatch) {
     const key =
       type === SummonerServiceInsertMatch.LOL ? 'lolMatches' : 'tftMatches'
     const condition = {

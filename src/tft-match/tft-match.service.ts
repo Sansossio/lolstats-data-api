@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, BadGatewayException } from '@nestjs/common'
 import { ITFTMatchModel } from './models/match/tft-match.interface'
 import { ModelsName } from '../enums/database.enum'
 import { InjectModel } from '@nestjs/mongoose'
@@ -16,6 +16,7 @@ import { StaticDataService } from '../static-data/static-data.service'
 import { QueryTftMatches } from './dto/query.tft-match.dto'
 import { Cache } from '../cache/cache.decorator'
 import { CacheTimes } from '../enums/cache.enum'
+import { UpdateSummonerTFTMatchDTO } from './dto/update-summoner.tft-match.dto'
 
 @Injectable()
 export class TftMatchService {
@@ -61,22 +62,31 @@ export class TftMatchService {
 
   private async createMatch (puuid: string, match_id: string, region: Regions) {
     const parseRegion = regionToTftRegions(region)
-    // Not recreate
-    const exists = await this.repository.findOne({ match_id, region })
-    if (exists) {
-      return exists
-    }
     const match = await this.getMatch(match_id, parseRegion)
     // Match users
     const users = await this.matchSummoners(puuid, match.metadata.participants, region)
     const queue = await this.staticService.getQueue(match.info.queue_id)
     const items = await this.staticService.getTftitems()
     const model = tftMatchUtils.riotToModel(match, region, users, queue, items)
+    if (!model.match_id) {
+      throw new BadGatewayException('Invalid match id')
+    }
     // Create game
-    const instance = await this.repository.create(model)
+    const condition = {
+      match_id: model.match_id,
+      region: model.region
+    }
+    const options = {
+      upsert: true
+    }
+    const instance = await this.repository.updateOne(condition, model, options)
     // Push game into users
     const usersIds = users.map(u => u._id)
-    await this.summonerService.insertMatches(usersIds, instance.match_id, SummonerServiceInsertMatch.TFT)
+    await this.summonerService.insertMatches(
+      usersIds,
+      model.match_id,
+      SummonerServiceInsertMatch.TFT
+    )
 
     return instance
   }
@@ -92,20 +102,18 @@ export class TftMatchService {
   }
 
   // Public methods
-  async updateSummoner (params: GetSummonerQueryDTO) {
+  async updateSummoner (params: GetSummonerQueryDTO): Promise<UpdateSummonerTFTMatchDTO> {
     const parseRegion = regionToTftRegions(params.region)
     // Summoner details
     const { puuid } = await this.summonerService.get(params)
-    // Listing by user
-    const matchIds = await this.getMatchListing(puuid, parseRegion)
-    // Get all models
-    const models = await Promise.map(
-      matchIds,
+    // Create matches
+    await Promise.map(
+      this.getMatchListing(puuid, parseRegion),
       match => this.createMatch(puuid, match, params.region),
       { concurrency: this.concurrency }
     )
     // Response
-    return models
+    return { msg: 'OK' }
   }
 
   async getBySummoner (params: QueryTftMatches) {

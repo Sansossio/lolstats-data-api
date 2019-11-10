@@ -42,8 +42,6 @@ export function riotToModel (
     accountId: riot.accountId,
     puuid: riot.puuid,
     bot: isBot(riot.accountId),
-    lolMatches: new Map(),
-    tftMatches: new Map(),
     leagues: matchLeagues(leagues),
     loading,
     region

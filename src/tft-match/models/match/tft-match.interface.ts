@@ -4,7 +4,7 @@ import { Regions } from 'twisted/dist/constants'
 import { IQueueModel } from '../../../static-data/models/queue/queue.interface'
 
 export interface ITFTMatchModel extends IBaseInterface {
-  match_id: number
+  match_id: string
   region: Regions
   data_version: string
   tft_set_number: number

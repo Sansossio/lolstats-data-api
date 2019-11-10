@@ -66,19 +66,22 @@ const schema = new mongoose.Schema({
   lolMatches: {
     type: Map,
     of: Boolean,
-    required: true
+    required: false,
+    default: {}
   },
 
   tftMatches: {
     type: Map,
     of: Boolean,
-    required: true
+    required: false,
+    default: {}
   },
 
   leagues: {
     type: Map,
     of: SummonerLeagueModel.schema,
-    required: true
+    required: false,
+    default: {}
   }
 }, ModelsOptions)
 

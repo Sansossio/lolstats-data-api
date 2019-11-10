@@ -5,7 +5,7 @@ import { TftMatchParticipantsModelDto } from '../participants/tft-match.particip
 
 export class TftMatchModelDTO {
   @ApiResponseModelProperty()
-  match_id!: number
+  match_id!: string
 
   @ApiResponseModelProperty({
     type: String
