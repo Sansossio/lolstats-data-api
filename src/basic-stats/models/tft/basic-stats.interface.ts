@@ -17,6 +17,7 @@ export interface ITftSummonerStatsModel extends IBaseInterface {
     goldLeft: number
     level: number
     lastRound: number
+    damageToPlayers: number
   }
   mostUsed: {
     traits: {

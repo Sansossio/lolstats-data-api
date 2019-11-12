@@ -17,6 +17,11 @@ const averageSchema = new mongoose.Schema({
   lastRound: {
     type: Number,
     required: true
+  },
+
+  damageToPlayers: {
+    type: Number,
+    required: true
   }
 })
 

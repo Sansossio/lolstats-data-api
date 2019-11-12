@@ -5,7 +5,8 @@ import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
 enum TFTMatchKeys {
   GOLD = 'gold_left',
   LEVEL = 'level',
-  LAST_ROUND = 'last_round'
+  LAST_ROUND = 'last_round',
+  DAMAGE_TO_PLAYERS = 'total_damage_to_players'
 }
 
 export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[]) {
@@ -17,7 +18,8 @@ export function ObjectResponse (puuid: string, matches: Partial<ITFTMatchModel>[
     averages: {
       goldLeft: algorithms.keyAverage(puuid, matches, TFTMatchKeys.GOLD),
       level: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LEVEL),
-      lastRound: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LAST_ROUND)
+      lastRound: algorithms.keyAverage(puuid, matches, TFTMatchKeys.LAST_ROUND),
+      damageToPlayers: algorithms.keyAverage(puuid, matches, TFTMatchKeys.DAMAGE_TO_PLAYERS)
     },
     mostUsed: {
       units: algorithms.mostUsedUnits(puuid, matches),
