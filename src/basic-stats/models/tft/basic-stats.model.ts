@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions, ModelsName } from '../../../enums/database.enum'
+import { ModelsOptions, ModelsName, SubModelOptions } from '../../../enums/database.enum'
 import { IModels } from '../../../database/database.types'
 
 // Sub schemas definition
@@ -23,7 +23,7 @@ const averageSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-})
+}, SubModelOptions)
 
 const placementSchema = new mongoose.Schema({
   placement: {
@@ -40,7 +40,7 @@ const placementSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-})
+}, SubModelOptions)
 
 const mostUsedTraitsSchema = new mongoose.Schema({
   name: {
@@ -57,7 +57,7 @@ const mostUsedTraitsSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-})
+}, SubModelOptions)
 
 const mostUsedUnitsSchema = new mongoose.Schema({
   name: {
@@ -79,7 +79,7 @@ const mostUsedUnitsSchema = new mongoose.Schema({
     type: Number,
     required: true
   }
-})
+}, SubModelOptions)
 
 const mostUsedSchema = new mongoose.Schema({
   traits: {
@@ -91,7 +91,7 @@ const mostUsedSchema = new mongoose.Schema({
     type: [mostUsedUnitsSchema],
     required: true
   }
-})
+}, SubModelOptions)
 
 // Schema definition
 const schema = new mongoose.Schema({

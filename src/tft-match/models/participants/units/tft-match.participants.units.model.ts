@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions, ModelsName } from '../../../../enums/database.enum'
+import { SubModelOptions } from '../../../../enums/database.enum'
 import { StaticTftModel } from '../../../../static-data/models/static-tft-items/static-tft-items.model'
 
 // Schema definition
@@ -30,4 +30,4 @@ export const TftMatchParticipantsUnitsModel = new mongoose.Schema({
     required: false,
     default: 0
   }
-}, ModelsOptions)
+}, SubModelOptions)

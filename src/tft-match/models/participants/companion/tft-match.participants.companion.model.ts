@@ -1,5 +1,5 @@
 import * as mongoose from 'mongoose'
-import { ModelsOptions } from '../../../../enums/database.enum'
+import { SubModelOptions } from '../../../../enums/database.enum'
 
 // Schema definition
 export const TftMatchParticipantsCompanionModel = new mongoose.Schema({
@@ -15,4 +15,4 @@ export const TftMatchParticipantsCompanionModel = new mongoose.Schema({
     type: String
   }
 
-}, ModelsOptions)
+}, SubModelOptions)
