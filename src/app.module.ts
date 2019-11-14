@@ -10,6 +10,7 @@ import { StaticDataModule } from './static-data/static-data.module'
 import { ProfileStatsModule } from './profile-stats/profile-stats.module'
 import { CacheService } from './cache/cache.service'
 import { OriginMiddleware } from './middlewares/origin.middleware'
+import { InformationModule } from './information/information.module';
 
 @Module({
   imports: [
@@ -21,7 +22,8 @@ import { OriginMiddleware } from './middlewares/origin.middleware'
     TftMatchModule,
     SeederModule,
     StaticDataModule,
-    ProfileStatsModule
+    ProfileStatsModule,
+    InformationModule
   ],
   providers: [CacheService]
 })
