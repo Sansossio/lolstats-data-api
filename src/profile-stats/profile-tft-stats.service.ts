@@ -108,6 +108,7 @@ export class ProfileTftStatsService {
     }
     const queues = algorithms.getQueues(matchHistory)
 
+    await this.matchStatsByQueue(TftMatchStatsEnum.BY_QUEUES, _id, puuid, matchHistory, queues)
     await this.globalStats(_id, puuid, matchHistory)
     await this.traits(_id, puuid, matchHistory, queues)
     await this.items(_id, puuid, matchHistory, queues)

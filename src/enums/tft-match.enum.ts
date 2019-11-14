@@ -9,5 +9,6 @@ export enum TftMatchEnum {
 export enum TftMatchStatsEnum {
   GLOBAL_STATS = 'GLOBAL_STATS',
   BY_TRAIT = 'STATS_BY_TRAIT',
-  BY_ITEMS = 'STATS_BY_ITEM'
+  BY_ITEMS = 'STATS_BY_ITEM',
+  BY_QUEUES = 'STATS_BY_QUEUE'
 }
