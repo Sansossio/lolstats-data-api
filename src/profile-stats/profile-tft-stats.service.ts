@@ -117,7 +117,7 @@ export class ProfileTftStatsService {
 
   async get (params: GetProfileTftStats) {
     const { _id } = await this.summonerService.get(params)
-    const options = utils.SetOptions(_id, params)
+    const options = utils.FindOptions(_id, params)
     return this.repository.find(options)
   }
 }

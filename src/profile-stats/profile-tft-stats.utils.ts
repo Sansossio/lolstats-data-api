@@ -57,7 +57,7 @@ export function FilterByItem (item: number, puuid: string, matches: Partial<ITFT
   })
 }
 
-export function SetOptions (summoner: string, params: GetProfileTftStats) {
+export function FindOptions (summoner: string, params: GetProfileTftStats) {
   const options: any = { summoner }
   if (params.statName) {
     options.name = params.statName
