@@ -3,7 +3,7 @@ import { ProfileTftStatsService } from './profile-tft-stats.service'
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 import { ApiOperation, ApiUseTags } from '@nestjs/swagger'
 
-@Controller('profile-tft-stats')
+@Controller('profile-stats/tft')
 @ApiUseTags('Profile stats - TFT')
 export class BasicTftStatsController {
   constructor (
