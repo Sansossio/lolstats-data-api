@@ -1,12 +1,13 @@
 import { Controller, Get, Query, Post } from '@nestjs/common'
-import { BasicTftStatsService } from './basic-tft-stats.service'
+import { ProfileTftStatsService } from './profile-tft-stats.service'
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
-import { ApiOperation } from '@nestjs/swagger'
+import { ApiOperation, ApiUseTags } from '@nestjs/swagger'
 
-@Controller('basic-tft-stats')
+@Controller('profile-tft-stats')
+@ApiUseTags('Profile stats - TFT')
 export class BasicTftStatsController {
   constructor (
-    private readonly service: BasicTftStatsService
+    private readonly service: ProfileTftStatsService
   ) {}
 
   @Get()

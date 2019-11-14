@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { TftMatchService } from './tft-match.service'
 import { ConfigModule } from '../config/config.module'
 import { SummonerService } from '../summoner/summoner.service'
-import { BasicTftStatsService } from '../basic-stats/basic-tft-stats.service'
+import { ProfileTftStatsService } from '../profile-stats/profile-tft-stats.service'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 import { DatabaseTestProviders } from '../database/database.providers'
 import { RiotApiService } from '../riot-api/riot-api.service'
@@ -22,7 +22,7 @@ describe('TftMatchService', () => {
         ...DatabaseTestProviders,
         StaticDataService,
         RiotApiService,
-        BasicTftStatsService,
+        ProfileTftStatsService,
         SummonerLeaguesService,
         SummonerService,
         TftMatchService

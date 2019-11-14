@@ -1,4 +1,4 @@
-import { findSummoner } from '.'
+import { findSummoner } from '../tft'
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
 
 export function playersEliminated (puuid: string, matches: Partial<ITFTMatchModel>[]) {

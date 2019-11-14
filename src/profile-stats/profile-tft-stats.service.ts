@@ -4,16 +4,16 @@ import { ModelsName } from '../enums/database.enum'
 import { ISummonerModel } from '../summoner/models/summoner.interface'
 import { Model } from 'mongoose'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
-import * as utils from './basic-tft-stats.utils'
+import * as utils from './profile-tft-stats.utils'
 import { TftMatchEnum, TftMatchStatsEnum } from '../enums/tft-match.enum'
 import * as _ from 'lodash'
 import * as algorithms from './algorithms/tft'
-import { ITftSummonerStatsModel } from './models/tft/basic-stats.interface'
+import { ITftSummonerStatsModel } from './models/tft/profile-stats.interface'
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 import { SummonerService } from '../summoner/summoner.service'
 
 @Injectable()
-export class BasicTftStatsService {
+export class ProfileTftStatsService {
   constructor (
     // Database
     @InjectModel(ModelsName.TFT_SUMMONER_STATS) private readonly repository: Model<ITftSummonerStatsModel>,

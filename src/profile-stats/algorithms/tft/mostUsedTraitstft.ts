@@ -1,7 +1,7 @@
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
 import { orderBy } from 'lodash'
 import { TftMatchEnum } from '../../../enums/tft-match.enum'
-import { findSummoner } from '.'
+import { findSummoner } from '../tft'
 
 export function mostUsedTraits (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   let response: {

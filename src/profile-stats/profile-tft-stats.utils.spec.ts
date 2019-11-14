@@ -1,4 +1,4 @@
-import * as utils from './basic-tft-stats.utils'
+import * as utils from './profile-tft-stats.utils'
 import { NotFoundException } from '@nestjs/common'
 
 describe('Basic tft stats utils', () => {

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing'
 import { SummonerService } from './summoner.service'
 import { DatabaseTestProviders } from '../database/database.providers'
-import { BasicTftStatsService } from '../basic-stats/basic-tft-stats.service'
+import { ProfileTftStatsService } from '../profile-stats/profile-tft-stats.service'
 import { SummonerLeaguesService } from '../summoner-leagues/summoner-leagues.service'
 import { RiotApiService } from '../riot-api/riot-api.service'
 import { ConfigService } from '../config/config.service'
@@ -15,7 +15,7 @@ describe('SummonerService', () => {
         ...DatabaseTestProviders,
         ConfigService,
         RiotApiService,
-        BasicTftStatsService,
+        ProfileTftStatsService,
         SummonerLeaguesService,
         SummonerService
       ]

@@ -1,5 +1,5 @@
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
-import { findSummoner } from '.'
+import { findSummoner } from '../tft'
 import { TftMatchEnum } from '../../../enums/tft-match.enum'
 import { sortBy } from 'lodash'
 

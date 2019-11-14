@@ -1,5 +1,5 @@
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
-import { findSummoner } from '.'
+import { findSummoner } from '../tft'
 import * as _ from 'lodash'
 import { IStaticTftItemsModel } from '../../../static-data/models/static-tft-items/static-tft-items.interface'
 

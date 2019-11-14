@@ -7,7 +7,7 @@ import { TftMatchModule } from './tft-match/tft-match.module'
 import { SeederModule } from './seeder/seeder.module'
 import { DatabaseConnection } from './database/database.connection'
 import { StaticDataModule } from './static-data/static-data.module'
-import { BasicStatsModule } from './basic-stats/basic-stats.module'
+import { ProfileStatsModule } from './profile-stats/profile-stats.module'
 import { CacheService } from './cache/cache.service'
 import { OriginMiddleware } from './middlewares/origin.middleware'
 
@@ -21,7 +21,7 @@ import { OriginMiddleware } from './middlewares/origin.middleware'
     TftMatchModule,
     SeederModule,
     StaticDataModule,
-    BasicStatsModule
+    ProfileStatsModule
   ],
   providers: [CacheService]
 })

@@ -1,5 +1,5 @@
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
-import { findSummoner } from '.'
+import { findSummoner } from '../tft'
 
 export function keyAverage (puuid: string, matches: Partial<ITFTMatchModel>[], key: string) {
   let total = 0

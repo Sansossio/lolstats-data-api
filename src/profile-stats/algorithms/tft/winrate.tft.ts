@@ -1,5 +1,5 @@
 import { ITFTMatchModel } from '../../../tft-match/models/match/tft-match.interface'
-import { findSummoner, isWin } from '.'
+import { findSummoner, isWin } from '../tft'
 
 export function winrate (puuid: string, matches: Partial<ITFTMatchModel>[]) {
   const wins = matches.filter((m) => {
