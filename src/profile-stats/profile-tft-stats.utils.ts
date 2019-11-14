@@ -1,6 +1,7 @@
 import * as _ from 'lodash'
 import * as algorithms from './algorithms/tft'
 import { ITFTMatchModel } from '../tft-match/models/match/tft-match.interface'
+import { GetProfileTftStats } from './dto/tft/get.profile-stats.dto'
 
 enum TFTMatchKeys {
   GOLD = 'gold_left',
@@ -54,4 +55,15 @@ export function FilterByItem (item: number, puuid: string, matches: Partial<ITFT
     }
     return index !== -1
   })
+}
+
+export function SetOptions (summoner: string, params: GetProfileTftStats) {
+  const options: any = { summoner }
+  if (params.statName) {
+    options.name = params.statName
+  }
+  if (params.queue) {
+    options.queue = params.queue
+  }
+  return options
 }

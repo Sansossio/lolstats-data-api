@@ -12,17 +12,15 @@ export class GetSummonerQueryDTO {
   @IsNotEmpty()
   summonerName!: string
 
-  @ApiModelPropertyOptional()
-  @IsString()
-  @IsOptional()
-  summonerPUUID?: string
-
   @ApiModelProperty({
     enum: RegionsList
   })
   @IsEnum(RegionsList)
   @IsNotEmpty()
   region!: Regions
+
+  // Hidden params
+  summonerPUUID?: string
 }
 
 // Partial

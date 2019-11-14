@@ -11,6 +11,7 @@ import * as algorithms from './algorithms/tft'
 import { ITftSummonerStatsModel } from './models/tft/profile-stats.interface'
 import { GetSummonerQueryDTO } from '../summoner/models/summoner.dto'
 import { SummonerService } from '../summoner/summoner.service'
+import { GetProfileTftStats } from './dto/tft/get.profile-stats.dto'
 
 @Injectable()
 export class ProfileTftStatsService {
@@ -114,10 +115,9 @@ export class ProfileTftStatsService {
     await this.items(_id, puuid, matchHistory, queues)
   }
 
-  async get (params: GetSummonerQueryDTO) {
+  async get (params: GetProfileTftStats) {
     const { _id } = await this.summonerService.get(params)
-    return this.repository.find({
-      summoner: _id
-    })
+    const options = utils.SetOptions(_id, params)
+    return this.repository.find(options)
   }
 }
